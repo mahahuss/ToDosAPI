@@ -26,9 +26,9 @@ namespace ToDosAPI.Models.UserClasses
             parameters.Add("Salt", user.Salt, DbType.String);
             parameters.Add("UserType", user.UserType, DbType.Int64);
             parameters.Add("FullName", user.FullName, DbType.String);
-            using (var connectin = this.context.CreateConnection())
+            using (var connectin = new SqlConnection(context.connectionstring))
             {
-              await connectin.ExecuteAsync(query, parameters);
+                await connectin.ExecuteAsync(query, parameters);
                 response = "true";
 
             }
@@ -43,7 +43,7 @@ namespace ToDosAPI.Models.UserClasses
             var parameters = new DynamicParameters();
             parameters.Add("Password", Password, DbType.String);
             parameters.Add("Username", Username, DbType.String);
-            using (var connectin = this.context.CreateConnection())
+            using (var connectin = new SqlConnection(context.connectionstring))
             {
                 var user = await connectin.QueryFirstOrDefaultAsync<User>(query, parameters);
                 if (user != null)

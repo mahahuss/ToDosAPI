@@ -5,19 +5,20 @@ using ToDosAPI.Models.UserClasses;
 
 namespace ToDosAPI.Controllers
 {
-    public class TaskController : Controller
+    public class TasksController : Controller
     {
 
         private readonly ITaskServices TaskSer;
-        public TaskController(ITaskServices TaskSer)
+
+        public TasksController(ITaskServices TaskSer)
         {
             this.TaskSer = TaskSer;
         }
 
-        [HttpGet("GetAllTasks")]
+        [HttpGet]
         public async Task<IActionResult> GetAllTasks()
         {
-            var _list = await this.TaskSer.GetAllTasks();
+            var _list = await TaskSer.GetAllTasks();
             if (_list != null)
             {
                 return Ok(_list);
@@ -28,10 +29,10 @@ namespace ToDosAPI.Controllers
             }
         }
 
-        [HttpGet("GetAllTasks/{UserId}")]
-        public async Task<IActionResult> GetAllTasks(int UserId)
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetAllTasks(int userId)
         {
-            var _list = await this.TaskSer.GetAllTasks(UserId);
+            var _list = await TaskSer.GetAllTasks(userId);
             if (_list != null)
             {
                 return Ok(_list);
@@ -42,10 +43,10 @@ namespace ToDosAPI.Controllers
             }
         }
 
-        [HttpPost("AddTask")]
+        [HttpPost]
         public async Task<IActionResult> AddTask([FromBody] Models.TaskClasses.Task task)
         {
-            var Check = TaskSer.AddNewTask(task);
+            var Check = await TaskSer.AddNewTask(task);
             if (Check.ToString() != "")
                 return Ok(true);
             else
@@ -54,37 +55,21 @@ namespace ToDosAPI.Controllers
         }
 
 
-        [HttpPut("EditTask")]
-        public async Task<IActionResult> EditTask(int TaskId, String TaskContent)
+        [HttpPut("{taskId}")]
+        public async Task<IActionResult> EditTask(int taskId, string TaskContent)
         {
-            var Check = TaskSer.EditTask(TaskId,TaskContent);
+            var Check = await TaskSer.EditTask(taskId, TaskContent);
             if (Check.ToString() != "")
                 return Ok(true);
             else
                 return BadRequest();
-
         }
 
-        [HttpPut("UpdateTaskStatus")]
-        public async Task<IActionResult> UpdateTaskStatus(int TaskId, int Status)
+        [HttpDelete("{taskId}")]
+        public async Task<IActionResult> DeleteTask(int taskId)
         {
-            var Check = TaskSer.UpdateTaskStatus(TaskId, Status);
-            if (Check.ToString() != "")
-                return Ok(true);
-            else
-                return BadRequest();
-
-        }
-
-        [HttpDelete("DeleteTask")]
-        public async Task<IActionResult> DeleteTask(int TaskId)
-        {
-            var Check = TaskSer.DeleteTask(TaskId);
-            if (Check.ToString() != "")
-                return Ok(true);
-            else
-                return BadRequest();
-
+            var check = await TaskSer.DeleteTask(taskId);
+            return check ? Ok(true) : BadRequest();
         }
     }
 }

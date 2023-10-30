@@ -1,110 +1,73 @@
 ﻿using Dapper;
+using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Threading.Tasks;
 using ToDosAPI.Models.Dapper;
 using ToDosAPI.Models.UserClasses;
 
-namespace ToDosAPI.Models.TaskClasses
+namespace ToDosAPI.Models.TaskClasses;
+
+public class TaskServices : ITaskServices
 {
-    public class TaskServices : ITaskServices
+    private readonly DapperDBContext _context;
+    public TaskServices(DapperDBContext context)
     {
-        private readonly DapperDBContext context;
-        public TaskServices(DapperDBContext context)
-        {
-            this.context = context;
-        }
-        public async Task<string> AddNewTask(Task task)
-        {
-            var response = "";
+        _context = context;
+    }
+    public async Task<bool> AddNewTask(Task task)
+    {
+        string query = " insert into Tasks (TaskContent, CreatedDate ,CreatedBy,Status) Values (@TaskContent , GETDATE() ,@CreatedBy, @Status) ";
+        await using var con = new SqlConnection(_context.connectionstring);
+        return await con.ExecuteAsync(query, new { task.TaskContent, task.CreatedBy, task.Status }) > 0;
+    }
 
-            string query = " insert into Tasks (TaskContent, CreatedDate ,CreatedBy,Status) Values (@TaskContent , GETDATE() ,@CreatedBy, @Status) ";
-            var parameters = new DynamicParameters();
-            parameters.Add("TaskContent", task.TaskContent, DbType.String);
-            parameters.Add("CreatedBy", task.CreatedBy, DbType.Int64);
-            parameters.Add("Status", task.Status, DbType.Int64);
+    public async Task<bool> DeleteTask(int TaskId)
+    {
+        string query = " delete from Tasks where Id = @Id ";
+        var parameters = new DynamicParameters();
+        parameters.Add("Id", TaskId, DbType.Int64);
+        await using var con = new SqlConnection(_context.connectionstring);
 
-            using (var connectin = this.context.CreateConnection())
-            {
-                await connectin.ExecuteAsync(query, parameters);
-                response = "true";
+        return await con.ExecuteAsync(query, parameters) > 0;
 
-            }
-            return response;
-        }
+    }
 
-        public async Task<string> DeleteTask(int TaskId)
-        {
-            var response = "";
+    public async Task<bool> EditTask(int TaskId, String TaskContent)
+    {
+        string query = " Update Tasks set TaskContent = @TaskContent where Id = @Id ";
+        var parameters = new DynamicParameters();
+        parameters.Add("Id", TaskId, DbType.Int64);
+        parameters.Add("TaskContent", TaskContent, DbType.String);
 
-            string query = " delete from Tasks where Id = @Id ";
-            var parameters = new DynamicParameters();
-            parameters.Add("Id", TaskId, DbType.Int64);
-            using (var connectin = this.context.CreateConnection())
-            {
-                await connectin.ExecuteAsync(query, parameters);
-                response = "true";
+        await using var con = new SqlConnection(_context.connectionstring);
+        return await con.ExecuteAsync(query, parameters) > 0;
+    }
 
-            }
-            return response;
-        }
+    public async Task<List<Task>> GetAllTasks()
+    {
+        string query = "Select * From Tasks";
 
-        public async Task<string> EditTask(int TaskId, String TaskContent)
-        {
-            var response = "";
+        await using var con = new SqlConnection(_context.connectionstring);
+        var Taskslist = await con.QueryAsync<Task>(query);
+        return Taskslist.ToList();
+    }
 
-            string query = " Update Tasks set TaskContent = @TaskContent where Id = @Id ";
-            var parameters = new DynamicParameters();
-            parameters.Add("Id", TaskId, DbType.Int64);
-            parameters.Add("TaskContent", TaskContent, DbType.String);
+    public async Task<List<Task>> GetAllTasks(int userId)
+    {
+        await using var con = new SqlConnection(_context.connectionstring);
+        return (await con.QueryAsync<Task>("sp_TasksGetAll", new { userId })).ToList();
+    }
 
-            using (var connectin = this.context.CreateConnection())
-            {
-                await connectin.ExecuteAsync(query, parameters);
-                response = "true";
+    public async Task<bool> UpdateTaskStatus(int TaskId, int Status)
+    {
+        string query = " Update Tasks set Status = @Status where Id = @Id ";
+        var parameters = new DynamicParameters();
+        parameters.Add("Id", TaskId, DbType.Int64);
+        parameters.Add("Status", Status, DbType.Int64);
 
-            }
-            return response;
-        }
+        await using var con = new SqlConnection(_context.connectionstring);
 
-        public async Task<List<Task>> GetAllTasks()
-        {
-            string query = "Select * From Tasks";
-          
-            using (var connectin = this.context.CreateConnection())
-            {
-                var Taskslist = await connectin.QueryAsync<Task>(query);
-                return Taskslist.ToList();
-            }
-        }
+        return await con.ExecuteAsync(query, parameters) > 0;
 
-        public async Task<List<Task>> GetAllTasks(int UserId)
-        {
-            string query = "Select * From Tasks where CreatedBy = @CreatedBy ";
-            var parameters = new DynamicParameters();
-            parameters.Add("CreatedBy", UserId, DbType.Int64);
-            using (var connectin = this.context.CreateConnection())
-            {
-                var Taskslist = await connectin.QueryAsync<Task>(query,parameters);
-                return Taskslist.ToList();
-            }
-        }
-
-        public async Task<string> UpdateTaskStatus(int TaskId, int Status)
-        {
-            var response = "";
-
-            string query = " Update Tasks set Status = @Status where Id = @Id ";
-            var parameters = new DynamicParameters();
-            parameters.Add("Id", TaskId, DbType.Int64);
-            parameters.Add("Status", Status, DbType.Int64);
-
-            using (var connectin = this.context.CreateConnection())
-            {
-                await connectin.ExecuteAsync(query, parameters);
-                response = "true";
-
-            }
-            return response;
-        }
     }
 }
