@@ -8,67 +8,49 @@ namespace ToDosAPI.Controllers
     public class TasksController : Controller
     {
 
-        private readonly ITaskServices TaskSer;
+        private readonly ITaskServices _taskService;
 
-        public TasksController(ITaskServices TaskSer)
+        public TasksController(ITaskServices taskSer)
         {
-            this.TaskSer = TaskSer;
+            this._taskService = taskSer;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllTasks()
         {
-            var _list = await TaskSer.GetAllTasks();
-            if (_list != null)
-            {
-                return Ok(_list);
-            }
-            else
-            {
-                return NotFound();
-            }
+            var _list = await _taskService.GetAllTasks();
+            return _list != null ? Ok(_list) : NotFound();
+
         }
 
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetAllTasks(int userId)
         {
-            var _list = await TaskSer.GetAllTasks(userId);
-            if (_list != null)
-            {
-                return Ok(_list);
-            }
-            else
-            {
-                return NotFound();
-            }
+            var _list = await _taskService.GetAllTasks(userId);
+            return _list !=null? Ok(_list) : NotFound();
+           
         }
 
         [HttpPost]
         public async Task<IActionResult> AddTask([FromBody] Models.TaskClasses.Task task)
         {
-            var Check = await TaskSer.AddNewTask(task);
-            if (Check.ToString() != "")
-                return Ok(true);
-            else
-                return BadRequest();
+            var check = await _taskService.AddNewTask(task);
+            return check ? Ok(true) : BadRequest();
 
         }
 
 
         [HttpPut("{taskId}")]
-        public async Task<IActionResult> EditTask(int taskId, string TaskContent)
+        public async Task<IActionResult> EditTask(int taskId, string taskContent, int status)
         {
-            var Check = await TaskSer.EditTask(taskId, TaskContent);
-            if (Check.ToString() != "")
-                return Ok(true);
-            else
-                return BadRequest();
+            var check = await _taskService.EditTask(taskId, taskContent, status);
+            return check ? Ok(true) : BadRequest();
         }
 
         [HttpDelete("{taskId}")]
         public async Task<IActionResult> DeleteTask(int taskId)
         {
-            var check = await TaskSer.DeleteTask(taskId);
+            var check = await _taskService.DeleteTask(taskId);
             return check ? Ok(true) : BadRequest();
         }
     }

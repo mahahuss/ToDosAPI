@@ -2,8 +2,8 @@
 {
     public interface IUserServices
     {
-        Task<String> AddNewUser(User user);
-        Task<String> login(String Username, String Password);
+        Task<bool> AddNewUser(User user);
+        Task<String> Login(String username, String password);
 
 
     }

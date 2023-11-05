@@ -1,3 +1,7 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using ToDosAPI;
 using ToDosAPI.Models.Dapper;
 using ToDosAPI.Models.TaskClasses;
@@ -17,6 +21,26 @@ builder.Services.AddSingleton<ITaskServices, TaskServices>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
+//Jwt configuration starts here
+var jwtIssuer = builder.Configuration.GetSection("Jwt:Issuer").Get<string>();
+var jwtKey = builder.Configuration.GetSection("Jwt:Key").Get<string>();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+ .AddJwtBearer(options =>
+ {
+     options.TokenValidationParameters = new TokenValidationParameters
+     {
+         ValidateIssuer = true,
+         ValidateAudience = true,
+         ValidateLifetime = true,
+         ValidateIssuerSigningKey = true,
+         ValidIssuer = jwtIssuer,
+         ValidAudience = jwtIssuer,
+         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+     };
+ });
+
 var app = builder.Build();
 
 app.UseMiddleware<ExceptionMiddleware>();
@@ -34,14 +58,3 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-
-
-public class Scoped
-{
-
-    public Scoped(Singleton singleton)
-    {
-
-    }
-};
-public class Singleton { };

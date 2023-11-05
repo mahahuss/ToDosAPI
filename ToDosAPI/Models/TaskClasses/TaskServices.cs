@@ -16,58 +16,39 @@ public class TaskServices : ITaskServices
     }
     public async Task<bool> AddNewTask(Task task)
     {
-        string query = " insert into Tasks (TaskContent, CreatedDate ,CreatedBy,Status) Values (@TaskContent , GETDATE() ,@CreatedBy, @Status) ";
-        await using var con = new SqlConnection(_context.connectionstring);
+        string query = " insert into Tasks (TaskContent, CreatedDate ,CreatedBy,Status)";
+        query += " Values (@TaskContent , GETDATE() ,@CreatedBy, @Status) ";
+        using var con = new SqlConnection(_context.connectionstring);
         return await con.ExecuteAsync(query, new { task.TaskContent, task.CreatedBy, task.Status }) > 0;
     }
 
-    public async Task<bool> DeleteTask(int TaskId)
+    public async Task<bool> DeleteTask(int taskId)
     {
-        string query = " delete from Tasks where Id = @Id ";
-        var parameters = new DynamicParameters();
-        parameters.Add("Id", TaskId, DbType.Int64);
-        await using var con = new SqlConnection(_context.connectionstring);
-
-        return await con.ExecuteAsync(query, parameters) > 0;
+        string query = " delete from Tasks where Id = @taskId ";
+        using var con = new SqlConnection(_context.connectionstring);
+        return await con.ExecuteAsync(query, new { taskId }) > 0;
 
     }
 
-    public async Task<bool> EditTask(int TaskId, String TaskContent)
+    public async Task<bool> EditTask(int taskId, String taskContent, int status)
     {
-        string query = " Update Tasks set TaskContent = @TaskContent where Id = @Id ";
-        var parameters = new DynamicParameters();
-        parameters.Add("Id", TaskId, DbType.Int64);
-        parameters.Add("TaskContent", TaskContent, DbType.String);
+        string query = " Update Tasks set TaskContent = @taskContent, Status = @status where Id = @taskId ";
+        using var con = new SqlConnection(_context.connectionstring);
+        return await con.ExecuteAsync(query, new { taskContent, taskId, status }) > 0;
 
-        await using var con = new SqlConnection(_context.connectionstring);
-        return await con.ExecuteAsync(query, parameters) > 0;
     }
 
     public async Task<List<Task>> GetAllTasks()
     {
         string query = "Select * From Tasks";
-
-        await using var con = new SqlConnection(_context.connectionstring);
-        var Taskslist = await con.QueryAsync<Task>(query);
-        return Taskslist.ToList();
+        using var con = new SqlConnection(_context.connectionstring);
+        return (await con.QueryAsync<Task>(query)).ToList();
     }
 
     public async Task<List<Task>> GetAllTasks(int userId)
     {
-        await using var con = new SqlConnection(_context.connectionstring);
-        return (await con.QueryAsync<Task>("sp_TasksGetAll", new { userId })).ToList();
-    }
-
-    public async Task<bool> UpdateTaskStatus(int TaskId, int Status)
-    {
-        string query = " Update Tasks set Status = @Status where Id = @Id ";
-        var parameters = new DynamicParameters();
-        parameters.Add("Id", TaskId, DbType.Int64);
-        parameters.Add("Status", Status, DbType.Int64);
-
-        await using var con = new SqlConnection(_context.connectionstring);
-
-        return await con.ExecuteAsync(query, parameters) > 0;
-
+        string query = "Select * From Tasks where CreatedBy = @userId ";
+        using var con = new SqlConnection(_context.connectionstring);
+        return (await con.QueryAsync<Task>(query, new { userId })).ToList();
     }
 }
