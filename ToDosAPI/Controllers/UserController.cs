@@ -33,7 +33,7 @@ namespace ToDosAPI.Controllers
         }
 
         [HttpGet("Login")]
-        public async Task<IActionResult> Login(String username, String password)
+        public async Task<IActionResult> Login(string username, string password)
         {
             var token = await _userService.Login(username, password);
             if (token != "")

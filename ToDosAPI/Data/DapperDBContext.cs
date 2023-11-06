@@ -1,13 +1,10 @@
-﻿using Microsoft.Data.SqlClient;
-using System.Data;
-
-namespace ToDosAPI.Models.Dapper
+﻿namespace ToDosAPI.Data
 {
-    public class DapperDBContext
+    public class DapperDbContext
     {
         private readonly IConfiguration _configuration;
         public readonly string connectionstring;
-        public DapperDBContext(IConfiguration configuration)
+        public DapperDbContext(IConfiguration configuration)
         {
             this._configuration = configuration;
             this.connectionstring = this._configuration.GetConnectionString("connection") ??

@@ -1,6 +1,6 @@
 ﻿namespace ToDosAPI.Models.TaskClasses
 {
-    public class Task
+    public class UserTask
     {
         public int Id { get; set; }
         public string? TaskContent { get; set; }

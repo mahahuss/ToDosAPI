@@ -1,20 +1,17 @@
 ﻿using Dapper;
 using Microsoft.Data.SqlClient;
-using System.Data;
-using System.Threading.Tasks;
-using ToDosAPI.Models.Dapper;
-using ToDosAPI.Models.UserClasses;
+using ToDosAPI.Data;
 
 namespace ToDosAPI.Models.TaskClasses;
 
 public class TaskServices : ITaskServices
 {
-    private readonly DapperDBContext _context;
-    public TaskServices(DapperDBContext context)
+    private readonly DapperDbContext _context;
+    public TaskServices(DapperDbContext context)
     {
         _context = context;
     }
-    public async Task<bool> AddNewTask(Task task)
+    public async Task<bool> AddNewTask(UserTask task)
     {
         string query = " insert into Tasks (TaskContent, CreatedDate ,CreatedBy,Status)";
         query += " Values (@TaskContent , GETDATE() ,@CreatedBy, @Status) ";
@@ -38,17 +35,17 @@ public class TaskServices : ITaskServices
 
     }
 
-    public async Task<List<Task>> GetAllTasks()
+    public async Task<List<UserTask>> GetAllTasks()
     {
         string query = "Select * From Tasks";
         using var con = new SqlConnection(_context.connectionstring);
-        return (await con.QueryAsync<Task>(query)).ToList();
+        return (await con.QueryAsync<UserTask>(query)).ToList();
     }
 
-    public async Task<List<Task>> GetAllTasks(int userId)
+    public async Task<List<UserTask>> GetUserTasksAsync(int userId)
     {
         string query = "Select * From Tasks where CreatedBy = @userId ";
         using var con = new SqlConnection(_context.connectionstring);
-        return (await con.QueryAsync<Task>(query, new { userId })).ToList();
+        return (await con.QueryAsync<UserTask>(query, new { userId })).ToList();
     }
 }
