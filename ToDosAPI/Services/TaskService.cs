@@ -2,20 +2,20 @@
 using Microsoft.Data.SqlClient;
 using System.Threading.Tasks;
 using ToDosAPI.Data;
-using ToDosAPI.Models;
+using ToDosAPI.Models.Entities;
 
 namespace ToDosAPI.Services;
 
-public class TaskServices 
+public class TaskService 
 {
 
     private readonly UserTaskRepository _userTaskRepo;
 
-    public TaskServices(UserTaskRepository userTaskRepo)
+    public TaskService(UserTaskRepository userTaskRepo)
     {
         _userTaskRepo = userTaskRepo;
     }
-    public async Task<UserTask?> AddNewTask(UserTask task)
+    public async Task<UserTask?> AddNewTaskAsync(UserTask task)
     {
         var createdTask = await _userTaskRepo.CreateTaskAsync(task);
         return createdTask;

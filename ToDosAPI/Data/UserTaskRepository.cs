@@ -1,7 +1,7 @@
 ﻿using Dapper;
 using Microsoft.Data.SqlClient;
 using System.Threading.Tasks;
-using ToDosAPI.Models;
+using ToDosAPI.Models.Entities;
 
 namespace ToDosAPI.Data
 {

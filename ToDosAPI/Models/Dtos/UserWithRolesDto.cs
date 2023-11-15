@@ -1,11 +1,12 @@
-﻿namespace ToDosAPI.Models
+﻿namespace ToDosAPI.Models.Dtos
 {
-    public class User
+    public class UserWithRolesDto
     {
         public int Id { get; set; }
         public string Username { get; set; } = default!;
         public string Password { get; set; } = default!;
         public string Salt { get; set; } = default!;
         public string? FullName { get; set; }
+        public List<string> Roles { get; set; } = new();
     }
 }

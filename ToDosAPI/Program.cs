@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using ToDosAPI;
@@ -10,13 +9,23 @@ using ToDosAPI.Util;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+const string corsOrigins = "todos_origin";
 
 builder.Services.AddControllers();
-builder.Services.AddSingleton<UserServices>();
+builder.Services.AddCors(p =>
+{
+    p.AddPolicy(corsOrigins, c =>
+    {
+        c.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+    });
+});
+builder.Services.AddSingleton<UserService>();
+builder.Services.AddSingleton<UserRepository>();
+builder.Services.AddSingleton<UserTaskRepository>();
 builder.Services.AddSingleton<DapperDbContext>();
-builder.Services.AddSingleton<TaskServices>();
+builder.Services.AddSingleton<TaskService>();
 builder.Services.AddSingleton<PasswordHasher>();
-builder.Services.AddSingleton<Token>();
+builder.Services.AddSingleton<TokenService>();
 
 
 
@@ -26,8 +35,8 @@ builder.Services.AddSwaggerGen();
 
 
 //Jwt configuration starts here
-var jwtIssuer = builder.Configuration.GetSection("Jwt:Issuer").Get<string>();
-var jwtKey = builder.Configuration.GetSection("Jwt:Key").Get<string>();
+var jwtIssuer = builder.Configuration["Jwt:Issuer"];
+var jwtKey = builder.Configuration["Jwt:Key"];
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
  .AddJwtBearer(options =>
@@ -40,7 +49,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
          ValidateIssuerSigningKey = true,
          ValidIssuer = jwtIssuer,
          ValidAudience = jwtIssuer,
-         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey!))
      };
  });
 
@@ -54,6 +63,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors(corsOrigins);
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
