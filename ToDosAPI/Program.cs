@@ -4,7 +4,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using ToDosAPI;
 using ToDosAPI.Data;
-using ToDosAPI.Models.TaskClasses;
 using ToDosAPI.Models.UserClasses;
 using ToDosAPI.Services;
 using ToDosAPI.Util;

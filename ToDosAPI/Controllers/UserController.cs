@@ -11,36 +11,36 @@ using System.Reflection;
 using System.Security.Claims;
 using System.Text;
 using ToDosAPI.Models;
-using ToDosAPI.Models.UserClasses;
+using ToDosAPI.Services;
 
 namespace ToDosAPI.Controllers
 {
-    public class UserController : Controller
+    public class UserController : ControllerBase
     {
-        private readonly IUserServices _userService;
+        private readonly UserServices _userService;
 
-        public UserController(IUserServices userService)
+        public UserController(UserServices userService)
         {
-            this._userService = userService;
+            _userService = userService;
 
         }
 
-        [HttpPost("AddNewUser")]
-        public async Task<IActionResult> AddNewUser([FromBody] User user)
+        [HttpPost]
+        public async Task<ActionResult> AddNewUser([FromBody] User user)
         {
-            var check = await _userService.AddNewUser(user);
-            return Ok(check);
+            var userInfo = await _userService.AddNewUser(user);
+            return Ok(userInfo);
         }
 
-        [HttpGet("Login")]
-        public async Task<IActionResult> Login(string username, string password)
+        [HttpGet]
+        public async Task<ActionResult> Login(string username, string password)
         {
             var token = await _userService.Login(username, password);
-            if (token != "")
+            if (string.IsNullOrEmpty(token))
             {
                 return Ok(token);
             }
-            return this.Unauthorized();
+            return Unauthorized();
 
         }
     }

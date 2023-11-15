@@ -1,4 +1,4 @@
-﻿namespace ToDosAPI.Models.TaskClasses
+﻿namespace ToDosAPI.Models
 {
     public class UserTask
     {

@@ -1,53 +1,53 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ToDosAPI.Models.TaskClasses;
+using ToDosAPI.Models;
+using ToDosAPI.Services;
 
 namespace ToDosAPI.Controllers
 {
     public class TasksController : ControllerBase
     {
 
-        private readonly ITaskServices _taskService;
+        private readonly TaskServices _taskService;
 
-        public TasksController(ITaskServices taskSer)
+        public TasksController(TaskServices taskService)
         {
-            _taskService = taskSer;
+            _taskService = taskService;
         }
 
         [HttpGet]
-        public async Task<List<UserTask>> GetAllTasks()
+        public async Task<ActionResult> GetAllTasks()
         {
-            return await _taskService.GetAllTasks();
+            List<UserTask> tasks = await _taskService.GetAllTasks();
+            return Ok(tasks);
         }
 
         [HttpGet("{userId}")]
         public async Task<ActionResult> GetAllTasks(int userId)
         {
-            var list = await _taskService.GetUserTasksAsync(userId);
-            return list.Count > 0 ? Ok(list) : NotFound();
-
+            List<UserTask> tasks = await _taskService.GetUserTasks(userId);
+            return Ok(tasks);
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddTask([FromBody] Models.TaskClasses.UserTask task)
+        public async Task<ActionResult> AddTask([FromBody] UserTask task)
         {
-            var check = await _taskService.AddNewTask(task);
-            return check ? Ok(true) : BadRequest();
-
+            var userTask = await _taskService.AddNewTask(task);
+            return Ok(userTask);
         }
 
 
-        [HttpPut("{taskId}")]
+        [HttpPut]
         public async Task<ActionResult> EditTask(int taskId, string taskContent, int status)
         {
             var check = await _taskService.EditTask(taskId, taskContent, status);
-            return check ? Ok(true) : BadRequest();
+            return Ok(check);
         }
 
-        [HttpDelete("{taskId}")]
+        [HttpDelete]
         public async Task<ActionResult> DeleteTask(int taskId)
         {
             var check = await _taskService.DeleteTask(taskId);
-            return check ? Ok(true) : BadRequest();
+            return Ok(check);
         }
     }
 }
