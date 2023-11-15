@@ -4,7 +4,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using ToDosAPI;
 using ToDosAPI.Data;
-using ToDosAPI.Models.UserClasses;
 using ToDosAPI.Services;
 using ToDosAPI.Util;
 
@@ -13,10 +12,12 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
-builder.Services.AddSingleton<IUserServices, UserServices>();
+builder.Services.AddSingleton<UserServices>();
 builder.Services.AddSingleton<DapperDbContext>();
-builder.Services.AddSingleton<ITaskServices, TaskServices>();
+builder.Services.AddSingleton<TaskServices>();
 builder.Services.AddSingleton<PasswordHasher>();
+builder.Services.AddSingleton<Token>();
+
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
