@@ -19,7 +19,7 @@ public class UserController : BaseController
     [HttpPost("register")]
     public async Task<ActionResult> Register([FromBody] RegisterDto user)
     {
-        var userInfo = await _userService.AddNewUser(user);
+        var userInfo = await _userService.AddNewUserAsync(user);
         return Ok(userInfo);
     }
 

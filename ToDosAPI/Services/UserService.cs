@@ -20,7 +20,7 @@ public class UserService
         _userToken = userToken;
     }
 
-    public async Task<UserWithRolesDto?> AddNewUser(RegisterDto registerDto)
+    public async Task<UserWithRolesDto?> AddNewUserAsync(RegisterDto registerDto)
     {
         var salt = _passwordHasher.GenerateSalt();
         var password = _passwordHasher.HashPassword(registerDto.Password!, salt);
@@ -32,22 +32,20 @@ public class UserService
             Username = registerDto.Username
         }, 3);
 
-        if (createdUser is not null) return await GetUserWithRolesAsync(registerDto.Username);
+        if (createdUser is not null) return await _userRepo.GetUserWithRolesAsync(registerDto.Username, "register");
 
         return null;
     }
 
     public async Task<string?> LoginAsync(string username, string password)
     {
-        var userInfo = await _userRepo.GetUserAsync(username);
+        var userInfo = await _userRepo.GetUserWithRolesAsync(username, "login");
 
         if (userInfo is null) return null;
 
-        var result = _passwordHasher.CheckPassword(password, userInfo.Password, userInfo.Salt);
+        var result = _passwordHasher.CheckPassword(password, userInfo.Password!, userInfo.Salt!);
 
         return result ? _userToken.GenerateToken(userInfo) : null;
     }
 
-    public Task<UserWithRolesDto?> GetUserWithRolesAsync(string username) =>
-        _userRepo.GetUsersWithRolesAsync(username);
 }

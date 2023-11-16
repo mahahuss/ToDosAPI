@@ -18,7 +18,7 @@ public class UserRepository
     public async Task<User?> CreateUserAsync(User user, int roleId)
     {
         await using var con = new SqlConnection(_context.connectionstring);
-        return await con.QueryFirstOrDefaultAsync<User>("sp_CreateUser", new
+        return await con.QueryFirstOrDefaultAsync<User>("sp_UserCreate", new
         {
             user.Username,
             user.Password,
@@ -28,17 +28,11 @@ public class UserRepository
         });
     }
 
-    public async Task<User?> GetUserAsync(string username)
-    {
-        using var con = new SqlConnection(_context.connectionstring);
-        return await con.QueryFirstOrDefaultAsync<User>("sp_GetUser", new { username });
-    }
-
-    public async Task<UserWithRolesDto?> GetUsersWithRolesAsync(string username)
+    public async Task<UserWithRolesDto?> GetUserWithRolesAsync(string username, string type)
     {
         await using var con = new SqlConnection(_context.connectionstring);
         UserWithRolesDto? userWithRoles = null;
-        await con.QueryAsync<User, Role, UserWithRolesDto>("sp_GetUsersWithRoles",
+        await con.QueryAsync<User, Role, UserWithRolesDto>("sp_UserGetUserWithRoles",
             (user, role) =>
             {
                 userWithRoles ??= new UserWithRolesDto
@@ -46,6 +40,31 @@ public class UserRepository
                     Id = user.Id,
                     FullName = user.FullName,
                     Username = user.Username,
+                    Password = type == "register" ? null : user.Password,
+                    Salt = type == "register" ? null : user.Salt
+                };
+
+                userWithRoles.Roles.Add(role.UserType);
+                return userWithRoles;
+            }, new { username });
+
+        return userWithRoles;
+    }
+
+    public async Task<UserWithRolesDto?> GetUserWithRolesAsync(string username)
+    {
+        await using var con = new SqlConnection(_context.connectionstring);
+        UserWithRolesDto? userWithRoles = null;
+        await con.QueryAsync<User, Role, UserWithRolesDto>("sp_UserGetUserWithRoles",
+            (user, role) =>
+            {
+                userWithRoles ??= new UserWithRolesDto
+                {
+                    Id = user.Id,
+                    FullName = user.FullName,
+                    Username = user.Username,
+                    Password =  user.Password,
+                    Salt = user.Salt
                 };
 
                 userWithRoles.Roles.Add(role.UserType);

@@ -1,7 +1,9 @@
 ﻿using Microsoft.IdentityModel.Tokens;
+using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using ToDosAPI.Models.Dtos;
 using ToDosAPI.Models.Entities;
 
 namespace ToDosAPI.Util;
@@ -14,14 +16,15 @@ public class TokenService
     {
         _configuration = configuration;
     }
-    public string GenerateToken(User user)
+    public string GenerateToken(UserWithRolesDto userWithRolesDto)
     {
         var claims = new List<Claim>
         {
-            new(ClaimTypes.Name, user!.Username!, user.FullName),
+            new(ClaimTypes.NameIdentifier, userWithRolesDto.Username!),
+            new(ClaimTypes.Name, userWithRolesDto.FullName!),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-        };
-
+         };
+        claims.AddRange(userWithRolesDto.Roles.Select(role => new Claim(ClaimTypes.Role, role)));
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 

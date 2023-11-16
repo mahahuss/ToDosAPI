@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Microsoft.Data.SqlClient;
 using System.Threading.Tasks;
+using ToDosAPI.Models.Dtos;
 using ToDosAPI.Models.Entities;
 
 namespace ToDosAPI.Data
@@ -14,34 +15,34 @@ namespace ToDosAPI.Data
             _context = context;
         }
 
-        public async Task<UserTask?> CreateTaskAsync(UserTask task)
+        public async Task<UserTask?> CreateTaskAsync(AddTaskDto task)
         {
             await using var con = new SqlConnection(_context.connectionstring);
-            return await con.QueryFirstOrDefaultAsync<UserTask>("sp_GetUser", new { task.TaskContent, task.CreatedBy, task.Status });
+            return await con.QueryFirstOrDefaultAsync<UserTask>("sp_TaskCreate", new { task.TaskContent, task.CreatedBy, task.Status });
         }
 
         public async Task<bool> DeleteTaskAsync(int taskId)
         {
-            using var con = new SqlConnection(_context.connectionstring);
-            return await con.ExecuteAsync("sp_DeleteTask", new { taskId }) > 0;
+            await using var con = new SqlConnection(_context.connectionstring);
+            return await con.ExecuteAsync("sp_TaskDelete", new { taskId }) > 0;
         }
 
         public async Task<bool> EditTaskAsync(int taskId, string taskContent, int status)
         {
-            using var con = new SqlConnection(_context.connectionstring);
-            return await con.ExecuteAsync("sp_EditTask", new { taskContent, taskId, status }) > 0;
+            await using var con = new SqlConnection(_context.connectionstring);
+            return await con.ExecuteAsync("sp_TaskEdit", new { taskContent, taskId, status }) > 0;
         }
 
         public async Task<List<UserTask>> GetAllTasksAsync()
         {
-            using var con = new SqlConnection(_context.connectionstring);
-            return (await con.QueryAsync<UserTask>("sp_GetAllTasks")).ToList();
+            await using var con = new SqlConnection(_context.connectionstring);
+            return (await con.QueryAsync<UserTask>("sp_TaskGetAll")).ToList();
         }
 
         public async Task<List<UserTask>> GetUserTasksAsync(int userId)
         {
-            using var con = new SqlConnection(_context.connectionstring);
-            return (await con.QueryAsync<UserTask>("sp_GetUserTasks", new { userId })).ToList();
+            await using var con = new SqlConnection(_context.connectionstring);
+            return (await con.QueryAsync<UserTask>("sp_TaskGetUserTasks", new { userId })).ToList();
         }
 
     }

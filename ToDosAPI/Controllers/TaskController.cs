@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
+using System.Threading.Tasks;
+using ToDosAPI.Models.Dtos;
 using ToDosAPI.Models.Entities;
 using ToDosAPI.Services;
 
@@ -17,36 +20,42 @@ public class TasksController : BaseController
     [HttpGet]
     public async Task<ActionResult> GetAllTasks()
     {
-        List<UserTask> tasks = await _taskService.GetAllTasks();
+        List<UserTask> tasks = await _taskService.GetAllTasksAsync();
         return Ok(tasks);
     }
 
     [HttpGet("{userId}")]
     public async Task<ActionResult> GetAllTasks(int userId)
     {
-        List<UserTask> tasks = await _taskService.GetUserTasks(userId);
+        List<UserTask> tasks = await _taskService.GetUserTasksAsync(userId);
         return Ok(tasks);
     }
 
     [HttpPost]
-    public async Task<ActionResult> AddTask([FromBody] UserTask task)
+    public async Task<ActionResult> AddTask(AddTaskDto addTaskDto)
     {
-        var userTask = await _taskService.AddNewTaskAsync(task);
+        var userTask = await _taskService.AddNewTaskAsync(addTaskDto);
         return Ok(userTask);
     }
 
 
     [HttpPut]
-    public async Task<ActionResult> EditTask(int taskId, string taskContent, int status)
+    public async Task<ActionResult> EditTask(EditTaskDto editTaskDto)
     {
-        var check = await _taskService.EditTask(taskId, taskContent, status);
-        return Ok(check);
+        var check = await _taskService.EditTaskAsync(editTaskDto.TaskId, editTaskDto.TaskContent, editTaskDto.Status);
+        return Ok(new
+        {
+            status = check
+        });
     }
 
     [HttpDelete]
-    public async Task<ActionResult> DeleteTask(int taskId)
+    public async Task<ActionResult> DeleteTask(DeleteTaskDto TaskId)
     {
-        var check = await _taskService.DeleteTask(taskId);
-        return Ok(check);
+        var check = await _taskService.DeleteTaskAsync(TaskId.TaskId);
+        return Ok(new
+        {
+            status = check
+        });
     }
 }
