@@ -15,28 +15,13 @@ public class TokenService
         _configuration = configuration;
     }
 
-
-    public class ClaimTest
-    {
-        const string nameId = "nameId";
-        const string nameIdentifier = "https:/......";
-
-        public ClaimTest(string claimName)
-        {
-            if (claimName == nameId)
-                ClaimType = nameIdentifier;
-        }
-
-        public string ClaimType { get; set; }
-    }
-
     public string GenerateToken(UserWithRolesDto userWithRolesDto)
     {
         var claims = new List<Claim>
         {
             new(JwtRegisteredClaimNames.NameId, userWithRolesDto.Id.ToString()),
-            new(JwtRegisteredClaimNames.UniqueName, userWithRolesDto.Username!),
-            new(JwtRegisteredClaimNames.GivenName, userWithRolesDto.FullName!),
+            new(JwtRegisteredClaimNames.UniqueName, userWithRolesDto.Username),
+            new(JwtRegisteredClaimNames.GivenName, userWithRolesDto.FullName),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 

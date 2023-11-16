@@ -1,0 +1,33 @@
+<form
+  [formGroup]="loginForm"
+  (ngSubmit)="login()"
+  class="flex flex-col justify-center items-center gap-6 max-w-sm mx-auto bg-base-00 shadow-lg p-5 mt-20"
+>
+  <input
+    type="text"
+    placeholder="Username"
+    class="input input-bordered input-primary w-full max-w-xs"
+    [formControl]="loginForm.controls.username"
+  />
+  <div class="text-error">
+    {{loginForm.controls.username.touched && loginForm.controls.username.errors?.['required'] ? 'This field is required' : ''}}
+  </div>
+
+  <input
+    type="password"
+    placeholder="Password"
+    class="input input-bordered input-primary w-full max-w-xs"
+    [formControl]="loginForm.controls.password"
+  />
+  <div class="text-error">
+    {{loginForm.controls.password.touched && loginForm.controls.password.errors?.['required'] ? 'This field is required' : ''}}
+  </div>
+
+  <button
+    class="btn btn-primary w-full"
+    type="submit"
+    [disabled]="!loginForm.valid"
+  >
+    Login
+  </button>
+</form>

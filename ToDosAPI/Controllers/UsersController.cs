@@ -4,11 +4,11 @@ using ToDosAPI.Services;
 
 namespace ToDosAPI.Controllers;
 
-public class UserController : BaseController
+public class UsersController : BaseController
 {
     private readonly UserService _userService;
 
-    public UserController(UserService userService)
+    public UsersController(UserService userService)
     {
         _userService = userService;
     }
@@ -17,7 +17,10 @@ public class UserController : BaseController
     public async Task<ActionResult> Register([FromBody] RegisterDto user)
     {
         var userInfo = await _userService.AddNewUserAsync(user);
-        return Ok(userInfo);
+        
+        if (userInfo is not null) return Ok();
+
+        return BadRequest();
     }
 
     [HttpPost("login")]
@@ -29,10 +32,10 @@ public class UserController : BaseController
         {
             return Ok(new
             {
-                Token = token
+                token
             });
         }
 
-        return Unauthorized();
+        return Unauthorized("Username or password incorrect");
     }
 }

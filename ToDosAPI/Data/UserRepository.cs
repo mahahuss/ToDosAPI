@@ -50,12 +50,9 @@ public class UserRepository
     }
 
 
-    
-
-        public async Task<UserCredentialDto?> GetUserCredentialsAsync(string username)
+    public async Task<UserCredentialDto?> GetUserCredentialsAsync(string username)
     {
         await using var con = new SqlConnection(_context.connectionstring);
-        UserCredentialDto? userCredential = null;
         return await con.QueryFirstOrDefaultAsync<UserCredentialDto>("sp_UserCredential", new { username });
     }
 }
