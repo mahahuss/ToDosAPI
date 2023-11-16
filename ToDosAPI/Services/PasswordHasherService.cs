@@ -1,9 +1,9 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace ToDosAPI.Util;
+namespace ToDosAPI.Services;
 
-public class PasswordHasher
+public class PasswordHasherService
 {
     private const int KeySize = 64;
     private const int Iterations = 350000;

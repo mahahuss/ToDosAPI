@@ -41,9 +41,4 @@ public class TaskService
     {
         return await _userTaskRepo.GetUserTasksAsync(userId);
     }
-
-    internal Task EditTaskAsync(int taskId, string? taskContent, int? status)
-    {
-        throw new NotImplementedException();
-    }
 }

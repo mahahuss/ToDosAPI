@@ -15,56 +15,31 @@ public class UserRepository
         _context = context;
     }
 
-    public async Task<User?> CreateUserAsync(User user, int roleId)
+    public async Task<AppUser?> CreateUserAsync(AppUser appUser, int roleId)
     {
         await using var con = new SqlConnection(_context.connectionstring);
-        return await con.QueryFirstOrDefaultAsync<User>("sp_UserCreate", new
+        return await con.QueryFirstOrDefaultAsync<AppUser>("sp_UserCreate", new
         {
-            user.Username,
-            user.Password,
-            user.Salt,
-            user.FullName,
+            appUser.Username,
+            appUser.Password,
+            appUser.Salt,
+            appUser.FullName,
             roleId
         });
-    }
-
-    public async Task<UserWithRolesDto?> GetUserWithRolesAsync(string username, string type)
-    {
-        await using var con = new SqlConnection(_context.connectionstring);
-        UserWithRolesDto? userWithRoles = null;
-        await con.QueryAsync<User, Role, UserWithRolesDto>("sp_UserGetUserWithRoles",
-            (user, role) =>
-            {
-                userWithRoles ??= new UserWithRolesDto
-                {
-                    Id = user.Id,
-                    FullName = user.FullName,
-                    Username = user.Username,
-                    Password = type == "register" ? null : user.Password,
-                    Salt = type == "register" ? null : user.Salt
-                };
-
-                userWithRoles.Roles.Add(role.UserType);
-                return userWithRoles;
-            }, new { username });
-
-        return userWithRoles;
     }
 
     public async Task<UserWithRolesDto?> GetUserWithRolesAsync(string username)
     {
         await using var con = new SqlConnection(_context.connectionstring);
         UserWithRolesDto? userWithRoles = null;
-        await con.QueryAsync<User, Role, UserWithRolesDto>("sp_UserGetUserWithRoles",
+        await con.QueryAsync<AppUser, Role, UserWithRolesDto>("sp_UserGetUserWithRoles",
             (user, role) =>
             {
                 userWithRoles ??= new UserWithRolesDto
                 {
                     Id = user.Id,
                     FullName = user.FullName,
-                    Username = user.Username,
-                    Password =  user.Password,
-                    Salt = user.Salt
+                    Username = user.Username
                 };
 
                 userWithRoles.Roles.Add(role.UserType);

@@ -1,15 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using ToDosAPI.Extensions;
 using ToDosAPI.Models.Dtos;
-using ToDosAPI.Models.Entities;
 using ToDosAPI.Services;
 
 namespace ToDosAPI.Controllers;
 
+[Authorize]
 public class TasksController : BaseController
 {
-
     private readonly TaskService _taskService;
 
     public TasksController(TaskService taskService)
@@ -20,14 +19,18 @@ public class TasksController : BaseController
     [HttpGet]
     public async Task<ActionResult> GetAllTasks()
     {
-        List<UserTask> tasks = await _taskService.GetAllTasksAsync();
+        var tasks = await _taskService.GetAllTasksAsync();
         return Ok(tasks);
     }
 
     [HttpGet("{userId}")]
     public async Task<ActionResult> GetAllTasks(int userId)
     {
-        List<UserTask> tasks = await _taskService.GetUserTasksAsync(userId);
+        var currentUserId = User.GetId();
+
+        if (userId != currentUserId) return Unauthorized("No");
+
+        var tasks = await _taskService.GetUserTasksAsync(userId);
         return Ok(tasks);
     }
 
@@ -38,24 +41,23 @@ public class TasksController : BaseController
         return Ok(userTask);
     }
 
-
     [HttpPut]
     public async Task<ActionResult> EditTask(EditTaskDto editTaskDto)
     {
         var check = await _taskService.EditTaskAsync(editTaskDto.TaskId, editTaskDto.TaskContent, editTaskDto.Status);
         return Ok(new
         {
-            status = check
+            status = "check"
         });
     }
 
-    [HttpDelete]
-    public async Task<ActionResult> DeleteTask(DeleteTaskDto TaskId)
+    [HttpDelete("{taskId}")]
+    public async Task<ActionResult> DeleteTask(int taskId)
     {
-        var check = await _taskService.DeleteTaskAsync(TaskId.TaskId);
-        return Ok(new
-        {
-            status = check
-        });
+        var check = await _taskService.DeleteTaskAsync(taskId);
+
+        if (check) return Ok("Deleted successfully");
+
+        return BadRequest("Failed to delete task");
     }
 }

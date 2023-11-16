@@ -1,12 +1,10 @@
-﻿using Microsoft.IdentityModel.Tokens;
-using System.Data;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.IdentityModel.Tokens;
 using ToDosAPI.Models.Dtos;
-using ToDosAPI.Models.Entities;
 
-namespace ToDosAPI.Util;
+namespace ToDosAPI.Services;
 
 public class TokenService
 {
@@ -16,15 +14,34 @@ public class TokenService
     {
         _configuration = configuration;
     }
-    public string GenerateToken(UserWithRolesDto userWithRolesDto)
+
+
+    public class ClaimTest
+    {
+        const string nameId = "nameId";
+        const string nameIdentifier = "https:/......";
+
+        public ClaimTest(string claimName)
+        {
+            if (claimName == nameId)
+                ClaimType = nameIdentifier;
+        }
+
+        public string ClaimType { get; set; }
+    }
+
+    public string GenerateToken(UserWithPasswordAndRolesDto userWithRolesDto)
     {
         var claims = new List<Claim>
         {
-            new(ClaimTypes.NameIdentifier, userWithRolesDto.Username!),
-            new(ClaimTypes.Name, userWithRolesDto.FullName!),
+            new(JwtRegisteredClaimNames.NameId, userWithRolesDto.Id.ToString()),
+            new(JwtRegisteredClaimNames.UniqueName, userWithRolesDto.Username!),
+            new(JwtRegisteredClaimNames.GivenName, userWithRolesDto.FullName!),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-         };
-        claims.AddRange(userWithRolesDto.Roles.Select(role => new Claim(ClaimTypes.Role, role)));
+        };
+
+        claims.AddRange(userWithRolesDto.Roles.Select(role => new Claim("roles", role)));
+
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
@@ -36,7 +53,5 @@ public class TokenService
 
         var handler = new JwtSecurityTokenHandler();
         return handler.WriteToken(token);
-
-
     }
 }

@@ -1,30 +1,28 @@
 ﻿using ToDosAPI.Data;
 using ToDosAPI.Models.Dtos;
 using ToDosAPI.Models.Entities;
-using ToDosAPI.Util;
 
 namespace ToDosAPI.Services;
 
 public class UserService
 {
-
-    private readonly PasswordHasher _passwordHasher;
+    private readonly PasswordHasherService _passwordHasherService;
     private readonly UserRepository _userRepo;
     private readonly TokenService _userToken;
 
 
-    public UserService(PasswordHasher passwordHasher, UserRepository userRepo, TokenService userToken)
+    public UserService(PasswordHasherService passwordHasherService, UserRepository userRepo, TokenService userToken)
     {
-        _passwordHasher = passwordHasher;
+        _passwordHasherService = passwordHasherService;
         _userRepo = userRepo;
         _userToken = userToken;
     }
 
     public async Task<UserWithRolesDto?> AddNewUserAsync(RegisterDto registerDto)
     {
-        var salt = _passwordHasher.GenerateSalt();
-        var password = _passwordHasher.HashPassword(registerDto.Password!, salt);
-        var createdUser = await _userRepo.CreateUserAsync(new User
+        var salt = _passwordHasherService.GenerateSalt();
+        var password = _passwordHasherService.HashPassword(registerDto.Password!, salt);
+        var createdUser = await _userRepo.CreateUserAsync(new AppUser
         {
             FullName = registerDto.FullName,
             Password = password,
@@ -32,20 +30,22 @@ public class UserService
             Username = registerDto.Username
         }, 3);
 
-        if (createdUser is not null) return await _userRepo.GetUserWithRolesAsync(registerDto.Username, "register");
+        if (createdUser is not null)
+        {
+            return await _userRepo.GetUserWithRolesAsync(registerDto.Username);
+        }
 
         return null;
     }
 
     public async Task<string?> LoginAsync(string username, string password)
     {
-        var userInfo = await _userRepo.GetUserWithRolesAsync(username, "login");
+        var userInfo = await _userRepo.GetUserWithRolesAsync(username);
 
         if (userInfo is null) return null;
 
-        var result = _passwordHasher.CheckPassword(password, userInfo.Password!, userInfo.Salt!);
+        var result = _passwordHasherService.CheckPassword(password, userInfo.Password!, userInfo.Salt!);
 
         return result ? _userToken.GenerateToken(userInfo) : null;
     }
-
 }

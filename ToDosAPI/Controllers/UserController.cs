@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ToDosAPI.Models.Dtos;
-using ToDosAPI.Models.Entities;
 using ToDosAPI.Services;
 
 namespace ToDosAPI.Controllers;
-
 
 public class UserController : BaseController
 {
@@ -13,7 +11,6 @@ public class UserController : BaseController
     public UserController(UserService userService)
     {
         _userService = userService;
-
     }
 
     [HttpPost("register")]
@@ -37,6 +34,5 @@ public class UserController : BaseController
         }
 
         return Unauthorized();
-
     }
 }
