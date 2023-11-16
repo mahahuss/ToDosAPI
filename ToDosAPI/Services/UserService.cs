@@ -40,12 +40,14 @@ public class UserService
 
     public async Task<string?> LoginAsync(string username, string password)
     {
+        var userCredential = await _userRepo.GetUserCredentialsAsync(username);
+
+        if (userCredential is null) return null;
+
+        var result = _passwordHasherService.CheckPassword(password, userCredential.Password!, userCredential.Salt!);
+        if (!result) return null;
+
         var userInfo = await _userRepo.GetUserWithRolesAsync(username);
-
-        if (userInfo is null) return null;
-
-        var result = _passwordHasherService.CheckPassword(password, userInfo.Password!, userInfo.Salt!);
-
-        return result ? _userToken.GenerateToken(userInfo) : null;
+        return userInfo != null ? _userToken.GenerateToken(userInfo!) : null;
     }
 }

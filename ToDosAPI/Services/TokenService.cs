@@ -30,7 +30,7 @@ public class TokenService
         public string ClaimType { get; set; }
     }
 
-    public string GenerateToken(UserWithPasswordAndRolesDto userWithRolesDto)
+    public string GenerateToken(UserWithRolesDto userWithRolesDto)
     {
         var claims = new List<Claim>
         {
