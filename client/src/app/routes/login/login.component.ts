@@ -1,14 +1,12 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { JwtHelperService } from '@auth0/angular-jwt';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import {
   FormControl,
   FormGroup,
-  FormsModule,
   ReactiveFormsModule,
-  Validators,
+  Validators
 } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 
@@ -22,7 +20,7 @@ import { AuthService } from '../../services/auth.service';
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup<LoginForm>;
 
-  constructor(private authService: AuthService, private jwtHelper :JwtHelperService, private route : Router) {}
+  constructor(private authService: AuthService, private route: Router) {}
 
   get f() {
     return this.loginForm.controls;
@@ -36,8 +34,7 @@ export class LoginComponent implements OnInit {
     this.authService
       .login(this.f.username.value, this.f.password.value)
       .subscribe({
-        next: (res) => {
-          localStorage.setItem('name', this.jwtHelper.decodeToken(localStorage.getItem("token")!).given_name);
+        next: () => {
           this.route.navigate(['/home']);
         },
         error: (res) => {

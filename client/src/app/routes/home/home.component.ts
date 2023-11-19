@@ -6,16 +6,16 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.scss'
+  styleUrl: './home.component.scss',
 })
 export class HomeComponent implements OnInit {
-  public name= "";
-ngOnInit(): void {
-  this.initForm();
-}
+  name = '';
+  
+  ngOnInit(): void {
+    this.initForm();
+  }
 
-private initForm() {
-  this.name = localStorage.getItem('name')!;
-}
-
+  private initForm() {
+    this.name = localStorage.getItem('name')!;
+  }
 }
