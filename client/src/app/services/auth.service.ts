@@ -11,6 +11,13 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
 
+  isLoggedIn = false;
+
+  isAuthenticated(){  
+    this.isLoggedIn = localStorage.getItem("token")!=null? true:false
+     return this.isLoggedIn 
+    }
+
   login(username: string, password: string): Observable<LoginResponse> {
     return this.http
       .post<LoginResponse>(this.baseUrl + 'users/login', {
@@ -24,6 +31,7 @@ export class AuthService {
         })
       );
   }
+
 
   async login2(username: string, password: string): Promise<LoginResponse> {
     const response = await firstValueFrom(
