@@ -12,30 +12,19 @@ export class AuthService {
   private readonly baseUrl = `http://localhost:5135/`;
   private currentUserSource$ = new BehaviorSubject<User | undefined>(undefined);
   currentUser$ = this.currentUserSource$.asObservable();
-  private loginSuccessSource$ = new BehaviorSubject<boolean>(false);
-  loginSuccess$ = this.loginSuccessSource$.asObservable();
 
+  constructor(private http: HttpClient, private router: Router) {}
 
-  constructor(private http: HttpClient, private router : Router) {}
+  isTokenValid(): boolean {
+    const token = localStorage.getItem('token');
 
-
-  checkTokenExpiry(){
-    if (localStorage.getItem('token') !=null){
-      console.log("token not null "+ localStorage.getItem('token') )
-    if (Date.now() >= jwtDecode(localStorage.getItem('token')!).exp! * 1000){
-      localStorage.removeItem('token');
-      this.loginSuccessSource$.next(false);
-      this.router.navigate(["/login"]);
+    if (!token) {
+      return false;
     }
-    else {
-      console.log("token null "+ localStorage.getItem('token'))
-      this.router.navigate(["/login"]);
-    }
-    }
-   }
-  
+    return Date.now() < jwtDecode(token).exp! * 1000;
+  }
 
-  login(username: string, password: string): Observable<LoginResponse> {
+  login(username: string, password: string): Observable<User> {
     return this.http
       .post<LoginResponse>(this.baseUrl + 'users/login', {
         username,
@@ -43,22 +32,14 @@ export class AuthService {
       })
       .pipe(
         map((res) => {
-          console.log(res);
-          if (res !=null){
           localStorage.setItem('token', res.token);
-          // decode token then set current user props
-          this.currentUserSource$.next(jwtDecode<User | undefined>(res.token));
-          this.loginSuccessSource$.next(true);
-          }
-          // this.loginSuccessSource$.subscribe(() => {
-          // });
-          return res;
+          const user = jwtDecode<User>(res.token);
+          this.currentUserSource$.next(user);
+          return user;
         })
       );
   }
 
- 
-    
   async login2(username: string, password: string): Promise<LoginResponse> {
     const response = await firstValueFrom(
       this.http.post<LoginResponse>(this.baseUrl + 'users', {

@@ -12,8 +12,7 @@ import { AuthService } from '../../services/auth.service';
 export class HomeComponent implements OnInit {
   profile = this.authService.currentUser$;
 
-  
-  constructor(private authService: AuthService) { } 
+  constructor(private authService: AuthService) {}
 
   ngOnInit(): void {
     this.initHome();
@@ -22,5 +21,8 @@ export class HomeComponent implements OnInit {
   private initHome() {
     // console.log("in home "+ localStorage.getItem('token'))
     // this.authService.checkTokenExpiry();
+    this.authService.login('', '').subscribe({
+      next: (res) => {},
+    });
   }
 }
