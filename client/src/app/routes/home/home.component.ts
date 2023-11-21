@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-home',
@@ -9,13 +10,17 @@ import { CommonModule } from '@angular/common';
   styleUrl: './home.component.scss',
 })
 export class HomeComponent implements OnInit {
-  name = '';
+  profile = this.authService.currentUser$;
+
   
+  constructor(private authService: AuthService) { } 
+
   ngOnInit(): void {
-    this.initForm();
+    this.initHome();
   }
 
-  private initForm() {
-    this.name = localStorage.getItem('name')!;
+  private initHome() {
+    // console.log("in home "+ localStorage.getItem('token'))
+    // this.authService.checkTokenExpiry();
   }
 }

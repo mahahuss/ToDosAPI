@@ -3,5 +3,8 @@ export type LoginResponse = {
 };
 
 export type User = {
-  
+  nameid : number;
+  unique_name:string;
+  given_name:string;
+  roles: Array<string>
 }
