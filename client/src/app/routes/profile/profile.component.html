@@ -1,24 +1,42 @@
 <div
-    class="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 flex flex-col justify-center items-center gap-6 max-w-sm mx-auto bg-base-00 shadow-lg p-5 mt-20">
-    <div class="flex justify-end px-4 pt-4">
-        <div> <h6 class="text-white text-xl font-medium">Profile</h6></div> 
+  class="w-full bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700 flex flex-col justify-center items-center gap-6 max-w-sm mx-auto bg-base-00 shadow-lg p-5 mt-20"
+>
+  <div class="flex justify-end px-4 pt-4">
+    <div><h6 class="text-white text-xl font-medium">Profile</h6></div>
+  </div>
+  <div class="flex flex-col items-center pb-10">
+    <img
+      class="w-24 h-24 mb-3 rounded-full shadow-lg"
+      src="assets/img/{{ userInfo.unique_name }}.png"
+      alt="Bonnie image"
+    />
+    <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">
+      {{ userInfo.given_name }}
+    </h5>
+    <span class="text-sm text-gray-500 dark:text-gray-400">&#64;{{ userInfo.unique_name }}</span>
+    <div class="flex mt-4 md:mt-6">
+      @for (role of userInfo.roles; track role) {
+        <ul class="text-left text-gray-500 dark:text-gray-400 flex flex-wrap items-center justify-center">
+          <li class="flex items-center space-x-3 rtl:space-x-reverse md:me-6 me-4">
+            <svg
+              class="flex-shrink-0 w-3.5 h-3.5 text-green-500 dark:text-green-500"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 16 12"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M1 5.917 5.724 10.5 15 1.5"
+              />
+            </svg>
+            <span>{{ role }}</span>
+          </li>
+        </ul>
+      }
     </div>
-    <div class="flex flex-col items-center pb-10">
-        <img class="w-24 h-24 mb-3 rounded-full shadow-lg"
-            src="/assets/img/{{userInfo.unique_name}}.png" alt="Bonnie image" />
-        <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">{{userInfo.given_name}}</h5>
-        <span class="text-sm text-gray-500 dark:text-gray-400">&#64;{{userInfo.unique_name}}</span>
-        <div class="flex mt-4 md:mt-6">
-            <ul class="text-left text-gray-500 dark:text-gray-400 flex flex-wrap items-center justify-center" *ngFor="let role of userInfo.roles">
-                <li class="flex items-center space-x-3 rtl:space-x-reverse md:me-6 me-4">
-                    <svg class="flex-shrink-0 w-3.5 h-3.5 text-green-500 dark:text-green-500" aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M1 5.917 5.724 10.5 15 1.5" />
-                    </svg>
-                    <span>{{role}}</span>
-                </li>
-            </ul>
-        </div>
-    </div>
+  </div>
 </div>

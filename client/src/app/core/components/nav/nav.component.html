@@ -21,9 +21,11 @@
         tabindex="0"
         class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
       >
-        <li><a routerLink="todos" routerLinkActive="active">Todos</a></li>
-        <li><a routerLink="Profile">Profile</a></li>
-        <li><a *ngif="isAdmin">Settings (SHOW ONLY TO ADMIN)</a></li>
+        <li><a routerLink="/todos" routerLinkActive="active">Todos</a></li>
+        <li><a routerLink="/profile">Profile</a></li>
+        @if (isAdmin) {
+          <li><a>Settings (SHOW ONLY TO ADMIN)</a></li>
+        }
       </ul>
     </div>
   </div>

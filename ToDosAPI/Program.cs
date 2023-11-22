@@ -59,7 +59,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors(corsOrigins);
-app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 

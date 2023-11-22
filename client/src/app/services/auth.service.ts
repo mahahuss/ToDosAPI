@@ -1,20 +1,19 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, firstValueFrom, map } from 'rxjs';
-import { LoginResponse, User } from '../shared/models/auth';
 import { jwtDecode } from 'jwt-decode';
-import { Router } from '@angular/router';
+import { BehaviorSubject, Observable, firstValueFrom, map } from 'rxjs';
 import { environment } from '../../environments/environment.development';
+import { LoginResponse, User } from '../shared/models/auth';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private readonly baseUrl = environment.apiUrl
+  private readonly baseUrl = environment.apiUrl;
   private currentUserSource$ = new BehaviorSubject<User | undefined>(undefined);
   currentUser$ = this.currentUserSource$.asObservable();
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient) {}
 
   isTokenValid(): boolean {
     const token = localStorage.getItem('token');
@@ -23,8 +22,23 @@ export class AuthService {
       return false;
     }
 
-    this.currentUserSource$.next(jwtDecode<User>(token)); //refresh user information
     return Date.now() < jwtDecode(token).exp! * 1000;
+  }
+
+  setCurrentUserFromToken(): void {
+    const token = localStorage.getItem('token');
+
+    if (token) this.currentUserSource$.next(jwtDecode<User>(token));
+  }
+
+  getCurrentUserFromToken(): User | undefined {
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      return undefined;
+    }
+
+    return jwtDecode<User>(token);
   }
 
   login(username: string, password: string): Observable<User> {
@@ -39,7 +53,7 @@ export class AuthService {
           const user = jwtDecode<User>(res.token);
           this.currentUserSource$.next(user);
           return user;
-        })
+        }),
       );
   }
 
@@ -48,7 +62,7 @@ export class AuthService {
       this.http.post<LoginResponse>(this.baseUrl + 'users', {
         username,
         password,
-      })
+      }),
     );
     return response;
   }

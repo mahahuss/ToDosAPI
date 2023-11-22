@@ -93,8 +93,7 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "src/favicon.ico",
-              "src/assets",
-              {"glob": "**/*", "input": "../../../angularImages", "output": "/imgFolder/"}
+              "src/assets"
             ],
             "styles": [
               "src/styles.scss"

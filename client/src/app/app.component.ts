@@ -1,13 +1,21 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterLink, RouterLinkActive, RouterModule, RouterOutlet } from '@angular/router';
-import { NavComponent } from "./core/components/nav/nav.component";
+import {
+    RouterOutlet
+} from '@angular/router';
+import { NavComponent } from './core/components/nav/nav.component';
+import { AuthService } from './services/auth.service';
 
 @Component({
-    selector: 'app-root',
-    standalone: true,
-    templateUrl: './app.component.html',
-    styleUrl: './app.component.scss',
-    imports: [CommonModule, RouterOutlet, NavComponent, RouterLink, RouterModule, RouterLinkActive]
+  selector: 'app-root',
+  standalone: true,
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.scss',
+  imports: [RouterOutlet, NavComponent],
 })
-export class AppComponent {}
+export class AppComponent {
+  constructor(private authService: AuthService) {
+    if (this.authService.isTokenValid()) {
+      this.authService.setCurrentUserFromToken();
+    }
+  }
+}

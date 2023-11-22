@@ -1,39 +1,26 @@
-import { Component, OnInit, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
-import { Router } from '@angular/router';
-
 
 @Component({
   selector: 'app-nav',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './nav.component.html',
-  styleUrl: './nav.component.scss'
+  styleUrl: './nav.component.scss',
 })
+export class NavComponent {
+  isAdmin = false;
 
+  constructor(public authService: AuthService) {}
 
-export class NavComponent{
-
-  isAdmin: boolean = true;
-
-  constructor() { 
+  ngOnInit(): void {
+    this.initNav();
   }
 
-  // ngOnInit(): void {
-  //    this.initNav();
-  // }
-
-  // initNav() {
-  //   this.authService.currentUser$.subscribe({
-  //     next: (res) => {
-  //       this.isAdmin = res!.roles.includes("Admin")
-  //       console.log(this.isAdmin)
-  //     },
-  //   });  
-  // }
-
- 
-
-
+  initNav() {
+    const user = this.authService.getCurrentUserFromToken();
+    if (user) this.isAdmin = user.roles.includes('admin');
+  }
 }

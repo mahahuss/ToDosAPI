@@ -7,6 +7,7 @@ namespace ToDosAPI.Controllers;
 public class UsersController : BaseController
 {
     private readonly UserService _userService;
+    private readonly string _imagesDir = "C:/temp/whatever";
 
     public UsersController(UserService userService)
     {
@@ -17,7 +18,7 @@ public class UsersController : BaseController
     public async Task<ActionResult> Register([FromBody] RegisterDto user)
     {
         var userInfo = await _userService.AddNewUserAsync(user);
-        
+
         if (userInfo is not null) return Ok();
 
         return BadRequest();

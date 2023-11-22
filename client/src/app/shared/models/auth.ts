@@ -9,7 +9,7 @@ export type User = {
   roles: Array<string>
 };
 
-export type toDoTask = {
+export type ToDoTask = {
   id : number;
   taskContent:string;
   createdDate:Date;
