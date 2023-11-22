@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
+import { RouterLink, RouterLinkActive, RouterModule, RouterOutlet } from '@angular/router';
 import { NavComponent } from "./core/components/nav/nav.component";
 
 @Component({
@@ -8,6 +8,6 @@ import { NavComponent } from "./core/components/nav/nav.component";
     standalone: true,
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss',
-    imports: [CommonModule, RouterOutlet, NavComponent]
+    imports: [CommonModule, RouterOutlet, NavComponent, RouterLink, RouterModule, RouterLinkActive]
 })
 export class AppComponent {}

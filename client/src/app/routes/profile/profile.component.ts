@@ -1,30 +1,29 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../../services/auth.service';
 import { User } from '../../shared/models/auth';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
-  selector: 'app-home',
+  selector: 'app-profile',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './home.component.html',
-  styleUrl: './home.component.scss',
+  templateUrl: './profile.component.html',
+  styleUrl: './profile.component.scss'
 })
-export class HomeComponent implements OnInit {
+export class ProfileComponent implements OnInit{
+
   userInfo!: User;
 
   constructor(private authService: AuthService) {}
-
   ngOnInit(): void {
-    this.initHome();
+    this.initProfile();
   }
 
-  private initHome() {
+  private initProfile(){
     this.authService.currentUser$.subscribe({
       next: (res) => {
        this.userInfo=res!;
-       console.log(res);
-      },      
+      },
     });
   }
 }

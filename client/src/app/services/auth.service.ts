@@ -4,12 +4,13 @@ import { BehaviorSubject, Observable, firstValueFrom, map } from 'rxjs';
 import { LoginResponse, User } from '../shared/models/auth';
 import { jwtDecode } from 'jwt-decode';
 import { Router } from '@angular/router';
+import { environment } from '../../environments/environment.development';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private readonly baseUrl = `http://localhost:5135/`;
+  private readonly baseUrl = environment.apiUrl
   private currentUserSource$ = new BehaviorSubject<User | undefined>(undefined);
   currentUser$ = this.currentUserSource$.asObservable();
 
@@ -21,6 +22,8 @@ export class AuthService {
     if (!token) {
       return false;
     }
+
+    this.currentUserSource$.next(jwtDecode<User>(token)); //refresh user information
     return Date.now() < jwtDecode(token).exp! * 1000;
   }
 
