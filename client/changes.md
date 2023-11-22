@@ -16,4 +16,5 @@
 - Install prettier extension && enable Format on Save from settings
 - Move images folder path to appsettings
 - Add a logo to the website, must be png
+- Create a new component to display every todo
 - Make it highlighted if it's completed, otherwise no, also on click -> complete. on click again -> uncomplete
