@@ -1,6 +1,7 @@
 <form
   [formGroup]="loginForm"
   (ngSubmit)="login()"
+  (keyup.enter)="login()"
   class="flex flex-col justify-center items-center gap-6 max-w-sm mx-auto bg-base-00 shadow-lg p-5 mt-20"
 >
   <input
