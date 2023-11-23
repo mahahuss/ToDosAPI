@@ -17,7 +17,7 @@ public class UserRepository
 
     public async Task<AppUser?> CreateUserAsync(AppUser appUser, int roleId)
     {
-        await using var con = new SqlConnection(_context.connectionstring);
+        await using var con = new SqlConnection(_context.ConnectionString);
         return await con.QueryFirstOrDefaultAsync<AppUser>("sp_UserCreate", new
         {
             appUser.Username,
@@ -30,7 +30,7 @@ public class UserRepository
 
     public async Task<UserWithRolesDto?> GetUserWithRolesAsync(string username)
     {
-        await using var con = new SqlConnection(_context.connectionstring);
+        await using var con = new SqlConnection(_context.ConnectionString);
         UserWithRolesDto? userWithRoles = null;
         await con.QueryAsync<AppUser, Role, UserWithRolesDto>("sp_UserGetUserWithRoles",
             (user, role) =>
@@ -52,7 +52,7 @@ public class UserRepository
 
     public async Task<UserCredentialDto?> GetUserCredentialsAsync(string username)
     {
-        await using var con = new SqlConnection(_context.connectionstring);
+        await using var con = new SqlConnection(_context.ConnectionString);
         return await con.QueryFirstOrDefaultAsync<UserCredentialDto>("sp_UserCredential", new { username });
     }
 }

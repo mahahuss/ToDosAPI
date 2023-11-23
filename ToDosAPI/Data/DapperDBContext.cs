@@ -2,14 +2,12 @@
 {
     public class DapperDbContext
     {
-        private readonly IConfiguration _configuration;
-        public readonly string connectionstring;
+        public readonly string ConnectionString;
+
         public DapperDbContext(IConfiguration configuration)
         {
-            _configuration = configuration;
-            connectionstring = _configuration.GetConnectionString("connection") ??
-             throw new ArgumentNullException("connection string was not found in config");
+            ConnectionString = configuration.GetConnectionString("TodosDb") ??
+                               throw new ArgumentNullException("connection string was not found in config");
         }
-
     }
 }

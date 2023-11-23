@@ -14,7 +14,10 @@ export class NavComponent {
   isAdmin = false;
   isLoggedin = false;
 
-  constructor(public authService: AuthService, private router : Router) {}
+  constructor(
+    public authService: AuthService,
+    private router: Router,
+  ) {}
 
   ngOnInit(): void {
     this.initNav();
@@ -22,17 +25,15 @@ export class NavComponent {
 
   initNav() {
     const user = this.authService.getCurrentUserFromToken();
-    if (user){ 
+    if (user) {
       this.isAdmin = user.roles.includes('admin');
       this.isLoggedin = true;
     }
   }
 
-  Logout(){
-
-    localStorage.removeItem("token");
+  Logout() {
+    localStorage.removeItem('token');
     this.isLoggedin = false;
     this.router.navigate(['/login']);
-
   }
 }
