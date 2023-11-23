@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using ToDosAPI.Extensions;
 using ToDosAPI.Models.Dtos;
 using ToDosAPI.Services;
 
@@ -46,10 +44,13 @@ public class UsersController : BaseController
     [HttpGet("{userId}")]
     public async Task<ActionResult> GetUserPhoto(int userId)
     {
-        var imagesDir = _configuration.GetValue<string>("Data:imagesPath");
-        Byte[] photoByte = await System.IO.File.ReadAllBytesAsync(Path.Combine(imagesDir!, userId.ToString() + ".png"));
-        if (photoByte.Length > 0) return File(photoByte, "image/png");
-        return NotFound();
+        var imagesDir =
+            _configuration.GetValue<string>("Files:ImagesPath"); // move to constructor and assign to a readonly field
+        var photoByte =
+            await System.IO.File.ReadAllBytesAsync(Path.Combine(imagesDir!, userId + ".png")); // check file exists
 
+        if (photoByte.Length > 0) return File(photoByte, "image/png");
+
+        return NotFound();
     }
 }

@@ -17,3 +17,4 @@
 - Add a logo to the website, must be png
 - Create a new component to display every todo
 - Make it highlighted if it's completed, otherwise no, also on click -> complete. on click again -> uncomplete
+- Add logout button

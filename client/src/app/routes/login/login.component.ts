@@ -31,6 +31,8 @@ export class LoginComponent implements OnInit {
   }
 
   login() {
+    if (!this.loginForm.valid) return;
+    
     this.authService
       .login(this.f.username.value, this.f.password.value)
       .subscribe({
