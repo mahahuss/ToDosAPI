@@ -16,3 +16,7 @@ export type ToDoTask = {
   createdBy: number;
   status: number;
 };
+
+export type EditTaskResponse = {
+  status: boolean;
+};

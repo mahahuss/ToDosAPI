@@ -21,7 +21,7 @@
         tabindex="0"
         class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
       >
-        <li><a routerLink="/todos" routerLinkActive="active">Todos</a></li>
+        <li><a routerLink="/todos" >Todos</a></li>
         <li><a routerLink="/profile">Profile</a></li>
         @if (isAdmin) {
           <li><a>Settings (SHOW ONLY TO ADMIN)</a></li>
@@ -30,7 +30,8 @@
     </div>
   </div>
   <div class="navbar-center">
-    <a class="btn btn-ghost text-xl">daisyUI</a>
+    <img src="assets/img/logo.png" height="30" width="30">
+    <a class="btn btn-ghost text-xl p-0">Todos</a>
   </div>
   <div class="navbar-end">
     <button class="btn btn-ghost btn-circle">
@@ -49,7 +50,8 @@
         />
       </svg>
     </button>
-    <button class="btn btn-ghost btn-circle">
+    @if (isLoggedin) {
+    <button class="btn btn-ghost btn-circle" (click)="Logout()">
       <div class="indicator">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -62,11 +64,11 @@
             stroke-linecap="round"
             stroke-linejoin="round"
             stroke-width="2"
-            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+            d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"
           />
         </svg>
-        <span class="badge badge-xs badge-primary indicator-item"></span>
       </div>
     </button>
+  }
   </div>
 </div>

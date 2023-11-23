@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 
 @Component({
@@ -12,8 +12,9 @@ import { AuthService } from '../../../services/auth.service';
 })
 export class NavComponent {
   isAdmin = false;
+  isLoggedin = false;
 
-  constructor(public authService: AuthService) {}
+  constructor(public authService: AuthService, private router : Router) {}
 
   ngOnInit(): void {
     this.initNav();
@@ -21,6 +22,17 @@ export class NavComponent {
 
   initNav() {
     const user = this.authService.getCurrentUserFromToken();
-    if (user) this.isAdmin = user.roles.includes('admin');
+    if (user){ 
+      this.isAdmin = user.roles.includes('admin');
+      this.isLoggedin = true;
+    }
+  }
+
+  Logout(){
+
+    localStorage.removeItem("token");
+    this.isLoggedin = false;
+    this.router.navigate(['/login']);
+
   }
 }

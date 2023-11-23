@@ -44,10 +44,10 @@ public class TasksController : BaseController
     [HttpPut]
     public async Task<ActionResult> EditTask(EditTaskDto editTaskDto)
     {
-        var check = await _taskService.EditTaskAsync(editTaskDto.TaskId, editTaskDto.TaskContent, editTaskDto.Status);
+        var check = await _taskService.EditTaskAsync(editTaskDto.Id, editTaskDto.TaskContent, editTaskDto.Status);
         return Ok(new
         {
-            status = "check"
+            status = check
         });
     }
 

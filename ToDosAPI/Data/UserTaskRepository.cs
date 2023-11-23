@@ -27,10 +27,10 @@ public class UserTaskRepository
         return await con.ExecuteAsync("sp_TaskDelete", new { taskId }) > 0;
     }
 
-    public async Task<bool> EditTaskAsync(int taskId, string taskContent, int status)
+    public async Task<bool> EditTaskAsync(int Id, string taskContent, int status)
     {
         await using var con = new SqlConnection(_context.connectionstring);
-        return await con.ExecuteAsync("sp_TaskEdit", new { taskContent, taskId, status }) > 0;
+        return await con.ExecuteAsync("sp_TaskEdit", new { taskContent, Id, status }) > 0;
     }
 
     public async Task<List<UserTask>> GetAllTasksAsync()

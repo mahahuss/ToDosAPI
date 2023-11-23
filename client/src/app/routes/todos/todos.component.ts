@@ -1,42 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { User, ToDoTask } from '../../shared/models/auth';
-import { AuthService } from '../../services/auth.service';
-import { TodosService } from '../../services/todos.service';
+import { TodoListComponent } from '../../core/components/todo-list/todo-list.component';
+
 
 @Component({
   selector: 'app-todos',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TodoListComponent],
   templateUrl: './todos.component.html',
   styleUrl: './todos.component.scss',
 })
-export class TodosComponent implements OnInit {
-  userInfo!: User;
-  todos!: ToDoTask[];
+export class TodosComponent  {
 
-  constructor(
-    private authService: AuthService,
-    private todosService: TodosService
-  ) {}
-
-  ngOnInit(): void {
-    this.loadTodos();
-  }
-
-  private loadTodos() {
-    this.authService.currentUser$.subscribe({
-      next: (res) => {
-        this.userInfo = res!;
-        this.todosService.getUserTodos(this.userInfo.nameid).subscribe({
-          next: (res) => {
-            this.todos = res;
-          },
-          error: (res) => {
-            console.log(res.error.message);
-          },
-        });
-      },
-    });
-  }
 }

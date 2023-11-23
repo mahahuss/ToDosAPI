@@ -8,11 +8,13 @@ public class UsersController : BaseController
 {
     private readonly UserService _userService;
     private readonly IConfiguration _configuration;
+    private readonly string _imageDir;
 
     public UsersController(UserService userService, IConfiguration configuration)
     {
         _userService = userService;
         _configuration = configuration;
+        _imageDir= _configuration.GetValue<string>("Files:ImagesPath")!;
     }
 
     [HttpPost("register")]
@@ -44,13 +46,15 @@ public class UsersController : BaseController
     [HttpGet("{userId}")]
     public async Task<ActionResult> GetUserPhoto(int userId)
     {
-        var imagesDir =
-            _configuration.GetValue<string>("Files:ImagesPath"); // move to constructor and assign to a readonly field
-        var photoByte =
-            await System.IO.File.ReadAllBytesAsync(Path.Combine(imagesDir!, userId + ".png")); // check file exists
+        if (System.IO.File.Exists(Path.Combine(_imageDir!, userId + ".png")))
+        {
+         var photoByte = await System.IO.File.ReadAllBytesAsync(Path.Combine(_imageDir!, userId + ".png"));
 
-        if (photoByte.Length > 0) return File(photoByte, "image/png");
-
+            if (photoByte.Length > 0)
+            {
+                return File(photoByte, "image/png");
+            }
+        }
         return NotFound();
     }
 }

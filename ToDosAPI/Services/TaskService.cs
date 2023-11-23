@@ -27,9 +27,9 @@ public class TaskService
         return _userTaskRepo.DeleteTaskAsync(taskId);
     }
 
-    public Task<bool> EditTaskAsync(int taskId, string taskContent, int status)
+    public Task<bool> EditTaskAsync(int Id, string taskContent, int status)
     {
-        return _userTaskRepo.EditTaskAsync(taskId, taskContent, status);
+        return _userTaskRepo.EditTaskAsync(Id, taskContent, status);
     }
 
     public Task<List<UserTask>> GetAllTasksAsync()

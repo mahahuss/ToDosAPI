@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+
 
 import {
   FormControl,
@@ -20,7 +22,7 @@ import { AuthService } from '../../services/auth.service';
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup<LoginForm>;
 
-  constructor(private authService: AuthService, private route: Router) {}
+  constructor(private authService: AuthService, private route: Router, private toastr: ToastrService) {}
 
   get f() {
     return this.loginForm.controls;
@@ -41,6 +43,7 @@ export class LoginComponent implements OnInit {
         },
         error: (res) => {
           console.log(res.error.message);
+          this.toastr.error(res.error.message,'Login Faild');
         },
       });
   }

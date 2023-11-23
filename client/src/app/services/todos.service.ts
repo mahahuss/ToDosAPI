@@ -1,8 +1,8 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment.development';
-import { ToDoTask } from '../shared/models/auth';
+import { EditTaskResponse, ToDoTask } from '../shared/models/auth';
 
 @Injectable({
   providedIn: 'root',
@@ -21,5 +21,23 @@ export class TodosService {
     return this.http.get<ToDoTask[]>(this.baseUrl + 'tasks/' + userId, {
       headers: reqHeader,
     });
+  }
+
+  updateTask(task : ToDoTask): Observable<boolean> {
+    task.status = task.status ==0? 1:0;
+    console.log(task);
+    const reqHeader = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + localStorage.getItem('token'),
+    });
+    return this.http
+    .put<EditTaskResponse>(this.baseUrl + 'Tasks', task,  {
+      headers: reqHeader,
+    })
+    .pipe(
+      map((res) => {
+        return res.status;
+      }),
+    );
   }
 }
