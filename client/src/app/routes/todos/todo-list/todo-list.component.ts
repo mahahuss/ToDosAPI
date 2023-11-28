@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { User, ToDoTask } from '../../../shared/models/auth';
 import { AuthService } from '../../../services/auth.service';
@@ -11,43 +11,23 @@ import { TodosService } from '../../../services/todos.service';
   templateUrl: './todo-list.component.html',
   styleUrl: './todo-list.component.scss'
 })
-export class TodoListComponent implements OnInit {
+export class TodoListComponent {
 
-  userInfo!: User;
-  todos!: ToDoTask[];
+  
 
+@Input() todoTask: ToDoTask | undefined = undefined;
+@Input() myname : string="";
   constructor(
     private authService: AuthService,
     private todosService: TodosService
   ) {}
-
-  ngOnInit(): void {
-    this.loadTodos();
-  }
-
-  private loadTodos() {
-    this.authService.currentUser$.subscribe({
-      next: (res) => {
-        this.userInfo = res!;
-        this.todosService.getUserTodos(this.userInfo.nameid).subscribe({
-          next: (res) => {
-            this.todos = res;
-            console.log(res);
-          },
-          error: (res) => {
-            console.log(res.error.message);
-          },
-        });
-      },
-    });
-  }
 
    updateStatus(task : ToDoTask){
 
     this.todosService.updateTask(task).subscribe({
       next: (res) => {
         console.log(res);
-        this.loadTodos();
+        //this.loadTodos();
       },
       error: (res) => {
         console.log(res.error.message);

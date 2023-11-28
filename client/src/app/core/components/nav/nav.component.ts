@@ -24,11 +24,19 @@ export class NavComponent {
   }
 
   initNav() {
-    const user = this.authService.getCurrentUserFromToken();
-    if (user) {
-      this.isAdmin = user.roles.includes('admin');
-      this.isLoggedin = true;
-    }
+    // const user = this.authService.getCurrentUserFromToken();
+    // if (user) {
+    //   this.isAdmin = user.roles.includes('admin');
+    // }
+    
+    this.authService.currentUser$.subscribe({
+      next: (res) => {
+        this.isAdmin = res!.roles.includes('Admin');
+        console.log(this.isAdmin)
+        this.isLoggedin = true;
+      
+      },
+    });
   }
 
   Logout() {

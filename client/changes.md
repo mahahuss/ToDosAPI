@@ -21,7 +21,7 @@
 
 
 ### 23-11-2023
-- logout button must be visible after login
+- logout button must be visible after login -
 - Create a new component to display every todo
 - add text area above todos list to insert todos - must be its own component
 - add delete button next to every todo - (user must confirm after clicking delete)

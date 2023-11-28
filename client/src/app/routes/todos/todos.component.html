@@ -4,7 +4,9 @@
     <div class="w-full max-w-md">
       <div class="bg-white shadow-md rounded-lg px-3 py-2 mb-4">
         <div class="block text-indigo-700 text-lg font-semibold py-2 px-2">Todos List</div>
-        <app-todo-list />
+        @for (todo of todos; track $index) {
+        <app-todo-list [myname]="name" > </app-todo-list>
+        }
       </div>
     </div>
   </div>
