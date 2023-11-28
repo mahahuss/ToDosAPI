@@ -5,19 +5,18 @@ import { AuthService } from '../../../services/auth.service';
 import { TodosService } from '../../../services/todos.service';
 
 @Component({
-  selector: 'app-todo-list',
+  selector: 'app-todolist',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './todo-list.component.html',
-  styleUrl: './todo-list.component.scss'
+  templateUrl: './todolist.component.html',
+  styleUrl: './todolist.component.scss'
 })
-export class TodoListComponent {
+export class TodolistComponent {
 
-  
 
 @Input() todoTask: ToDoTask | undefined = undefined;
-@Input() myname : string="";
-  constructor(
+
+constructor(
     private authService: AuthService,
     private todosService: TodosService
   ) {}
@@ -35,4 +34,5 @@ export class TodoListComponent {
     });
 
   }
+
 }

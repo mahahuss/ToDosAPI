@@ -1,15 +1,15 @@
 import { Component, OnInit , Input} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TodoListComponent } from './todo-list/todo-list.component';
 import { ToDoTask, User } from '../../shared/models/auth';
 import { AuthService } from '../../services/auth.service';
 import { TodosService } from '../../services/todos.service';
+import { TodolistComponent } from './todolist/todolist.component';
 
 
 @Component({
   selector: 'app-todos',
   standalone: true,
-  imports: [CommonModule, TodoListComponent],
+  imports: [CommonModule, TodolistComponent],
   templateUrl: './todos.component.html',
   styleUrl: './todos.component.scss',
 })
