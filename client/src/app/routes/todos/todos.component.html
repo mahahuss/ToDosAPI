@@ -4,8 +4,9 @@
     <div class="w-full max-w-md">
       <div class="bg-white shadow-md rounded-lg px-3 py-2 mb-4">
         <div class="block text-indigo-700 text-lg font-semibold py-2 px-2">Todos List</div>
+       <app-newtask (addNewTask)=addNewTask($event)></app-newtask>
         @for (todo of todos; track $index) {
-        <app-todolist [todoTask]="todo" > </app-todolist>
+        <app-todolist [todoTask]="todo" (updateTask)=updateTask($event) (deleteTask)=deleteTask($event)> </app-todolist>
         }
       </div>
     </div>

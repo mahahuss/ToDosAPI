@@ -31,11 +31,17 @@ export class NavComponent {
     
     this.authService.currentUser$.subscribe({
       next: (res) => {
+        if(res){
         this.isAdmin = res!.roles.includes('Admin');
         console.log(this.isAdmin)
         this.isLoggedin = true;
+        }
       
       },
+      error: (err)=>{
+        console.log(err.message)
+
+      }
     });
   }
 

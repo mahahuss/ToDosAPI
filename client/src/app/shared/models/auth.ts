@@ -20,3 +20,13 @@ export type ToDoTask = {
 export type EditTaskResponse = {
   status: boolean;
 };
+
+export type DeleteTaskResponse = {
+  status: boolean;
+};
+
+export type AddNewTaskModel = {
+  TaskContent: string;
+  CreatedBy: number;
+  status: number;
+};
