@@ -26,7 +26,7 @@ export type DeleteTaskResponse = {
 };
 
 export type AddNewTaskModel = {
-  TaskContent: string;
-  CreatedBy: number;
+  taskContent: string;
+  createdBy: number;
   status: number;
 };

@@ -24,24 +24,16 @@ export class NavComponent {
   }
 
   initNav() {
-    // const user = this.authService.getCurrentUserFromToken();
-    // if (user) {
-    //   this.isAdmin = user.roles.includes('admin');
-    // }
-    
     this.authService.currentUser$.subscribe({
       next: (res) => {
-        if(res){
-        this.isAdmin = res!.roles.includes('Admin');
-        console.log(this.isAdmin)
-        this.isLoggedin = true;
+        if (res) {
+          this.isAdmin = res!.roles.includes('Admin');
+          this.isLoggedin = true;
         }
-      
       },
-      error: (err)=>{
-        console.log(err.message)
-
-      }
+      error: (err) => {
+        console.log(err.message);
+      },
     });
   }
 
