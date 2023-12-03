@@ -3,15 +3,16 @@ import { CommonModule } from '@angular/common';
 import { AddNewTaskModel, ToDoTask, User } from '../../shared/models/auth';
 import { AuthService } from '../../services/auth.service';
 import { TodosService } from '../../services/todos.service';
-import { TodolistComponent } from './todolist/todolist.component';
-import { NewtaskComponent } from './newtask/newtask.component';
+import { TodoItemComponent } from './todo-item/todo-item.component';
+import { NewTaskComponent } from './new-task/new-task.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-todos',
   standalone: true,
   templateUrl: './todos.component.html',
   styleUrl: './todos.component.scss',
-  imports: [CommonModule, TodolistComponent, NewtaskComponent],
+  imports: [CommonModule, TodoItemComponent, NewTaskComponent ],
 })
 export class TodosComponent implements OnInit {
   userInfo!: User;
@@ -20,6 +21,7 @@ export class TodosComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private todosService: TodosService,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -30,32 +32,13 @@ export class TodosComponent implements OnInit {
     this.todos.push(createdTask);
   }
 
-  updateTask(eventData: { task: ToDoTask }) {
-    this.todosService.updateTask(eventData.task).subscribe({
-      next: (res) => {
-        const indexToUpdate = this.todos.findIndex((item) => item.id === eventData.task.id);
-        if (indexToUpdate !== -1) this.todos[indexToUpdate] = eventData.task;
-      },
-      error: (res) => {
-        console.log(res.error.message);
-      },
-    });
+  updateTask(updatedtask: ToDoTask) {
+    const indexToUpdate = this.todos.findIndex((item) => item.id === updatedtask.id);
+        if (indexToUpdate !== -1) this.todos[indexToUpdate] = updatedtask
   }
 
-  deleteTask(eventData: { task: ToDoTask }) {
-    const c = confirm('Are you sure');
-
-    if (c) {
-      this.todosService.deleteTask(eventData.task).subscribe({
-        next: (res) => {
-          this.todos = this.todos.filter((item) => item.id !== eventData.task.id);
-          console.log(res);
-        },
-        error: (res) => {
-          console.log(res.error.message);
-        },
-      });
-    }
+  deleteTask(deletedtask: ToDoTask) {
+    this.todos = this.todos.filter((item) => item.id !== deletedtask.id);
   }
 
   private loadTodos() {

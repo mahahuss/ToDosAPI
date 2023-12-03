@@ -5,6 +5,8 @@ import { guardAuthGuard } from './core/gaurd/guard-auth.guard';
 import { loggedInAuthGuardGuard } from './core/gaurd/logged-in-auth-guard.guard';
 import { ProfileComponent } from './routes/profile/profile.component';
 import { TodosComponent } from './routes/todos/todos.component';
+import { AppComponent } from './app.component';
+
 
 export const routes: Routes = [
   {
@@ -28,5 +30,6 @@ export const routes: Routes = [
     component: TodosComponent,
     canActivate: [guardAuthGuard]
 
-  }
+  },
+  { path: '**', redirectTo: 'login' }
 ];

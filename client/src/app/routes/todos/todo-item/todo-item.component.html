@@ -1,0 +1,24 @@
+<div class="py-3 text-sm">
+    <div
+      class="flex justify-start cursor-pointer text-gray-700 hover:text-gray-400 hover:bg-gray-100 rounded-md px-2 py-2 my-2"
+      style.background-color="{{ todoTask!.status == 1 ? '#F3F3F3' : 'white' }}"
+    >
+      <span class="bg-slate-950 h-2 w-2 m-2 rounded-full"></span>
+      @if (todoTask) {
+        <div class="flex-grow font-medium px-2" (click)="onTaskClick(todoTask)">
+          {{ todoTask.taskContent }}
+        </div>
+        <div class="text-sm font-normal text-gray-500 tracking-wide">
+          {{ todoTask.createdDate | date }}
+        </div>
+        <div class="pl-4">
+          <button class="btn btn-outline btn-warning btn-xs" (click)="onDeleteClick(todoTask)">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+  

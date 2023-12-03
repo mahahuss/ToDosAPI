@@ -4,15 +4,14 @@ import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { TodosService } from '../../../services/todos.service';
 import { AddNewTaskModel, ToDoTask } from '../../../shared/models/auth';
-
 @Component({
-  selector: 'app-newtask',
+  selector: 'app-new-task',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './newtask.component.html',
-  styleUrl: './newtask.component.scss',
+  templateUrl: './new-task.component.html',
+  styleUrl: './new-task.component.scss'
 })
-export class NewtaskComponent {
+export class NewTaskComponent {
   content = '';
   @Output() onTaskCreated = new EventEmitter<ToDoTask>();
 
@@ -23,6 +22,7 @@ export class NewtaskComponent {
 
   addTask() {
     const userid = this.authService.getCurrentUserFromToken()?.nameid;
+    console.log(this.content)
     if (this.content && userid) {
       const task: AddNewTaskModel = {
         createdBy: userid,
