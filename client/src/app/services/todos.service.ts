@@ -4,6 +4,8 @@ import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment.development';
 import { AddNewTaskModel, DeleteTaskResponse, EditTaskResponse, ToDoTask } from '../shared/models/auth';
 import { TmplAstForLoopBlock } from '@angular/compiler';
+import { MatDialog } from '@angular/material/dialog';
+import { TodoDialogComponent } from '../routes/todos/todo-dialog/todo-dialog.component';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +13,7 @@ import { TmplAstForLoopBlock } from '@angular/compiler';
 export class TodosService {
   private readonly baseUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private dialog: MatDialog) {}
 
   getUserTodos(userId: number): Observable<ToDoTask[]> {
     const reqHeader = new HttpHeaders({
@@ -69,5 +71,9 @@ export class TodosService {
     });
 
   }
-  
+
+
+  open() {
+    return this.dialog.open(TodoDialogComponent);
+  }
 }

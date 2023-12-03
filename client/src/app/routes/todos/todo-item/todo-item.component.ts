@@ -3,13 +3,14 @@ import { CommonModule } from '@angular/common';
 import { ToDoTask } from '../../../shared/models/auth';
 import { TodosService } from '../../../services/todos.service';
 import { ToastrService } from 'ngx-toastr';
+import { TodoDialogComponent } from "../todo-dialog/todo-dialog.component";
 
 @Component({
-  selector: 'app-todo-item',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './todo-item.component.html',
-  styleUrl: './todo-item.component.scss'
+    selector: 'app-todo-item',
+    standalone: true,
+    templateUrl: './todo-item.component.html',
+    styleUrl: './todo-item.component.scss',
+    imports: [CommonModule, TodoDialogComponent]
 })
 export class TodoItemComponent {
 
@@ -34,19 +35,23 @@ export class TodoItemComponent {
   }
 
   onDeleteClick(task: ToDoTask) {
-    this.todosService.deleteTask(task).subscribe({
-      next: (res) => {
-        if (res){
-        this.deleteTask.emit(task);
-        this.toastr.success("The task deleted successfully")
-        }
-      },
-      error: (res) => {
-        console.log(res.error.message);
-      },
-    });
-  
+    //this.todosService.open();
+    //   this.todosService.deleteTask(task).subscribe({
+    //     next: (res) => {
+    //       if (res){
+    //       this.deleteTask.emit(task);
+    //       this.toastr.success("The task deleted successfully")
+    //       }
+    //     },
+    //     error: (res) => {
+    //       console.log(res.error.message);
+    //     },
+    //   });
+    
+   
   }
-}
+    
+  }
+
 
 

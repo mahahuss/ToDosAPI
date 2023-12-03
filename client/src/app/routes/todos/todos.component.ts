@@ -1,11 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AddNewTaskModel, ToDoTask, User } from '../../shared/models/auth';
+import { ToDoTask, User } from '../../shared/models/auth';
 import { AuthService } from '../../services/auth.service';
 import { TodosService } from '../../services/todos.service';
 import { TodoItemComponent } from './todo-item/todo-item.component';
 import { NewTaskComponent } from './new-task/new-task.component';
-import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-todos',
@@ -21,7 +20,6 @@ export class TodosComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private todosService: TodosService,
-    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
