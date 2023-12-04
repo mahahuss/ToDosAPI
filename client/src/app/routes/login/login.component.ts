@@ -3,13 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 
-
-import {
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators
-} from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -21,9 +15,13 @@ import { AuthService } from '../../services/auth.service';
 })
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup<LoginForm>;
-  loginStatus=false;
+  loginStatus = false;
 
-  constructor(private authService: AuthService, private route: Router, private toastr: ToastrService) {}
+  constructor(
+    private authService: AuthService,
+    private route: Router,
+    private toastr: ToastrService,
+  ) {}
 
   get f() {
     return this.loginForm.controls;
@@ -35,19 +33,19 @@ export class LoginComponent implements OnInit {
 
   login() {
     if (!this.loginForm.valid) return;
-    this.loginStatus=true;
-    this.authService
-      .login(this.f.username.value, this.f.password.value)
-      .subscribe({
+    this.loginStatus = true;
+    setTimeout(() => {
+      this.authService.login(this.f.username.value, this.f.password.value).subscribe({
         next: () => {
           this.route.navigate(['/home']);
         },
         error: (res) => {
           console.log(res.error.message);
-          this.toastr.error(res.error.message,'Login Faild');
-          this.loginStatus=false;
+          this.toastr.error(res.error.message, 'Login Faild');
+          this.loginStatus = false;
         },
       });
+    }, 3000);
   }
 
   private initForm() {

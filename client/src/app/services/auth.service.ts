@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { jwtDecode } from 'jwt-decode';
-import { BehaviorSubject, Observable, firstValueFrom, map } from 'rxjs';
+import { BehaviorSubject, Observable, delay, firstValueFrom, map } from 'rxjs';
 import { environment } from '../../environments/environment.development';
 import { LoginResponse, User } from '../shared/models/auth';
 

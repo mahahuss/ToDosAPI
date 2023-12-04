@@ -4,12 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { TodosService } from '../../../services/todos.service';
 import { AddNewTaskModel, ToDoTask } from '../../../shared/models/auth';
+import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-new-task',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './new-task.component.html',
-  styleUrl: './new-task.component.scss'
+  styleUrl: './new-task.component.scss',
 })
 export class NewTaskComponent {
   content = '';
@@ -18,11 +19,12 @@ export class NewTaskComponent {
   constructor(
     private authService: AuthService,
     private todoService: TodosService,
+    private toastr: ToastrService,
   ) {}
 
   addTask() {
     const userid = this.authService.getCurrentUserFromToken()?.nameid;
-    console.log(this.content)
+    console.log(this.content);
     if (this.content && userid) {
       const task: AddNewTaskModel = {
         createdBy: userid,
@@ -33,6 +35,7 @@ export class NewTaskComponent {
         next: (res) => {
           this.onTaskCreated.emit(res);
           this.content = '';
+          this.toastr.success('The task added successfully');
         },
         error: (res) => {
           console.log(res.error.message);

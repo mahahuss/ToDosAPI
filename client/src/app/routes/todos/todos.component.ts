@@ -5,17 +5,20 @@ import { AuthService } from '../../services/auth.service';
 import { TodosService } from '../../services/todos.service';
 import { TodoItemComponent } from './todo-item/todo-item.component';
 import { NewTaskComponent } from './new-task/new-task.component';
+import { TodoDialogComponent } from './todo-dialog/todo-dialog.component';
 
 @Component({
   selector: 'app-todos',
   standalone: true,
   templateUrl: './todos.component.html',
   styleUrl: './todos.component.scss',
-  imports: [CommonModule, TodoItemComponent, NewTaskComponent ],
+  imports: [CommonModule, TodoItemComponent, NewTaskComponent, TodoDialogComponent],
 })
 export class TodosComponent implements OnInit {
   userInfo!: User;
   todos: ToDoTask[] = [];
+  onDeleteStatus = false;
+  toDoTask: ToDoTask | undefined;
 
   constructor(
     private authService: AuthService,
@@ -32,11 +35,19 @@ export class TodosComponent implements OnInit {
 
   updateTask(updatedtask: ToDoTask) {
     const indexToUpdate = this.todos.findIndex((item) => item.id === updatedtask.id);
-        if (indexToUpdate !== -1) this.todos[indexToUpdate] = updatedtask
+    if (indexToUpdate !== -1) this.todos[indexToUpdate] = updatedtask;
   }
 
-  deleteTask(deletedtask: ToDoTask) {
-    this.todos = this.todos.filter((item) => item.id !== deletedtask.id);
+  deleteTask(canceled: boolean) {
+    if (canceled) this.toDoTask = undefined;
+    else {
+      this.todos = this.todos.filter((item) => item.id !== this.toDoTask!.id);
+      this.toDoTask = undefined;
+    }
+  }
+
+  deleteStatus(toDoTask: ToDoTask) {
+    this.toDoTask = toDoTask;
   }
 
   private loadTodos() {
