@@ -1,11 +1,12 @@
 <div class="flex">
-<textarea
-[ariaMultiLine]="true"
-  id="taskContent"
-  type="text"
-  placeholder="Enter new task"
-  class="input input-bordered input-primary w-9/12"
-  [(ngModel)]="content"
-> </textarea>
-<button class="btn btn-outline ml-4" (click)="addTask()" [disabled]="content === ''">Add</button>
+  <textarea
+    [ariaMultiLine]="true"
+    id="taskContent"
+    type="text"
+    placeholder="Enter new task"
+    class="input input-bordered input-primary w-9/12"
+    [(ngModel)]="content"
+  >
+  </textarea>
+  <button class="btn btn-outline ml-4" (click)="addTask()" [disabled]="content === ''">Add</button>
 </div>

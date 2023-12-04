@@ -17,7 +17,6 @@ import { TodoDialogComponent } from './todo-dialog/todo-dialog.component';
 export class TodosComponent implements OnInit {
   userInfo!: User;
   todos: ToDoTask[] = [];
-  onDeleteStatus = false;
   toDoTask: ToDoTask | undefined;
 
   constructor(
@@ -33,12 +32,12 @@ export class TodosComponent implements OnInit {
     this.todos.push(createdTask);
   }
 
-  updateTask(updatedtask: ToDoTask) {
+  taskUpdated(updatedtask: ToDoTask) {
     const indexToUpdate = this.todos.findIndex((item) => item.id === updatedtask.id);
     if (indexToUpdate !== -1) this.todos[indexToUpdate] = updatedtask;
   }
 
-  deleteTask(canceled: boolean) {
+  taskDeleted(canceled: boolean) {
     if (canceled) this.toDoTask = undefined;
     else {
       this.todos = this.todos.filter((item) => item.id !== this.toDoTask!.id);
@@ -46,7 +45,7 @@ export class TodosComponent implements OnInit {
     }
   }
 
-  deleteStatus(toDoTask: ToDoTask) {
+  deleteStatusChanged(toDoTask: ToDoTask) {
     this.toDoTask = toDoTask;
   }
 

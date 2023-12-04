@@ -14,26 +14,12 @@ export class TodosService {
   constructor(private http: HttpClient) { }
 
   getUserTodos(userId: number): Observable<ToDoTask[]> {
-    const reqHeader = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + localStorage.getItem('token'),
-    });
-    return this.http.get<ToDoTask[]>(this.baseUrl + 'tasks/' + userId, {
-      headers: reqHeader,
-    });
+    return this.http.get<ToDoTask[]>(this.baseUrl + 'tasks/' + userId);
   }
 
   updateTask(task: ToDoTask): Observable<boolean> {
-    task.status = task.status == 0 ? 1 : 0;
-    console.log(task);
-    const reqHeader = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + localStorage.getItem('token'),
-    });
     return this.http
-      .put<EditTaskResponse>(this.baseUrl + 'Tasks', task, {
-        headers: reqHeader,
-      })
+      .put<EditTaskResponse>(this.baseUrl + 'Tasks', task)
       .pipe(
         map((res) => {
           return res.status;
@@ -42,27 +28,11 @@ export class TodosService {
   }
 
   deleteTask(task: ToDoTask): Observable<ApiResponse> {
-
-    const reqHeader = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + localStorage.getItem('token'),
-    });
-    return this.http
-      .delete<ApiResponse>(this.baseUrl + 'Tasks/' + task.id, {
-        headers: reqHeader,
-      });
+    return this.http.delete<ApiResponse>(this.baseUrl + 'Tasks/' + task.id);
   }
 
   addNewTask(task: AddNewTaskModel): Observable<ToDoTask> {
-
-    const reqHeader = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + localStorage.getItem('token'),
-    });
-    return this.http.post<ToDoTask>(this.baseUrl + 'tasks', task, {
-      headers: reqHeader,
-    });
-
+    return this.http.post<ToDoTask>(this.baseUrl + 'tasks', task,);
   }
 
 }

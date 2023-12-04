@@ -1,6 +1,8 @@
 ﻿using ToDosAPI.Data;
 using ToDosAPI.Models.Dtos;
 using ToDosAPI.Models.Entities;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ToDosAPI.Services;
 
@@ -24,6 +26,7 @@ public class TaskService
 
     public Task<bool> DeleteTaskAsync(int taskId)
     {
+        
         return _userTaskRepo.DeleteTaskAsync(taskId);
     }
 

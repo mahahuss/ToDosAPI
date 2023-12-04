@@ -36,7 +36,8 @@ public class TasksController : BaseController
 
     [HttpPost]
     public async Task<ActionResult> AddTask(AddTaskDto addTaskDto)
-    {
+    {   
+        addTaskDto.CreatedBy = int.Parse(User.Claims.First().Value);
         var userTask = await _taskService.AddNewTaskAsync(addTaskDto);
         return Ok(userTask);
     }

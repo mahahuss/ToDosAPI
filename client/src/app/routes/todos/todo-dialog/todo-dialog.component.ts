@@ -13,7 +13,7 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class TodoDialogComponent {
   @Input() todoTask: ToDoTask | undefined = undefined;
-  @Output() deleteTask = new EventEmitter<boolean>();
+  @Output() taskDeleted = new EventEmitter<boolean>();
 
   constructor(
     private todosService: TodosService,
@@ -21,14 +21,14 @@ export class TodoDialogComponent {
   ) {}
 
   onClose() {
-    this.deleteTask.emit(true);
+    this.taskDeleted.emit(true);
   }
   onDelete() {
     this.todosService.deleteTask(this.todoTask!).subscribe({
       next: (res) => {
         console.log(res);
 
-        this.deleteTask.emit(false);
+        this.taskDeleted.emit(false);
         this.toastr.success(res.message);
       },
       error: (res) => {

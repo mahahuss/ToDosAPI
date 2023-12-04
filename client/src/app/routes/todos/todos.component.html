@@ -1,19 +1,21 @@
 <!-- component -->
 <div class="w-full max-w-screen-xl mx-auto px-6">
   <div class="flex justify-center p-4 px-3 py-10">
-    <div class="w-full max-w-md">
+    <div class="w-full max-w-xl">
       <div class="bg-white shadow-md rounded-lg px-3 py-2 mb-4">
         <div class="block text-indigo-700 text-lg font-semibold py-2 px-2">Todos List</div>
         <app-new-task (onTaskCreated)="taskAdded($event)" />
         @for (todo of todos; track $index) {
-          <app-todo-item [todoTask]="todo" (updateTask)="updateTask($event)" (deleteStatus)="deleteStatus(todo)" />
-          
+          <app-todo-item
+            [todoTask]="todo"
+            (taskUpdated)="taskUpdated($event)"
+            (deleteStatusChanged)="deleteStatusChanged(todo)"
+          />
         }
-        @if (toDoTask){
-          <app-todo-dialog [todoTask]="toDoTask" (deleteTask)="deleteTask($event)"></app-todo-dialog>
+        @if (toDoTask) {
+          <app-todo-dialog [todoTask]="toDoTask" (taskDeleted)="taskDeleted($event)"></app-todo-dialog>
         }
       </div>
     </div>
   </div>
 </div>
-

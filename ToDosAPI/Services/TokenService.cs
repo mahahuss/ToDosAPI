@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
+using ToDosAPI.Models;
 using ToDosAPI.Models.Dtos;
 
 namespace ToDosAPI.Services;
@@ -39,4 +40,5 @@ public class TokenService
         var handler = new JwtSecurityTokenHandler();
         return handler.WriteToken(token);
     }
+
 }
