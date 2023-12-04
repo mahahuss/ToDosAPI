@@ -13,14 +13,12 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './todo-item.component.scss',
   imports: [CommonModule, TodoDialogComponent, FormsModule],
 })
-export class TodoItemComponent implements OnInit{
-
+export class TodoItemComponent implements OnInit {
   @Input() todoTask: ToDoTask | undefined = undefined;
   @Output() taskUpdated = new EventEmitter<ToDoTask>();
   @Output() deleteStatusChanged = new EventEmitter();
   content = '';
-  updateClickStatus=false;
-
+  updateClickStatus = false;
 
   constructor(
     private todosService: TodosService,
@@ -29,15 +27,14 @@ export class TodoItemComponent implements OnInit{
 
   ngOnInit(): void {
     this.content = this.todoTask!.taskContent;
-    //this.todoTask!.taskContent= this.todoTask!.taskContent.replace("\n", "<br>") 
   }
-  
-  onTaskClick(task: ToDoTask) {
-    task.status = task.status == 0 ? 1 : 0;
+
+  updateStatus(task: ToDoTask) {
+    task.status = !task.status;
     this.todosService.updateTask(task).subscribe({
       next: () => {
-          this.taskUpdated.emit(task);
-          this.toastr.success('The task updated successfully');
+        this.taskUpdated.emit(task);
+        this.toastr.success('The task updated successfully');
       },
       error: (res) => {
         console.log(res.error.message);
@@ -45,22 +42,21 @@ export class TodoItemComponent implements OnInit{
     });
   }
 
-  onEditClick() {
-    this.updateClickStatus=!this.updateClickStatus;
+  toggleEdit() {
+    this.updateClickStatus = !this.updateClickStatus;
   }
-
 
   onDeleteClick() {
     this.deleteStatusChanged.emit();
   }
 
-  onTaskUpdate(task: ToDoTask) {
+  updateTask(task: ToDoTask) {
     task.taskContent = this.content;
     this.todosService.updateTask(task).subscribe({
       next: () => {
-          this.taskUpdated.emit(task);
-          this.toastr.success('The task updated successfully');
-          this.onEditClick();
+        this.taskUpdated.emit(task);
+        this.toastr.success('The task updated successfully');
+        this.toggleEdit();
       },
       error: (res) => {
         console.log(res.error.message);

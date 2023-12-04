@@ -29,7 +29,7 @@ export class NewTaskComponent {
       const task: AddNewTaskModel = {
         createdBy: userid,
         taskContent: this.content,
-        status: 0,
+        status: false,
       };
       this.todoService.addNewTask(task).subscribe({
         next: (res) => {

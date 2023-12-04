@@ -23,7 +23,7 @@ public class TasksController : BaseController
         return Ok(tasks);
     }
 
-    [HttpGet("{userId}")]
+    [HttpGet("{userId:int}")]
     public async Task<ActionResult> GetAllTasks(int userId)
     {
         var currentUserId = User.GetId();
@@ -37,6 +37,7 @@ public class TasksController : BaseController
     [HttpPost]
     public async Task<ActionResult> AddTask(AddTaskDto addTaskDto)
     {   
+        // TODO: FIX THIS PLEASE, USE THE EXTENSION METHOD
         addTaskDto.CreatedBy = int.Parse(User.Claims.First().Value);
         var userTask = await _taskService.AddNewTaskAsync(addTaskDto);
         return Ok(userTask);
@@ -45,7 +46,7 @@ public class TasksController : BaseController
     [HttpPut]
     public async Task<ActionResult> EditTask(EditTaskDto editTaskDto)
     {
-        var check = await _taskService.EditTaskAsync(editTaskDto.Id, editTaskDto.TaskContent, editTaskDto.Status);
+        var check = await _taskService.EditTaskAsync(editTaskDto);
         return Ok(new
         {
             status = check

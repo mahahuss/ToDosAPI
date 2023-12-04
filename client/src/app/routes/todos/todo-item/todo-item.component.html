@@ -1,17 +1,51 @@
-<div class="py-3 text-sm">
-  <div
-    class="flex justify-start cursor-pointer text-gray-700 hover:text-gray-400 hover:bg-gray-100 rounded-md px-2 py-2 my-2"
-    style.background-color="{{ todoTask!.status == 1 ? '#F3F3F3' : 'white' }}"
-  >
-    <span class="bg-slate-950 h-2 w-2 m-2 rounded-full"></span>
-    @if (todoTask) {
+@if (todoTask) {
+  <div class="py-3 text-sm">
+    <div
+      class="flex justify-start cursor-pointer text-gray-700 hover:text-gray-400 hover:bg-gray-100 rounded-md px-2 py-4 my-2 shadow"
+      style.background-color="{{ todoTask.status ? '#F3F3F3' : 'white' }}"
+    >
       @if (!updateClickStatus) {
-        <div class="flex-grow font-medium px-2" style="white-space: pre" (click)="onTaskClick(todoTask!)">
-          {{ todoTask!.taskContent }}
+        <div class="flex-grow font-medium px-2" style="white-space: pre" (click)="updateStatus(todoTask!)">
+          {{ todoTask.taskContent }}
         </div>
-      }
-      @if (updateClickStatus) {
-        <div class="flex flex-grow space-x-3 font-medium px-2">
+        <div class="text-sm font-normal text-gray-500 tracking-wide">
+          {{ todoTask.createdDate | date }}
+        </div>
+        <div class="pl-4">
+          <button class="btn btn-outline btn-warning btn-xs btn-circle" (click)="toggleEdit()">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="10"
+              height="10"
+              fill="currentColor"
+              class="bi bi-pencil-square"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"
+              />
+              <path
+                fill-rule="evenodd"
+                d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"
+              />
+            </svg>
+          </button>
+        </div>
+        <div class="pl-4">
+          <button class="btn btn-outline btn-error btn-xs btn-circle" (click)="onDeleteClick()">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      } @else {
+        <div class="flex flex-grow space-x-3 font-medium px-2 items-center">
           <textarea
             id="taskContent"
             [ariaMultiLine]="true"
@@ -20,40 +54,14 @@
             [(ngModel)]="content"
           >
           </textarea>
-          <button class="btn btn-outline btn-xs" (click)="onEditClick()">Cancel</button>
-          <button class="btn btn-outline btn-xs" (click)="onTaskUpdate(todoTask!)">Update</button>
+          <button class="btn btn-ghost btn-xs btn-circle" (click)="updateTask(todoTask!)">
+            <i class="fas fa-check text-success"></i>
+          </button>
+          <button class="btn btn-ghost btn-xs btn-circle" (click)="toggleEdit()">
+            <i class="fas fa-x text-error"></i>
+          </button>
         </div>
       }
-      <div class="text-sm font-normal text-gray-500 tracking-wide">
-        {{ todoTask.createdDate | date }}
-      </div>
-      <div class="pl-4">
-        <button class="btn btn-outline btn-error btn-xs" (click)="onDeleteClick()">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-      </div>
-      <div class="pl-4">
-        <button class="btn btn-outline btn-warning btn-xs" (click)="onEditClick()">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            fill="currentColor"
-            class="bi bi-pencil-square"
-            viewBox="0 0 16 16"
-          >
-            <path
-              d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"
-            />
-            <path
-              fill-rule="evenodd"
-              d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"
-            />
-          </svg>
-        </button>
-      </div>
-    }
+    </div>
   </div>
-</div>
+}

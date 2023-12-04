@@ -14,7 +14,7 @@ export type ToDoTask = {
   taskContent: string;
   createdDate: Date;
   createdBy: number;
-  status: number;
+  status: boolean;
 };
 
 export type EditTaskResponse = {
@@ -29,5 +29,5 @@ export type ApiResponse = {
 export type AddNewTaskModel = {
   taskContent: string;
   createdBy: number;
-  status: number;
+  status: boolean;
 };

@@ -18,7 +18,8 @@ public class UserTaskRepository
     public async Task<UserTask?> CreateTaskAsync(AddTaskDto task)
     {
         await using var con = new SqlConnection(_context.ConnectionString);
-        return await con.QueryFirstOrDefaultAsync<UserTask>("sp_TaskCreate", new { task.TaskContent, task.CreatedBy, task.Status });
+        return await con.QueryFirstOrDefaultAsync<UserTask>("sp_TaskCreate",
+            new { task.TaskContent, task.CreatedBy, task.Status });
     }
 
     public async Task<bool> DeleteTaskAsync(int taskId)
@@ -27,10 +28,10 @@ public class UserTaskRepository
         return await con.ExecuteAsync("sp_TaskDelete", new { taskId }) > 0;
     }
 
-    public async Task<bool> EditTaskAsync(int id, string taskContent, int status)
+    public async Task<bool> EditTaskAsync(EditTaskDto editTaskDto)
     {
         await using var con = new SqlConnection(_context.ConnectionString);
-        return await con.ExecuteAsync("sp_TaskEdit", new { taskContent, Id = id, status }) > 0;
+        return await con.ExecuteAsync("sp_TaskEdit", editTaskDto) > 0;
     }
 
     public async Task<List<UserTask>> GetAllTasksAsync()
@@ -44,5 +45,4 @@ public class UserTaskRepository
         await using var con = new SqlConnection(_context.ConnectionString);
         return (await con.QueryAsync<UserTask>("sp_TaskGetUserTasks", new { userId })).ToList();
     }
-
 }

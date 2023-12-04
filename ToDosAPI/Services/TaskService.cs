@@ -30,9 +30,9 @@ public class TaskService
         return _userTaskRepo.DeleteTaskAsync(taskId);
     }
 
-    public Task<bool> EditTaskAsync(int Id, string taskContent, int status)
+    public Task<bool> EditTaskAsync(EditTaskDto editTaskDto)
     {
-        return _userTaskRepo.EditTaskAsync(Id, taskContent, status);
+        return _userTaskRepo.EditTaskAsync(editTaskDto);
     }
 
     public Task<List<UserTask>> GetAllTasksAsync()

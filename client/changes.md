@@ -31,13 +31,25 @@
 
 - ~~when navigating to the website, if the user does not have a valid token, then should be redirected to login, otherwise to todos page. (app.routes.ts)~~
 - ~~when user clicks the login button, the button should be disabled, and should have a loading indicator~~ /
-- check if user who submitted todo creation request === createdBy X - to be continued -
-- add toast message after operations, ex: Deleted successfully, created successfully, etc.. / -
+- check if user who submitted todo creation request === createdBy X - to be continued - XX
+- ~~add toast message after operations, ex: Deleted successfully, created successfully, etc.. / -~~
 - ~~rename todolist component to todo-item component ands newtask to new-task ~~
-- make todo create input a text area, and keep textarea style / -
+- ~~make todo create input a text area, and keep textarea style / -~~
 - ~~user must confirm after clicking delete before deleting the todo~~
 - ~~calling update or delete service must be in the todo-item component~~
 - ~~Fix event emitter to have only the required type without the additional {task:...}~~
-- add update button, when clicked, the current todo content should be replaced with an input which has the current content, the user can update it, then click save, or cancel the update - X to be continued.. -
+- ~~add update button, when clicked, the current todo content should be replaced with an input which has the current content, the user can update it, then click save, or cancel the update - X to be continued.. -~~
 - fix naming (event emitters, methods, variables, etc..) -
 - create auth interceptor -
+
+
+### 4-12-2023
+
+- remove all inline styles, use tailwind classes instead
+- unify all api responses, remove any dynamic(anonymous) types in api.
+- move models to separate files ex: tasks.ts, user.ts, etc...
+- focus textarea on edit click (ViewChild)
+- add dark overlay to dialog
+- change todos list style
+- edit profile styles
+- edit profile: name, upload user image
