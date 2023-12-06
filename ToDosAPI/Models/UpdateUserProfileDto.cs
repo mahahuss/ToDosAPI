@@ -2,7 +2,7 @@
 
 namespace ToDosAPI.Models
 {
-    public class UserProfile
+    public class UpdateUserProfileDto
     {
         [Required] public string Name { get; set; } = default!;
         public IFormFile? Image { get; set; }

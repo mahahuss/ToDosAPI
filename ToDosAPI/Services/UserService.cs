@@ -15,16 +15,16 @@ public class UserService
     private readonly string _imageDir;
 
 
-    public UserService(PasswordHasherService passwordHasherService, UserRepository userRepo, TokenService userToken , IConfiguration configuration)
+    public UserService(PasswordHasherService passwordHasherService, UserRepository userRepo, TokenService userToken,
+        IConfiguration configuration)
     {
         _passwordHasherService = passwordHasherService;
         _userRepo = userRepo;
         _userToken = userToken;
         _imageDir = configuration.GetValue<string>("Files:ImagesPath")!;
-
     }
 
-public async Task<UserWithRolesDto?> AddNewUserAsync(RegisterDto registerDto)
+    public async Task<UserWithRolesDto?> AddNewUserAsync(RegisterDto registerDto)
     {
         var salt = _passwordHasherService.GenerateSalt();
         var password = _passwordHasherService.HashPassword(registerDto.Password!, salt);
@@ -57,19 +57,16 @@ public async Task<UserWithRolesDto?> AddNewUserAsync(RegisterDto registerDto)
         return userInfo != null ? _userToken.GenerateToken(userInfo!) : null;
     }
 
-    public async Task<bool> EditProfileAsync(UserProfile userInfo, int id)
+    public async Task<bool> EditProfileAsync(UpdateUserProfileDto updateUserInfo, int id)
     {
-
-        var check = await _userRepo.EditUserProfileAsync(userInfo.Name, id);
-       
-        if (userInfo.Image != null)
+        if (updateUserInfo.Image != null)
         {
-            string filename = id.ToString();
-            using (var fileStream = new FileStream(Path.Combine(_imageDir, filename), FileMode.Create))
-            {
-                await userInfo.Image.CopyToAsync(fileStream);
-            }
+            var filename = id.ToString();
+            await using var fileStream = new FileStream(Path.Combine(_imageDir, filename), FileMode.Create);
+            await updateUserInfo.Image.CopyToAsync(fileStream);
         }
+
+        var check = await _userRepo.EditUserProfileAsync(updateUserInfo.Name, id);
 
         return check;
     }

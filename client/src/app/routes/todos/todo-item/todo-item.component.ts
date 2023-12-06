@@ -30,8 +30,6 @@ export class TodoItemComponent implements OnInit {
   @Output() deleteStatusChanged = new EventEmitter();
   content = '';
   updateClickStatus = false;
-  taskBgColor = 'white';
-  @ViewChild('taskDiv') taskDiv?: ElementRef;
   @ViewChild('focusTaskInput') focusTaskInput?: ElementRef;
 
   constructor(
@@ -39,29 +37,14 @@ export class TodoItemComponent implements OnInit {
     private toastr: ToastrService,
   ) {}
 
-
-  // ngAfterViewInit(): void {
-  //   if (this.focusTaskInput) 
-  //     this.focusTaskInput.nativeElement.focus();
-  //   }
-
   ngOnInit(): void {
     this.content = this.todoTask!.taskContent;
-    this.taskBgColor = this.todoTask!.status ? '#F3F3F3' : 'white';
-    if (this.taskDiv)
-      this.taskDiv.nativeElement.style.backgroundColor = this.taskBgColor;
-    if (this.focusTaskInput) 
-      this.focusTaskInput.nativeElement.focus();
+    if (this.focusTaskInput) this.focusTaskInput.nativeElement.focus();
   }
-
-
 
   updateStatus(task: ToDoTask) {
     task.status = !task.status;
-    this.taskBgColor = task.status ? '#F3F3F3' : 'white';
-    if (this.taskDiv) {
-      this.taskDiv.nativeElement.style.backgroundColor = this.taskBgColor;
-    }
+
     this.todosService.updateTask(task).subscribe({
       next: () => {
         this.taskUpdated.emit(task);
@@ -75,8 +58,7 @@ export class TodoItemComponent implements OnInit {
 
   toggleEdit() {
     this.updateClickStatus = !this.updateClickStatus;
-    if(this.updateClickStatus && this.focusTaskInput) 
-    this.focusTaskInput.nativeElement.focus();
+    if (this.updateClickStatus && this.focusTaskInput) this.focusTaskInput.nativeElement.focus();
   }
 
   onDeleteClick() {
