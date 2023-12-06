@@ -1,4 +1,15 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  Renderer2,
+  ViewChild,
+  ViewChildren,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ToDoTask } from '../../../shared/models/auth';
 import { TodosService } from '../../../services/todos.service';
@@ -19,6 +30,8 @@ export class TodoItemComponent implements OnInit {
   @Output() deleteStatusChanged = new EventEmitter();
   content = '';
   updateClickStatus = false;
+  taskBgColor = 'white';
+  @ViewChild('mainWrapperElement') myElement?: ElementRef;
 
   constructor(
     private todosService: TodosService,
@@ -27,10 +40,18 @@ export class TodoItemComponent implements OnInit {
 
   ngOnInit(): void {
     this.content = this.todoTask!.taskContent;
+    this.taskBgColor = this.todoTask!.status ? '#F3F3F3' : 'white';
+    if (this.myElement) {
+      this.myElement.nativeElement.style.backgroundColor = this.taskBgColor;
+    }
   }
 
   updateStatus(task: ToDoTask) {
     task.status = !task.status;
+    this.taskBgColor = task.status ? '#F3F3F3' : 'white';
+    if (this.myElement) {
+      this.myElement.nativeElement.style.backgroundColor = this.taskBgColor;
+    }
     this.todosService.updateTask(task).subscribe({
       next: () => {
         this.taskUpdated.emit(task);

@@ -42,14 +42,13 @@
 - fix naming (event emitters, methods, variables, etc..) -
 - create auth interceptor -
 
-
 ### 4-12-2023
 
-- remove all inline styles, use tailwind classes instead
+- remove all inline styles, use tailwind classes instead -
 - unify all api responses, remove any dynamic(anonymous) types in api.
 - move models to separate files ex: tasks.ts, user.ts, etc...
 - focus textarea on edit click (ViewChild)
-- add dark overlay to dialog
+- add dark overlay to dialog -
 - change todos list style
 - edit profile styles
 - edit profile: name, upload user image
