@@ -2,7 +2,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment.development';
-import { AddNewTaskModel, ApiResponse, EditTaskResponse, ToDoTask } from '../shared/models/auth';
+import { ApiResponse } from '../shared/models/common';
+import { AddNewTaskModel, ToDoTask } from '../shared/models/todo';
 
 
 @Injectable({
@@ -17,12 +18,12 @@ export class TodosService {
     return this.http.get<ToDoTask[]>(this.baseUrl + 'tasks/' + userId);
   }
 
-  updateTask(task: ToDoTask): Observable<boolean> {
+  updateTask(task: ToDoTask): Observable<ApiResponse> {
     return this.http
-      .put<EditTaskResponse>(this.baseUrl + 'Tasks', task)
+      .put<ApiResponse>(this.baseUrl + 'Tasks', task)
       .pipe(
         map((res) => {
-          return res.status;
+          return res
         }),
       );
   }

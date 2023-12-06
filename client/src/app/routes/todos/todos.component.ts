@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ToDoTask, User } from '../../shared/models/auth';
+import { User } from '../../shared/models/auth';
+import { ToDoTask } from '../../shared/models/todo';
 import { AuthService } from '../../services/auth.service';
 import { TodosService } from '../../services/todos.service';
 import { TodoItemComponent } from './todo-item/todo-item.component';

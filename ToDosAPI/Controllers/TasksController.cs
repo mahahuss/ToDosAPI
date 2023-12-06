@@ -47,10 +47,9 @@ public class TasksController : BaseController
     public async Task<ActionResult> EditTask(EditTaskDto editTaskDto)
     {
         var check = await _taskService.EditTaskAsync(editTaskDto);
-        return Ok(new
-        {
-            status = check
-        });
+        if (check) return Ok("Updated successfully");
+
+        return BadRequest("Failed to update task");
     }
 
     [HttpDelete("{taskId}")]

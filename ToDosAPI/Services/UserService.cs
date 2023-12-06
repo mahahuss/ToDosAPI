@@ -1,4 +1,7 @@
-﻿using ToDosAPI.Data;
+﻿using Microsoft.IdentityModel.Logging;
+using System.IO;
+using ToDosAPI.Data;
+using ToDosAPI.Models;
 using ToDosAPI.Models.Dtos;
 using ToDosAPI.Models.Entities;
 
@@ -9,16 +12,19 @@ public class UserService
     private readonly PasswordHasherService _passwordHasherService;
     private readonly UserRepository _userRepo;
     private readonly TokenService _userToken;
+    private readonly string _imageDir;
 
 
-    public UserService(PasswordHasherService passwordHasherService, UserRepository userRepo, TokenService userToken)
+    public UserService(PasswordHasherService passwordHasherService, UserRepository userRepo, TokenService userToken , IConfiguration configuration)
     {
         _passwordHasherService = passwordHasherService;
         _userRepo = userRepo;
         _userToken = userToken;
+        _imageDir = configuration.GetValue<string>("Files:ImagesPath")!;
+
     }
 
-    public async Task<UserWithRolesDto?> AddNewUserAsync(RegisterDto registerDto)
+public async Task<UserWithRolesDto?> AddNewUserAsync(RegisterDto registerDto)
     {
         var salt = _passwordHasherService.GenerateSalt();
         var password = _passwordHasherService.HashPassword(registerDto.Password!, salt);
@@ -49,5 +55,22 @@ public class UserService
 
         var userInfo = await _userRepo.GetUserWithRolesAsync(username);
         return userInfo != null ? _userToken.GenerateToken(userInfo!) : null;
+    }
+
+    public async Task<bool> EditProfileAsync(UserProfile userInfo, int id)
+    {
+
+        var check = await _userRepo.EditUserProfileAsync(userInfo.Name, id);
+       
+        if (userInfo.Image != null)
+        {
+            string filename = id.ToString();
+            using (var fileStream = new FileStream(Path.Combine(_imageDir, filename), FileMode.Create))
+            {
+                await userInfo.Image.CopyToAsync(fileStream);
+            }
+        }
+
+        return check;
     }
 }

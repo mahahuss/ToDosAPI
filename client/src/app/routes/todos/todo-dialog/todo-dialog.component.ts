@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ToDoTask } from '../../../shared/models/auth';
+import { ToDoTask } from '../../../shared/models/todo';
 import { TodosService } from '../../../services/todos.service';
 import { ToastrService } from 'ngx-toastr';
 

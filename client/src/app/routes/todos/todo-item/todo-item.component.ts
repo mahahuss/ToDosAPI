@@ -11,7 +11,7 @@ import {
   ViewChildren,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ToDoTask } from '../../../shared/models/auth';
+import { ToDoTask } from '../../../shared/models/todo';
 import { TodosService } from '../../../services/todos.service';
 import { ToastrService } from 'ngx-toastr';
 import { TodoDialogComponent } from '../todo-dialog/todo-dialog.component';
@@ -31,26 +31,36 @@ export class TodoItemComponent implements OnInit {
   content = '';
   updateClickStatus = false;
   taskBgColor = 'white';
-  @ViewChild('mainWrapperElement') myElement?: ElementRef;
+  @ViewChild('taskDiv') taskDiv?: ElementRef;
+  @ViewChild('focusTaskInput') focusTaskInput?: ElementRef;
 
   constructor(
     private todosService: TodosService,
     private toastr: ToastrService,
   ) {}
 
+
+  // ngAfterViewInit(): void {
+  //   if (this.focusTaskInput) 
+  //     this.focusTaskInput.nativeElement.focus();
+  //   }
+
   ngOnInit(): void {
     this.content = this.todoTask!.taskContent;
     this.taskBgColor = this.todoTask!.status ? '#F3F3F3' : 'white';
-    if (this.myElement) {
-      this.myElement.nativeElement.style.backgroundColor = this.taskBgColor;
-    }
+    if (this.taskDiv)
+      this.taskDiv.nativeElement.style.backgroundColor = this.taskBgColor;
+    if (this.focusTaskInput) 
+      this.focusTaskInput.nativeElement.focus();
   }
+
+
 
   updateStatus(task: ToDoTask) {
     task.status = !task.status;
     this.taskBgColor = task.status ? '#F3F3F3' : 'white';
-    if (this.myElement) {
-      this.myElement.nativeElement.style.backgroundColor = this.taskBgColor;
+    if (this.taskDiv) {
+      this.taskDiv.nativeElement.style.backgroundColor = this.taskBgColor;
     }
     this.todosService.updateTask(task).subscribe({
       next: () => {
@@ -65,6 +75,8 @@ export class TodoItemComponent implements OnInit {
 
   toggleEdit() {
     this.updateClickStatus = !this.updateClickStatus;
+    if(this.updateClickStatus && this.focusTaskInput) 
+    this.focusTaskInput.nativeElement.focus();
   }
 
   onDeleteClick() {

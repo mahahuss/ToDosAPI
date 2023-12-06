@@ -55,4 +55,11 @@ public class UserRepository
         await using var con = new SqlConnection(_context.ConnectionString);
         return await con.QueryFirstOrDefaultAsync<UserCredentialDto>("sp_UserCredential", new { username });
     }
+
+
+    public async Task<bool> EditUserProfileAsync(string name, int id)
+    {
+        await using var con = new SqlConnection(_context.ConnectionString);
+        return await con.ExecuteAsync("sp_UserEdit", new { name, id }) > 0;
+    }
 }

@@ -9,25 +9,7 @@ export type User = {
   roles: Array<string>;
 };
 
-export type ToDoTask = {
-  id: number;
-  taskContent: string;
-  createdDate: Date;
-  createdBy: number;
-  status: boolean;
-};
-
-export type EditTaskResponse = {
-  status: boolean;
-};
-
-export type ApiResponse = {
-  statusCode: number;
-  message: string;
-};
-
-export type AddNewTaskModel = {
-  taskContent: string;
-  createdBy: number;
-  status: boolean;
+export type UserProfile = {
+  Name: string;
+  Image : FormData;
 };

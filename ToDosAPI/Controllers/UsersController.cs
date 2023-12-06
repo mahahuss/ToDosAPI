@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ToDosAPI.Extensions;
+using ToDosAPI.Models;
 using ToDosAPI.Models.Dtos;
 using ToDosAPI.Services;
 
@@ -20,9 +22,9 @@ public class UsersController : BaseController
     {
         var userInfo = await _userService.AddNewUserAsync(user);
 
-        if (userInfo is not null) return Ok();
+        if (userInfo is not null)return Ok("User registered successfully");
 
-        return BadRequest();
+        return BadRequest("Failed to register");
     }
 
     [HttpPost("login")]
@@ -55,5 +57,17 @@ public class UsersController : BaseController
         }
 
         return NotFound();
+    }
+
+
+    [HttpPut]
+    public async Task<ActionResult> EditProfile(UserProfile userProfile)
+    {
+        var currentUserId = User.GetId();
+        var check = await _userService.EditProfileAsync(userProfile, currentUserId);
+         if (check) return Ok("Profile updated successfully");
+
+        return BadRequest("Failed to update profile");
+
     }
 }

@@ -3,7 +3,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { TodosService } from '../../../services/todos.service';
-import { AddNewTaskModel, ToDoTask } from '../../../shared/models/auth';
+import { AddNewTaskModel, ToDoTask } from '../../../shared/models/todo';
 import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-new-task',

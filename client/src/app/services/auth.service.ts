@@ -1,9 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { jwtDecode } from 'jwt-decode';
-import { BehaviorSubject, Observable, delay, firstValueFrom, map } from 'rxjs';
+import { BehaviorSubject, Observable, firstValueFrom, map } from 'rxjs';
 import { environment } from '../../environments/environment.development';
-import { LoginResponse, User } from '../shared/models/auth';
+import { LoginResponse, User, UserProfile } from '../shared/models/auth';
+import { ToDoTask } from '../shared/models/todo';
+import { ApiResponse } from '../shared/models/common';
 
 @Injectable({
   providedIn: 'root',
@@ -57,6 +59,17 @@ export class AuthService {
       );
   }
 
+
+  updateUserProfile(userProfile: UserProfile): Observable<ApiResponse> {
+    return this.http
+      .put<ApiResponse>(this.baseUrl + 'Users', userProfile)
+      .pipe(
+        map((res) => {
+          return res
+        }),
+      );
+  } 
+  
   async login2(username: string, password: string): Promise<LoginResponse> {
     const response = await firstValueFrom(
       this.http.post<LoginResponse>(this.baseUrl + 'users', {
