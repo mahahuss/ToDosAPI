@@ -34,10 +34,7 @@ public class UsersController : BaseController
 
         if (!string.IsNullOrEmpty(token))
         {
-            return Ok(new
-            {
-                token
-            });
+            return Ok(token);
         }
 
         return Unauthorized("Username or password incorrect");

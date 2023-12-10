@@ -1,7 +1,3 @@
-export type LoginResponse = {
-  token: string;
-};
-
 export type User = {
   nameid: number;
   unique_name: string;
@@ -11,5 +7,5 @@ export type User = {
 
 export type UserProfile = {
   Name: string;
-  Image : FormData;
+  Image: FormData;
 };

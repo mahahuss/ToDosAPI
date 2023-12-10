@@ -59,9 +59,10 @@ public class UserService
 
     public async Task<bool> EditProfileAsync(UpdateUserProfileDto updateUserInfo, int id)
     {
-        if (updateUserInfo.Image != null)
+        if (updateUserInfo.Image != null && updateUserInfo.Image.Length < 200000 && System.IO.Path.GetExtension(updateUserInfo.Image.FileName).ToLower() == ".png" )
         {
-            var filename = id.ToString();
+           
+            var filename = id.ToString()+ System.IO.Path.GetExtension(updateUserInfo.Image.FileName);
             await using var fileStream = new FileStream(Path.Combine(_imageDir, filename), FileMode.Create);
             await updateUserInfo.Image.CopyToAsync(fileStream);
         }
