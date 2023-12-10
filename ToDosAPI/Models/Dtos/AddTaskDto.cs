@@ -7,5 +7,6 @@ namespace ToDosAPI.Models.Dtos
         [Required] public string TaskContent { get; set; } = default!;
         [Required] public int CreatedBy { get; set; }
         [Required] public bool Status { get; set; }
+        public List<IFormFile> files { get; set; } = new();
     }
 }

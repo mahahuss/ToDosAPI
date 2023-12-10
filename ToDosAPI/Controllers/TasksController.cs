@@ -35,10 +35,10 @@ public class TasksController : BaseController
     }
 
     [HttpPost]
-    public async Task<ActionResult> AddTask(AddTaskDto addTaskDto)
+    public async Task<ActionResult> AddTask([FromForm] AddTaskDto addTaskDto)
     {   
-        // TODO: FIX THIS PLEASE, USE THE EXTENSION METHOD
-        addTaskDto.CreatedBy = int.Parse(User.Claims.First().Value);
+        // TODO: FIX THIS PLEASE, USE THE EXTENSION METHOD , dn
+        addTaskDto.CreatedBy = User.GetId();
         var userTask = await _taskService.AddNewTaskAsync(addTaskDto);
         return Ok(userTask);
     }

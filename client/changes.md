@@ -47,8 +47,10 @@
 - remove all inline styles, use tailwind classes instead -
 - unify all api responses, remove any dynamic(anonymous) types in api. -
 - move models to separate files ex: tasks.ts, user.ts, etc... -
-- focus textarea on edit click (ViewChild) /
+- focus textarea on edit click (ViewChild) -
 - add dark overlay to dialog -
 - change todos list style x
 - edit profile styles x
 - edit profile: name, upload user image /
+- enable users to attach any file(s) when adding a task, and download them
+- add users page which only viewed by admins and moderators (authorized in API also), admins and moderators can view users tasks, and only admins can block any user

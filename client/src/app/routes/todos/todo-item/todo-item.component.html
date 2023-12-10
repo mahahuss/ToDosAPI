@@ -3,7 +3,7 @@
     <div
       [class.bg-base-100]="todoTask.status"
       [class.bg-base-300]="!todoTask.status"
-      class="flex justify-start cursor-pointer text-gray-700 hover:text-gray-400 hover:bg-gray-100 rounded-md px-2 py-4 my-2 shadow "
+      class="flex justify-start cursor-pointer text-gray-700 hover:text-gray-400 hover:bg-gray-100 rounded-md px-2 py-4 my-2 shadow"
     >
       @if (!updateClickStatus) {
         <div class="flex-grow font-medium px-2 whitespace-pre" (click)="updateStatus(todoTask!)">
@@ -54,7 +54,6 @@
             class="input input-bordered input-primary w-9/12"
             [(ngModel)]="content"
             #focusTaskInput
-            autofocus="true"
           >
           </textarea>
           <button class="btn btn-ghost btn-xs btn-circle" (click)="updateTask(todoTask!)">

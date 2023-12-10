@@ -3,6 +3,7 @@ using ToDosAPI.Models.Dtos;
 using ToDosAPI.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 
 namespace ToDosAPI.Services;
 
@@ -12,15 +13,27 @@ namespace ToDosAPI.Services;
 public class TaskService
 {
     private readonly UserTaskRepository _userTaskRepo;
+    private readonly string _imageDir;
 
-    public TaskService(UserTaskRepository userTaskRepo)
+    public TaskService(UserTaskRepository userTaskRepo, IConfiguration configuration)
     {
+        
         _userTaskRepo = userTaskRepo;
+        _imageDir = configuration.GetValue<string>("Files:ImagesPath")!;
+
     }
 
     public async Task<UserTask?> AddNewTaskAsync(AddTaskDto task)
     {
         var createdTask = await _userTaskRepo.CreateTaskAsync(task);
+        if (createdTask != null)
+        {
+            foreach (var file in task.files.Where(f => f.ContentType == "application/pdf" || f.ContentType == "image/png"))
+            {
+                await using var fileStream = new FileStream(Path.Combine(_imageDir, file.FileName), FileMode.Create);
+                await file.CopyToAsync(fileStream);
+            }
+        }
         return createdTask;
     }
 
@@ -40,7 +53,7 @@ public class TaskService
         return _userTaskRepo.GetAllTasksAsync();
     }
 
-    public Task<List<UserTask>> GetUserTasksAsync(int userId)
+    public Task<List<UserTasksWithAttachs>> GetUserTasksAsync(int userId)
     {
         return _userTaskRepo.GetUserTasksAsync(userId);
     }

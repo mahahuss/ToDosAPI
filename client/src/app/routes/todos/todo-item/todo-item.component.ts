@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -35,12 +36,12 @@ export class TodoItemComponent implements OnInit {
   constructor(
     private todosService: TodosService,
     private toastr: ToastrService,
+    private cdRef:ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     this.content = this.todoTask!.taskContent;
-    if (this.focusTaskInput) this.focusTaskInput.nativeElement.focus();
-  }
+}
 
   updateStatus(task: ToDoTask) {
     task.status = !task.status;
@@ -58,8 +59,11 @@ export class TodoItemComponent implements OnInit {
 
   toggleEdit() {
     this.updateClickStatus = !this.updateClickStatus;
-    if (this.updateClickStatus && this.focusTaskInput) this.focusTaskInput.nativeElement.focus();
+    if (this.updateClickStatus) {
+      this.cdRef.detectChanges();
+      this.focusTaskInput!.nativeElement.focus();
   }
+}
 
   onDeleteClick() {
     this.deleteStatusChanged.emit();

@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Microsoft.Data.SqlClient;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using ToDosAPI.Models.Dtos;
 using ToDosAPI.Models.Entities;
@@ -17,9 +18,19 @@ public class UserTaskRepository
 
     public async Task<UserTask?> CreateTaskAsync(AddTaskDto task)
     {
-        await using var con = new SqlConnection(_context.ConnectionString);
-        return await con.QueryFirstOrDefaultAsync<UserTask>("sp_TaskCreate",
+       await using var con = new SqlConnection(_context.ConnectionString);
+       var userTask =  await con.QueryFirstOrDefaultAsync<UserTask>("sp_TaskCreate",
             new { task.TaskContent, task.CreatedBy, task.Status });
+
+        if (userTask != null)
+        {
+            foreach (var file in task.files)
+            {
+                await con.QueryFirstOrDefaultAsync<UserTask>("sp_TasksAttachsAddFiles",
+               new { userTask.Id, file.FileName }); //check extension
+            }
+        }
+        return userTask;
     }
 
     public async Task<bool> DeleteTaskAsync(int taskId)
@@ -40,9 +51,55 @@ public class UserTaskRepository
         return (await con.QueryAsync<UserTask>("sp_TaskGetAll")).ToList();
     }
 
-    public async Task<List<UserTask>> GetUserTasksAsync(int userId)
+    public async Task<ListOfTasks> GetUserTasksAsync(int userId)
     {
         await using var con = new SqlConnection(_context.ConnectionString);
-        return (await con.QueryAsync<UserTask>("sp_TaskGetUserTasks", new { userId })).ToList();
+
+        //UserTasksWithAttachs? userTasksWithAttachs = null;
+        //return (await con.QueryAsync<UserTask, string, UserTasksWithAttachs>("sp_TaskGetUserTasks",
+        //     (task, files) =>
+        //     {
+        //         userTasksWithAttachs ??= new UserTasksWithAttachs
+        //         {
+        //             Id = task.Id,
+        //             CreatedBy = task.CreatedBy,
+        //             Status = task.Status,
+        //             TaskContent = task.TaskContent!,
+        //             CreatedDate = task.CreatedDate,
+        //         };
+
+        //         userTasksWithAttachs.files.Add(files);
+        //         return userTasksWithAttachs;
+
+        //     }, new { userId }, splitOn: "Id, FileName")).ToList();
+
+
+        ListOfTasks list = new ListOfTasks();
+        UserTasksWithAttachs? userTasksWithAttachs = null;
+        await con.QueryAsync<UserTask, string, UserTasksWithAttachs>("sp_TaskGetUserTasks",
+            (task, files) =>
+            {
+                if () {
+                    list.tasks.Append(new UserTasksWithAttachs
+                    {
+                        Id = task.Id,
+                        CreatedBy = task.CreatedBy,
+                        Status = task.Status,
+                        TaskContent = task.TaskContent!,
+                        CreatedDate = task.CreatedDate,
+                    }
+               );
+                }
+
+                if () {
+
+                    list.tasks.Last().files.Add(files);
+                }
+
+                return list.tasks.Last();
+            }, new { userId }, splitOn: "Id");
+        
+        return list;
+
     }
 }

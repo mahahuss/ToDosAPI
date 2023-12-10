@@ -29,18 +29,18 @@ export class AuthService {
 
   setCurrentUserFromToken(): void {
     const token = localStorage.getItem('token');
-
     if (token) this.currentUserSource$.next(jwtDecode<User>(token));
   }
 
   getCurrentUserFromToken(): User | undefined {
     const token = localStorage.getItem('token');
-
-    if (!token) {
+    if (!token) 
       return undefined;
-    }
-
     return jwtDecode<User>(token);
+  }
+
+  updateCurrentUser(user : User){
+    this.currentUserSource$.next(user);
   }
 
   login(username: string, password: string): Observable<User> {
