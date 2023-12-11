@@ -28,7 +28,8 @@ public class TaskService
         var createdTask = await _userTaskRepo.CreateTaskAsync(task);
         if (createdTask != null)
         {
-            foreach (var file in task.files.Where(f => f.ContentType == "application/pdf" || f.ContentType == "image/png"))
+            
+            foreach (var file in task.files.Where(f => f.ContentType.ToLower() == "application/pdf" || f.ContentType.ToLower() == "image/png"))
             {
                 await using var fileStream = new FileStream(Path.Combine(_imageDir, file.FileName), FileMode.Create);
                 await file.CopyToAsync(fileStream);

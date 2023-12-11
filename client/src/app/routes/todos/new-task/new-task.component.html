@@ -4,9 +4,22 @@
     id="taskContentInput"
     type="text"
     placeholder="Enter new task"
-    class="input input-bordered input-primary w-9/12"
+    class="input input-bordered border-indigo-700 input-primary w-9/12"
     [(ngModel)]="content"
   >
   </textarea>
+  <div class="rounded-md border border-indigo-700 bg-gray-50 p-4 ml-4 shadow-md w-5 h-9/12">
+    <label for="upload" class="flex flex-col items-center gap-2 cursor-pointer">
+      <span class="fa fa-upload text-indigo-700"> </span>
+    </label>
+    <input
+      id="upload"
+      type="file"
+      class="hidden"
+      (change)="handleFileInput($event)"
+      accept="image/png, application/pdf"
+      multiple
+    />
+  </div>
   <button class="btn btn-outline ml-4" (click)="addTask()" [disabled]="content === ''">Add</button>
 </div>

@@ -74,54 +74,44 @@ public class UserTaskRepository
         //     }, new { userId }, splitOn: "Id, FileName")).ToList();
 
 
-        //List<UserTasksWithAttachs> list = new List<UserTasksWithAttachs>();
-
-
-        //await con.QueryAsync<UserTasksWithAttachs, string, UserTasksWithAttachs>("sp_TaskGetUserTasks",
-        //    (task, file) =>
-        //    {
-
-        //        var check = list.Any((element) =>
-        //        {
-        //            return element.Id == task.Id;
-        //        });
-        //        if (!check)
-        //        {
-        //            list.Append(new UserTasksWithAttachs
-        //            {
-        //                Id = task.Id,
-        //                CreatedBy = task.CreatedBy,
-        //                Status = task.Status,
-        //                TaskContent = task.TaskContent!,
-        //                CreatedDate = task.CreatedDate,
-        //            });
-        //        }
-        //        if (list.Count > 0)
-        //        {
-        //            list.Last().files.Add(file);
-        //        }
-
-        //        return new UserTasksWithAttachs
-        //        {
-        //            Id = task.Id,
-        //            CreatedBy = task.CreatedBy,
-        //            Status = task.Status,
-        //            TaskContent = task.TaskContent!,
-        //            CreatedDate = task.CreatedDate,
-        //        };
-
-        //    }, new { userId }) ;
-
-        //return list;
-
+        List<UserTasksWithAttachs> list = new List<UserTasksWithAttachs>();
 
 
         return (await con.QueryAsync<UserTasksWithAttachs, string, UserTasksWithAttachs>("sp_TaskGetUserTasks",
-            (task, file) =>
-            {
-                task.files.Add(file);
-                return task;
+              (task, file) =>
+              {
 
-            }, new { userId }, splitOn: "FileName")).ToList();
+                  var check = list.Any((element) =>
+                  {
+                      return element.Id == task.Id;
+                  });
+
+                  if (!check)
+                  {
+                      task.files.Add(file);
+                      list.Append(task);
+                  }
+
+                  else
+                      list.Last().files.Add(file);
+
+                  return task;
+
+              }, new { userId })).ToList();
+
+        //return list;
+
+        
+
+
+
+        //return (await con.QueryAsync<UserTasksWithAttachs, string, UserTasksWithAttachs>("sp_TaskGetUserTasks",
+        //    (task, file) =>
+        //    {
+        //        task.files.Add(file);+
+
+        //        return task;
+
+        //    }, new { userId }, splitOn: "FileName")).ToList();
     }
 }

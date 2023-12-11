@@ -58,6 +58,8 @@ public class UserService
     }
 
     public async Task<bool> EditProfileAsync(UpdateUserProfileDto updateUserInfo, int id)
+        
+        
     {
         if (updateUserInfo.Image != null && updateUserInfo.Image.Length < 200000 && System.IO.Path.GetExtension(updateUserInfo.Image.FileName).ToLower() == ".png" )
         {

@@ -32,7 +32,7 @@ export class TodosService {
     return this.http.delete<ApiResponse>(this.baseUrl + 'Tasks/' + task.id);
   }
 
-  addNewTask(task: AddNewTaskModel): Observable<ToDoTask> {
+  addNewTask(task: FormData): Observable<ToDoTask> {
     return this.http.post<ToDoTask>(this.baseUrl + 'tasks', task,);
   }
 

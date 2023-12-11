@@ -15,6 +15,7 @@ import { ToastrService } from 'ngx-toastr';
 export class NewTaskComponent {
   content = '';
   @Output() onTaskCreated = new EventEmitter<ToDoTask>();
+  files: File[] = [];
 
   constructor(
     private authService: AuthService,
@@ -22,25 +23,33 @@ export class NewTaskComponent {
     private toastr: ToastrService,
   ) {}
 
+  handleFileInput(event: any) {
+    this.files = event.target.files as File[];
+  }
+
   addTask() {
+    const formData = new FormData();
     const userid = this.authService.getCurrentUserFromToken()?.nameid;
-    console.log(this.content);
     if (this.content && userid) {
-      const task: AddNewTaskModel = {
-        createdBy: userid,
-        taskContent: this.content,
-        status: false,
-      };
-      this.todoService.addNewTask(task).subscribe({
-        next: (res) => {
-          this.onTaskCreated.emit(res);
-          this.content = '';
-          this.toastr.success('The task added successfully');
-        },
-        error: (res) => {
-          console.log(res.error.message);
-        },
-      });
+      formData.append('createdBy', userid.toString());
+      formData.append('taskContent', this.content);
+      formData.append('createdBy', 'false');
     }
+
+    Array.from(this.files).forEach((element) => {
+      formData.append('files', element);
+    });
+
+    this.todoService.addNewTask(formData).subscribe({
+      next: (res) => {
+        this.onTaskCreated.emit(res);
+        this.content = '';
+        this.files = [];
+        this.toastr.success('The task added successfully');
+      },
+      error: (res) => {
+        console.log(res.error.message);
+      },
+    });
   }
 }
