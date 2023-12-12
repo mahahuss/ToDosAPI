@@ -56,6 +56,7 @@ export class TodosComponent implements OnInit {
         this.userInfo = res!;
         this.todosService.getUserTodos(this.userInfo.nameid).subscribe({
           next: (res) => {
+            console.log(res);
             this.todos = res;
           },
           error: (res) => {

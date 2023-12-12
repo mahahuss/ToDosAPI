@@ -6,30 +6,33 @@ import { loggedInAuthGuardGuard } from './core/gaurd/logged-in-auth-guard.guard'
 import { ProfileComponent } from './routes/profile/profile.component';
 import { TodosComponent } from './routes/todos/todos.component';
 import { AppComponent } from './app.component';
-
+import { UsersComponent } from './routes/users/users.component';
 
 export const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
-    canActivate: [loggedInAuthGuardGuard]
+    canActivate: [loggedInAuthGuardGuard],
   },
   {
     path: 'home',
     component: HomeComponent,
-    canActivate: [guardAuthGuard]
+    canActivate: [guardAuthGuard],
   },
   {
     path: 'profile',
     component: ProfileComponent,
-    canActivate: [guardAuthGuard]
-
+    canActivate: [guardAuthGuard],
   },
   {
     path: 'todos',
     component: TodosComponent,
-    canActivate: [guardAuthGuard]
-
+    canActivate: [guardAuthGuard],
   },
-  { path: '**', redirectTo: 'login' }
+  {
+    path: 'users',
+    component: UsersComponent,
+    canActivate: [guardAuthGuard],
+  },
+  { path: '**', redirectTo: 'login' },
 ];

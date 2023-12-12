@@ -19,19 +19,28 @@ public class UserTaskRepository
 
     public async Task<UserTask?> CreateTaskAsync(AddTaskDto task)
     {
-       await using var con = new SqlConnection(_context.ConnectionString);
-       var userTask =  await con.QueryFirstOrDefaultAsync<TasksDto>("sp_TaskCreate",
-            new { task.TaskContent, task.CreatedBy, task.Status });
+        var userTaskWithFiles = new UserTask();
+        await using var con = new SqlConnection(_context.ConnectionString);
+        var userTask = await con.QueryFirstOrDefaultAsync<TasksDto>("sp_TaskCreate",
+             new { task.TaskContent, task.CreatedBy, task.Status });
 
         if (userTask != null)
         {
+            userTaskWithFiles.Id = userTask.Id;
+            userTaskWithFiles.Status = userTask.Status;
+            userTaskWithFiles.CreatedDate = userTask.CreatedDate;
+            userTaskWithFiles.TaskContent = userTask.TaskContent;
+            userTaskWithFiles.CreatedBy = userTask.CreatedBy;
+
             foreach (var file in task.Files)
             {
-                await con.QueryFirstOrDefaultAsync<UserTask>("sp_TasksAttachsAddFiles",
-               new { userTask.Id, file.FileName });
+                var taskFile = await con.QueryFirstOrDefaultAsync<TasksAttachmentsDto>("sp_TasksAttachmentsAddFiles",
+                new { userTask.Id, file.FileName });
+                if (taskFile != null)
+                    userTaskWithFiles.Files.Add(taskFile!); 
             }
         }
-        return userTask;
+        return userTaskWithFiles.TaskContent == null ? null: userTaskWithFiles;
     }
 
     public async Task<bool> DeleteTaskAsync(int taskId)

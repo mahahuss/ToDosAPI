@@ -24,6 +24,7 @@ public class TasksController : BaseController
     }
 
     [HttpGet("{userId:int}")]
+    [AllowAnonymous]
     public async Task<ActionResult> GetAllTasks(int userId)
     {
         var currentUserId = User.GetId();

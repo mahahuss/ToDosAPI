@@ -36,12 +36,12 @@ export class TodoItemComponent implements OnInit {
   constructor(
     private todosService: TodosService,
     private toastr: ToastrService,
-    private cdRef:ChangeDetectorRef
+    private cdRef: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
     this.content = this.todoTask!.taskContent;
-}
+  }
 
   updateStatus(task: ToDoTask) {
     task.status = !task.status;
@@ -62,8 +62,8 @@ export class TodoItemComponent implements OnInit {
     if (this.updateClickStatus) {
       this.cdRef.detectChanges();
       this.focusTaskInput!.nativeElement.focus();
+    }
   }
-}
 
   onDeleteClick() {
     this.deleteStatusChanged.emit();

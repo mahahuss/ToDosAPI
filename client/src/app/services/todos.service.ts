@@ -5,35 +5,31 @@ import { environment } from '../../environments/environment.development';
 import { ApiResponse } from '../shared/models/common';
 import { AddNewTaskModel, ToDoTask } from '../shared/models/todo';
 
-
 @Injectable({
   providedIn: 'root',
 })
 export class TodosService {
   private readonly baseUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getUserTodos(userId: number): Observable<ToDoTask[]> {
     return this.http.get<ToDoTask[]>(this.baseUrl + 'tasks/' + userId);
   }
 
   updateTask(task: ToDoTask): Observable<ApiResponse> {
-    return this.http
-      .put<ApiResponse>(this.baseUrl + 'Tasks', task)
-      .pipe(
-        map((res) => {
-          return res
-        }),
-      );
+    return this.http.put<ApiResponse>(this.baseUrl + 'tasks', task).pipe(
+      map((res) => {
+        return res;
+      }),
+    );
   }
 
   deleteTask(task: ToDoTask): Observable<ApiResponse> {
-    return this.http.delete<ApiResponse>(this.baseUrl + 'Tasks/' + task.id);
+    return this.http.delete<ApiResponse>(this.baseUrl + 'tasks/' + task.id);
   }
 
   addNewTask(task: FormData): Observable<ToDoTask> {
-    return this.http.post<ToDoTask>(this.baseUrl + 'tasks', task,);
+    return this.http.post<ToDoTask>(this.baseUrl + 'tasks', task);
   }
-
 }

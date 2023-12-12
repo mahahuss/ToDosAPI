@@ -19,7 +19,7 @@ public class TaskService
     {
         
         _userTaskRepo = userTaskRepo;
-        _imageDir = configuration.GetValue<string>("Files:ImagesPath")!;
+        _imageDir = configuration.GetValue<string>("Files:FilesPath")!;
 
     }
 
