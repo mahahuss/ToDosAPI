@@ -29,7 +29,7 @@ public class TaskService
         if (createdTask != null)
         {
             
-            foreach (var file in task.files.Where(f => f.ContentType.ToLower() == "application/pdf" || f.ContentType.ToLower() == "image/png"))
+            foreach (var file in task.Files.Where(f => f.ContentType.ToLower() == "application/pdf" || f.ContentType.ToLower() == "image/png"))
             {
                 await using var fileStream = new FileStream(Path.Combine(_imageDir, file.FileName), FileMode.Create);
                 await file.CopyToAsync(fileStream);
@@ -54,7 +54,7 @@ public class TaskService
         return _userTaskRepo.GetAllTasksAsync();
     }
 
-    public Task<List<UserTasksWithAttachs>> GetUserTasksAsync(int userId)
+    public Task<List<UserTask>> GetUserTasksAsync(int userId)
     {
         return _userTaskRepo.GetUserTasksAsync(userId);
     }

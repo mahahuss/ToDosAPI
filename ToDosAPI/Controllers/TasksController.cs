@@ -28,7 +28,7 @@ public class TasksController : BaseController
     {
         var currentUserId = User.GetId();
 
-        if (userId != currentUserId) return Unauthorized("No");
+        if (userId != currentUserId) return Unauthorized("Unauthorized: due to invalid credentials");
 
         var tasks = await _taskService.GetUserTasksAsync(userId);
         return Ok(tasks);
@@ -37,7 +37,6 @@ public class TasksController : BaseController
     [HttpPost]
     public async Task<ActionResult> AddTask([FromForm] AddTaskDto addTaskDto)
     {   
-        // TODO: FIX THIS PLEASE, USE THE EXTENSION METHOD , dn
         addTaskDto.CreatedBy = User.GetId();
         var userTask = await _taskService.AddNewTaskAsync(addTaskDto);
         return Ok(userTask);

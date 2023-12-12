@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Microsoft.Data.SqlClient;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using ToDosAPI.Models.Dtos;
 using ToDosAPI.Models.Entities;
@@ -19,15 +20,15 @@ public class UserTaskRepository
     public async Task<UserTask?> CreateTaskAsync(AddTaskDto task)
     {
        await using var con = new SqlConnection(_context.ConnectionString);
-       var userTask =  await con.QueryFirstOrDefaultAsync<UserTask>("sp_TaskCreate",
+       var userTask =  await con.QueryFirstOrDefaultAsync<TasksDto>("sp_TaskCreate",
             new { task.TaskContent, task.CreatedBy, task.Status });
 
         if (userTask != null)
         {
-            foreach (var file in task.files)
+            foreach (var file in task.Files)
             {
                 await con.QueryFirstOrDefaultAsync<UserTask>("sp_TasksAttachsAddFiles",
-               new { userTask.Id, file.FileName }); //check extension
+               new { userTask.Id, file.FileName });
             }
         }
         return userTask;
@@ -51,67 +52,28 @@ public class UserTaskRepository
         return (await con.QueryAsync<UserTask>("sp_TaskGetAll")).ToList();
     }
 
-    public async Task<List<UserTasksWithAttachs>> GetUserTasksAsync(int userId)
+    public async Task<List<UserTask>> GetUserTasksAsync(int userId)
     {
         await using var con = new SqlConnection(_context.ConnectionString);
 
-        //UserTasksWithAttachs? userTasksWithAttachs = null;
-        //return (await con.QueryAsync<UserTask, string, UserTasksWithAttachs>("sp_TaskGetUserTasks",
-        //     (task, files) =>
-        //     {
-        //         userTasksWithAttachs ??= new UserTasksWithAttachs
-        //         {
-        //             Id = task.Id,
-        //             CreatedBy = task.CreatedBy,
-        //             Status = task.Status,
-        //             TaskContent = task.TaskContent!,
-        //             CreatedDate = task.CreatedDate,
-        //         };
+        Dictionary<int, UserTask> tasks = new Dictionary<int, UserTask>();
 
-        //         userTasksWithAttachs.files.Add(files);
-        //         return userTasksWithAttachs;
-
-        //     }, new { userId }, splitOn: "Id, FileName")).ToList();
-
-
-        List<UserTasksWithAttachs> list = new List<UserTasksWithAttachs>();
-
-
-        return (await con.QueryAsync<UserTasksWithAttachs, string, UserTasksWithAttachs>("sp_TaskGetUserTasks",
+        await con.QueryAsync<UserTask, TasksAttachmentsDto, UserTask>("sp_TaskGetUserTasks",
               (task, file) =>
               {
-
-                  var check = list.Any((element) =>
+                  if (!tasks.TryGetValue(task.Id, out var taskInDictionary))
                   {
-                      return element.Id == task.Id;
-                  });
-
-                  if (!check)
-                  {
-                      task.files.Add(file);
-                      list.Append(task);
+                      task.Files.Add(file);
+                      tasks.Add(task.Id,task);
                   }
 
                   else
-                      list.Last().files.Add(file);
+                      taskInDictionary.Files.Add(file);
 
                   return task;
 
-              }, new { userId })).ToList();
+              }, new { userId });
 
-        //return list;
-
-        
-
-
-
-        //return (await con.QueryAsync<UserTasksWithAttachs, string, UserTasksWithAttachs>("sp_TaskGetUserTasks",
-        //    (task, file) =>
-        //    {
-        //        task.files.Add(file);+
-
-        //        return task;
-
-        //    }, new { userId }, splitOn: "FileName")).ToList();
+        return tasks.Values.ToList();
     }
 }
