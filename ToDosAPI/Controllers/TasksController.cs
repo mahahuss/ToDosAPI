@@ -61,4 +61,14 @@ public class TasksController : BaseController
 
         return BadRequest("Failed to delete task");
     }
+
+    [HttpGet("attachments/{attachmentId:int}")]
+    [AllowAnonymous]
+    public async Task<ActionResult> GetTaskAttachment(int attachmentId)
+    {
+        if (userId != currentUserId) return Unauthorized("Unauthorized: due to invalid credentials");
+
+        var tasks = await _taskService.GetUserTasksAsync(userId);
+        return Ok(tasks);
+    }
 }
