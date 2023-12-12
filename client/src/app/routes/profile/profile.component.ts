@@ -33,7 +33,7 @@ export class ProfileComponent implements OnInit {
         this.userInfo = res!;
         console.log("from initprofile: "+res?.given_name);
         
-        this.photoPath = environment.apiUrl + 'users/' + this.userInfo.nameid;
+        this.photoPath = environment.apiUrl + 'users/images/' + this.userInfo.nameid;
       },
     });
   }

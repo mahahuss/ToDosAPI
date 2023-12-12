@@ -40,20 +40,14 @@ public class UsersController : BaseController
         return Unauthorized("Username or password incorrect");
     }
 
-    [HttpGet("{userId}")]
-    public async Task<ActionResult> GetUserPhoto(int userId)
+    [HttpGet("images/{userId}")]
+    public ActionResult GetUserPhoto(int userId)
     {
-        var imagePath = Path.Combine(_imageDir!, userId + ".png");
+        var imagePath = Path.Combine(Directory.GetCurrentDirectory(), _imageDir!, userId + ".png");
+
         if (!System.IO.File.Exists(imagePath)) return NotFound();
-
-        var photoByte = await System.IO.File.ReadAllBytesAsync(imagePath);
-
-        if (photoByte.Length > 0)
-        {
-            return File(photoByte, "image/png");
-        }
-
-        return NotFound();
+        
+        return PhysicalFile(imagePath, "image/png");
     }
 
 

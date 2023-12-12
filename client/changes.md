@@ -44,13 +44,24 @@
 
 ### 4-12-2023
 
-- remove all inline styles, use tailwind classes instead -
-- unify all api responses, remove any dynamic(anonymous) types in api. -
-- move models to separate files ex: tasks.ts, user.ts, etc... -
-- focus textarea on edit click (ViewChild) -
-- add dark overlay to dialog -
-- change todos list style x
-- edit profile styles x
-- edit profile: name, upload user image /
-- enable users to attach any file(s) when adding a task, and download them
+- ~~remove all inline styles, use tailwind classes instead -~~
+- ~~unify all api responses, remove any dynamic(anonymous) types in api. -~~
+- ~~move models to separate files ex: tasks.ts, user.ts, etc... -~~
+- ~~focus textarea on edit click (ViewChild) -~~
+- ~~add dark overlay to dialog -~~
+- change todos list style x XX
+- edit profile styles x XX
+- ~~edit profile: name, upload user image~~
+- ~~enable users to attach any file(s) when adding a task, and download them~~ /
+- add users page which only viewed by admins and moderators (authorized in API also), admins and moderators can view users tasks, and only admins can block any user XXXXXXXXXXXXXXXXXX
+
+
+### 12-12-2023
+
+- check entity existance & validate entity owner on updating or deleting.
+- set current user name in localstorage
+- change task completion behavior in the frontend, make a completion button with a different icon based on the status.
+- uploaded attachments should be in folders which are named after the user id, every file inside the folder should have a unique name (GUID).
+- on profile edit, update image without refresh
 - add users page which only viewed by admins and moderators (authorized in API also), admins and moderators can view users tasks, and only admins can block any user
+- download attachments
