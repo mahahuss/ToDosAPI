@@ -12,7 +12,7 @@ module.exports = {
       "cupcake",
       {
         mytheme: {
-          primary: "#bc00ff",
+          primary: "#0059ff",
 
           secondary: "#00b300",
 

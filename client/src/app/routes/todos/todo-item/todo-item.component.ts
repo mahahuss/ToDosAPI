@@ -31,6 +31,7 @@ export class TodoItemComponent implements OnInit {
   @Output() deleteStatusChanged = new EventEmitter();
   content = '';
   updateClickStatus = false;
+  taskFileExistence = false;
   @ViewChild('focusTaskInput') focusTaskInput?: ElementRef;
 
   constructor(
@@ -41,6 +42,7 @@ export class TodoItemComponent implements OnInit {
 
   ngOnInit(): void {
     this.content = this.todoTask!.taskContent;
+    this.taskFileExistence = this.todoTask!.files.length > 0 ? true : false;
   }
 
   updateStatus(task: ToDoTask) {
