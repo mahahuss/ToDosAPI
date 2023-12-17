@@ -74,4 +74,12 @@ public class UserTaskRepository
 
         return tasks.Values.ToList();
     }
+
+    public async Task<TaskAttachment?> GetTaskAttachmentAsync(int userId)
+    {
+        await using var con = new SqlConnection(_context.ConnectionString);
+        var attachment =  await con.QueryFirstOrDefaultAsync<TaskAttachment>("sp_TasksAttachmentsGet", new { Id = userId });
+         return attachment;
+
+    }
 }

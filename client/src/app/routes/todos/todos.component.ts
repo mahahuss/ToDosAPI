@@ -7,13 +7,14 @@ import { TodosService } from '../../services/todos.service';
 import { TodoItemComponent } from './todo-item/todo-item.component';
 import { NewTaskComponent } from './new-task/new-task.component';
 import { TodoDialogComponent } from './todo-dialog/todo-dialog.component';
+import { TodoFilesDialogComponent } from './todo-files-dialog/todo-files-dialog.component';
 
 @Component({
   selector: 'app-todos',
   standalone: true,
   templateUrl: './todos.component.html',
   styleUrl: './todos.component.scss',
-  imports: [CommonModule, TodoItemComponent, NewTaskComponent, TodoDialogComponent],
+  imports: [CommonModule, TodoItemComponent, NewTaskComponent, TodoDialogComponent, TodoFilesDialogComponent],
 })
 export class TodosComponent implements OnInit {
   userInfo!: User;

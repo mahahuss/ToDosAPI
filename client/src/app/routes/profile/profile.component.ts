@@ -19,10 +19,14 @@ export class ProfileComponent implements OnInit {
   userInfo!: User;
   photoPath = '';
   name = '';
+  timeStamp = '';
   updateClickStatus = false;
   fileToUpload: File | undefined = undefined;
 
-  constructor(private authService: AuthService, private toastr: ToastrService) {}
+  constructor(
+    private authService: AuthService,
+    private toastr: ToastrService,
+  ) {}
   ngOnInit(): void {
     this.initProfile();
   }
@@ -31,9 +35,8 @@ export class ProfileComponent implements OnInit {
     this.authService.currentUser$.subscribe({
       next: (res) => {
         this.userInfo = res!;
-        console.log("from initprofile: "+res?.given_name);
-        
-        this.photoPath = environment.apiUrl + 'users/images/' + this.userInfo.nameid;
+        this.userInfo.given_name = localStorage.getItem('fullname')!;
+        this.getImageLink();
       },
     });
   }
@@ -49,37 +52,26 @@ export class ProfileComponent implements OnInit {
 
   editProfile() {
     const formData = new FormData();
-    if (this.fileToUpload && this.fileToUpload.size < 200000 ) {
+    if (this.fileToUpload && this.fileToUpload.size < 200000) {
       formData.append('Image', this.fileToUpload);
     }
     formData.append('Name', this.name);
     this.authService.updateUserProfile(formData).subscribe({
       next: (result) => {
-        this.userInfo.given_name=this.name;
-        this.authService.updateCurrentUser(this.userInfo!);
         this.updateClickStatus = false;
-        this.toastr.success(result.message)
-        // this.check();
+        localStorage.setItem('fullname', this.name);
+        this.userInfo.given_name = localStorage.getItem('fullname')!;
+        this.toastr.success(result.message);
       },
       error: (res) => {
-        this.toastr.success(res.message)
+        this.toastr.success(res.message);
       },
     });
   }
 
-
-
-
-  // check() {
-  //   this.authService.currentUser$.subscribe({
-  //     next: (res) => {
-  //       if (res) {
-  //         console.log("after update : "+res.given_name);
-  //       }
-  //     },
-  //     error: (err) => {
-  //       console.log(err.message);
-  //     },
-  //   });
-  // }
+  getImageLink() {
+    this.photoPath = environment.apiUrl + 'users/images/' + this.userInfo.nameid;
+    this.photoPath = this.photoPath.concat('?', new Date().getTime().toString());
+    return this.photoPath;
+  }
 }

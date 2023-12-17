@@ -1,0 +1,38 @@
+<div
+  id="popup-modal"
+  tabindex="-1"
+  class="grid place-items-center h-screen overflow-y-auto fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 max-h-full bg-black bg-opacity-40"
+>
+  <div class="relative p-4 w-full max-w-md max-h-full">
+    <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+      <div class="p-4 md:p-5 text-center">
+        <button
+          (click)="onClose()"
+          type="button"
+          class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+          data-modal-hide="popup-modal"
+        >
+          <li class="fas fa-x"></li>
+        </button>
+      </div>
+      <div class="p-4 md:p-5 text-center">
+        <div class="grid grid-cols-1 gap-2">
+          @for (file of todoTask?.files; track $index) {
+            <div class="p-4">
+              <div class="indicator">
+                <span class="indicator-item badge badge-primary">{{
+                  file.fileName.split(".").pop()?.toUpperCase()
+                }}</span>
+                <div class="grid w-40 h-12 bg-base-300 place-items-center">
+                  <button class="truncate w-4/5 hover:text-indigo-700 font-medium text-sm" (click)="getFile(file)">
+                    {{ file.fileName }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

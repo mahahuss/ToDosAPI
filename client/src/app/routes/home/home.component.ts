@@ -22,9 +22,9 @@ export class HomeComponent implements OnInit {
   private initHome() {
     this.authService.currentUser$.subscribe({
       next: (res) => {
-       this.userInfo=res!;
-       console.log(res);
-      },      
+        this.userInfo = res!;
+        this.userInfo.given_name = localStorage.getItem('fullname')!;
+      },
     });
   }
 }

@@ -34,12 +34,11 @@ export class AuthService {
 
   getCurrentUserFromToken(): User | undefined {
     const token = localStorage.getItem('token');
-    if (!token) 
-      return undefined;
+    if (!token) return undefined;
     return jwtDecode<User>(token);
   }
 
-  updateCurrentUser(user : User){
+  updateCurrentUser(user: User) {
     this.currentUserSource$.next(user);
   }
 
@@ -54,6 +53,8 @@ export class AuthService {
           localStorage.setItem('token', res.message); //message includes the token
           const user = jwtDecode<User>(res.message);
           this.currentUserSource$.next(user);
+          localStorage.setItem('fullname', user.given_name);
+
           return user;
         }),
       );

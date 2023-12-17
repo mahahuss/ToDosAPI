@@ -1,6 +1,6 @@
 @if (todoTask) {
   <div class="py-3 text-sm">
-    <div 
+    <div
       class="flex justify-start cursor-pointer bg-base-100 text-gray-700 hover:text-gray-400 hover:bg-gray-100 rounded-md px-2 py-4 my-2 shadow"
     >
       @if (!updateClickStatus) {
@@ -13,7 +13,7 @@
         </div>
         <div class="pl-4">
           <button class="btn btn-outline btn-warning btn-xs btn-circle" (click)="toggleEdit()">
-           <li class="fa-solid fa-pen-to-square"></li>
+            <li class="fa-solid fa-pen-to-square"></li>
           </button>
         </div>
         <div class="pl-4">
@@ -22,17 +22,22 @@
           </button>
         </div>
         <div class="pl-4">
-          <button [class.btn-primary]="todoTask.status" [class.btn-default]="!todoTask.status" class="btn btn-outline btn-xs btn-circle" (click)="todoTask.status=!todoTask.status">
+          <button
+            [class.btn-primary]="todoTask.status"
+            [class.btn-default]="!todoTask.status"
+            class="btn btn-outline btn-xs btn-circle"
+            (click)="todoTask.status = !todoTask.status"
+          >
             <i class="fa-solid" [class.fa-check]="todoTask.status" [class.fa-minus]="!todoTask.status"></i>
           </button>
         </div>
-        @if(taskFileExistence){
-        <div class="pl-4">
-          <button class="btn btn-outline btn-default btn-xs btn-circle">
-            <i class="fa-solid fa-file"></i>
-          </button>
-        </div>
-      }
+        @if (taskFilesExistence) {
+          <div class="pl-4">
+            <button class="btn btn-outline btn-default btn-xs btn-circle" (click)="viewFiles()">
+              <i class="fa-solid fa-file"></i>
+            </button>
+          </div>
+        }
       } @else {
         <div class="flex flex-grow space-x-3 font-medium px-2 items-center">
           <textarea
@@ -48,10 +53,13 @@
             <i class="fas fa-check text-success"></i>
           </button>
           <button class="btn btn-ghost btn-xs btn-circle" (click)="toggleEdit()">
-            <i class="fas fa-x text-error"></i>
+            <i class="fas fa-text-error"></i>
           </button>
         </div>
       }
     </div>
   </div>
+  @if (filesClickStatus) {
+    <app-todo-files-dialog [todoTask]="this.todoTask" (filesViewClosed)="filesViewClosed()"></app-todo-files-dialog>
+  }
 }

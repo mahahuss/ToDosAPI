@@ -26,8 +26,6 @@ export class TodoDialogComponent {
   onDelete() {
     this.todosService.deleteTask(this.todoTask!).subscribe({
       next: (res) => {
-        console.log(res);
-
         this.taskDeleted.emit(false);
         this.toastr.success(res.message);
       },

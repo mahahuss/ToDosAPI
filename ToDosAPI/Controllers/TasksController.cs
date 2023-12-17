@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using ToDosAPI.Extensions;
 using ToDosAPI.Models.Dtos;
 using ToDosAPI.Services;
@@ -10,10 +11,12 @@ namespace ToDosAPI.Controllers;
 public class TasksController : BaseController
 {
     private readonly TaskService _taskService;
+    private readonly string _filesDir;
 
-    public TasksController(TaskService taskService)
+    public TasksController(TaskService taskService, IConfiguration configuration)
     {
         _taskService = taskService;
+        _filesDir = configuration.GetValue<string>("Files:FilesPath")!;
     }
 
     [HttpGet]
@@ -62,12 +65,16 @@ public class TasksController : BaseController
         return BadRequest("Failed to delete task");
     }
 
-    //[HttpGet("attachments/{attachmentId:int}")]
-    //public async Task<ActionResult> GetTaskAttachment(int attachmentId)
-    //{
-    //    if (userId != currentUserId) return Unauthorized("Unauthorized: due to invalid credentials");
+    [HttpGet("attachments/{attachmentId:int}")]
+    public async Task<ActionResult> GetTaskAttachment(int attachmentId)
+    {
+        var file = await _taskService.GetTaskAttachmentAsync(attachmentId);
+        if (file == null) return NotFound();
 
-    //    var tasks = await _taskService.GetUserTasksAsync(userId);
-    //    return Ok(tasks);
-    //}
+        var filePath = Path.Combine(Directory.GetCurrentDirectory(), _filesDir, User.GetId().ToString() ,file.FileName);
+        if (!System.IO.File.Exists(filePath)) return NotFound();
+        var contectType = file.FileName.Split('.').Last().ToUpper() == "PDF" ? "application/PDF" : "image/PNG";
+        return PhysicalFile(filePath, contectType);
+
+    }
 }

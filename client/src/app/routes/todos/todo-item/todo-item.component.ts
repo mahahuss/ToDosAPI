@@ -17,13 +17,14 @@ import { TodosService } from '../../../services/todos.service';
 import { ToastrService } from 'ngx-toastr';
 import { TodoDialogComponent } from '../todo-dialog/todo-dialog.component';
 import { FormsModule } from '@angular/forms';
+import { TodoFilesDialogComponent } from '../todo-files-dialog/todo-files-dialog.component';
 
 @Component({
   selector: 'app-todo-item',
   standalone: true,
   templateUrl: './todo-item.component.html',
   styleUrl: './todo-item.component.scss',
-  imports: [CommonModule, TodoDialogComponent, FormsModule],
+  imports: [CommonModule, TodoDialogComponent, FormsModule, TodoFilesDialogComponent],
 })
 export class TodoItemComponent implements OnInit {
   @Input() todoTask: ToDoTask | undefined = undefined;
@@ -31,7 +32,8 @@ export class TodoItemComponent implements OnInit {
   @Output() deleteStatusChanged = new EventEmitter();
   content = '';
   updateClickStatus = false;
-  taskFileExistence = false;
+  taskFilesExistence = false;
+  filesClickStatus = false;
   @ViewChild('focusTaskInput') focusTaskInput?: ElementRef;
 
   constructor(
@@ -42,7 +44,7 @@ export class TodoItemComponent implements OnInit {
 
   ngOnInit(): void {
     this.content = this.todoTask!.taskContent;
-    this.taskFileExistence = this.todoTask!.files.length > 0 ? true : false;
+    this.taskFilesExistence = this.todoTask!.files.length > 0 ? true : false;
   }
 
   updateStatus(task: ToDoTask) {
@@ -83,5 +85,12 @@ export class TodoItemComponent implements OnInit {
         console.log(res.error.message);
       },
     });
+  }
+
+  viewFiles() {
+    this.filesClickStatus = !this.filesClickStatus;
+  }
+  filesViewClosed() {
+    this.filesClickStatus = false;
   }
 }
