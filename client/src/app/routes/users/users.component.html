@@ -2,27 +2,55 @@
   <div class="flex justify-center p-4 px-3 py-10">
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg w-fit">
       <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+        <thead class="text-sm text-gray-700 font-medium bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
-            <th scope="col" class="px-6 py-3">User Name</th>
+            <th scope="col" class="px-6 py-3">Username</th>
+            <th scope="col" class="px-6 py-3">Full Name</th>
             <th scope="col" class="px-6 py-3"></th>
             <th scope="col" class="px-6 py-3"></th>
           </tr>
         </thead>
         <tbody>
-          <tr
-            class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
-          >
-            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">Maha</th>
-            <td class="px-6 py-4">
-              <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">View tasks</a>
-            </td>
-            <td class="px-6 py-4">
-              <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Block</a>
-            </td>
-          </tr>
+          @for (user of users; track $index) {
+            <tr
+              class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 text-center"
+            >
+              <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                {{ user.username }}
+              </th>
+              <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                {{ user.fullName }}
+              </th>
+              <td class="px-6 py-4">
+                <button
+                  (click)="viewTasks(user.id)"
+                  class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                >
+                  {{ user.totalTasks > 0 ? "View Tasks" : "" }}
+                </button>
+              </td>
+              @if (isAdmin) {
+                <td class="px-6 py-4">
+                  <button
+                    (click)="changeUserStatus(user.id, user.status)"
+                    [class.bg-white]="user.status == 'Active'"
+                    [class.text-gray-900]="user.status == 'Active'"
+                    [class.bg-gray-300]="user.status != 'Active'"
+                    [class.text-gray-800]="user.status != 'Active'"
+                    type="button"
+                    class="h-6 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-full text-xs px-5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                  >
+                    {{ user.status == "Active" ? "Block" : "Unblock" }}
+                  </button>
+                </td>
+              }
+            </tr>
+          }
         </tbody>
       </table>
     </div>
   </div>
 </div>
+@if (tasksViewStatus) {
+  <app-users-tasks-dialog [userId]="crrrentUserId" (tasksViewClosed)="tasksViewClosed()"></app-users-tasks-dialog>
+}

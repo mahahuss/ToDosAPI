@@ -1,0 +1,42 @@
+<div
+  id="popup-modal"
+  tabindex="-1"
+  class="grid place-items-center h-screen overflow-y-auto fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 max-h-full bg-black bg-opacity-40"
+>
+  <div class="relative p-4 w-full max-w max-h-full">
+    <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+      <div class="p-4 md:p-5 text-center">
+        <button
+          (click)="onClose()"
+          type="button"
+          class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+          data-modal-hide="popup-modal"
+        >
+          <li class="fas fa-x"></li>
+        </button>
+      </div>
+
+      <div class="p-4 md:p-5 text-center">
+        @for (todo of todos; track $index) {
+          <div [class.collapse-plus]="todo.files.length > 0" class="collapse bg-base-200 mb-2">
+            @if (todo.files.length > 0) {
+              <input type="radio" name="my-accordion-3" />
+            }
+            <div [class.line-through]="todo.status" class="collapse-title text-sm font-medium">
+              {{ todo.taskContent }}
+            </div>
+            <div class="collapse-content w-80">
+              <ul class="menu menu-xs bg-base-200 w-auto rounded-box">
+                @for (file of todo.files; track $index) {
+                  <li>
+                    <button class="truncate w-60" (click)="getFile(file)">- {{ file.fileName }}</button>
+                  </li>
+                }
+              </ul>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

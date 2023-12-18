@@ -24,4 +24,9 @@ public class BaseController : ControllerBase
     {
         return base.Unauthorized(new ApiResponse(401, message ?? "You cannot access this resource"));
     }
+    [NonAction]
+    public NotFoundObjectResult NotFound(string? message = null)
+    {
+        return base.NotFound(new ApiResponse(404, message ?? "This resource not found"));
+    }
 }

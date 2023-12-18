@@ -12,6 +12,7 @@ import { AuthService } from '../../../services/auth.service';
 })
 export class NavComponent {
   isAdmin = false;
+  isModerator = false;
   isLoggedin = false;
 
   constructor(
@@ -28,6 +29,7 @@ export class NavComponent {
       next: (res) => {
         if (res) {
           this.isAdmin = res!.roles.includes('Admin');
+          this.isModerator = res!.roles.includes('Moderator');
           this.isLoggedin = true;
         }
       },

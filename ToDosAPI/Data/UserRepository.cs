@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Microsoft.Data.SqlClient;
 using System.ComponentModel;
+using ToDosAPI.Models;
 using ToDosAPI.Models.Dtos;
 using ToDosAPI.Models.Entities;
 
@@ -39,7 +40,8 @@ public class UserRepository
                 {
                     Id = user.Id,
                     FullName = user.FullName,
-                    Username = user.Username
+                    Username = user.Username,
+                    Status = user.Status
                 };
 
                 userWithRoles.Roles.Add(role.UserType);
@@ -61,5 +63,17 @@ public class UserRepository
     {
         await using var con = new SqlConnection(_context.ConnectionString);
         return await con.ExecuteAsync("sp_UserEdit", new { name, id }) > 0;
+    }
+
+    public async Task<List<GetUsers>> GetUsersAsync()
+    {
+        await using var con = new SqlConnection(_context.ConnectionString);
+        return (await con.QueryAsync<GetUsers>("sp_UserGetAll")).ToList();
+    }
+
+    public async Task<bool> ChangeUserStatusAsync(int userId, string status)
+    {
+        await using var con = new SqlConnection(_context.ConnectionString);
+        return await con.ExecuteAsync("sp_UserChangeStatus", new { userId, status }) > 0;
     }
 }

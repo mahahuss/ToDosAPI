@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using System.Security.Claims;
 using ToDosAPI.Extensions;
 using ToDosAPI.Models.Dtos;
 using ToDosAPI.Services;
@@ -27,12 +28,12 @@ public class TasksController : BaseController
     }
 
     [HttpGet("{userId:int}")]
-    [AllowAnonymous]
     public async Task<ActionResult> GetAllTasks(int userId)
     {
         var currentUserId = User.GetId();
+        var roles = User.GetRoles();
 
-        if (userId != currentUserId) return Unauthorized("Unauthorized: due to invalid credentials");
+        if (userId != currentUserId && !roles.Contains("Admin") && !roles.Contains("Moderator")) return Unauthorized("Unauthorized: due to invalid credentials");
 
         var tasks = await _taskService.GetUserTasksAsync(userId);
         return Ok(tasks);
@@ -49,6 +50,11 @@ public class TasksController : BaseController
     [HttpPut]
     public async Task<ActionResult> EditTask(EditTaskDto editTaskDto)
     {
+        var task = await _taskService.GetTaskByIdAsync(editTaskDto.Id);
+
+        if (task == null) return NotFound("The Selected Task Not Exist");
+        if (task.CreatedBy != User.GetId()) return Unauthorized("Unauthorized: due to invalid credentials");
+
         var check = await _taskService.EditTaskAsync(editTaskDto);
         if (check) return Ok("Updated successfully");
 
@@ -58,8 +64,12 @@ public class TasksController : BaseController
     [HttpDelete("{taskId}")]
     public async Task<ActionResult> DeleteTask(int taskId)
     {
-        var check = await _taskService.DeleteTaskAsync(taskId);
+        var task = await _taskService.GetTaskByIdAsync(taskId);
 
+        if (task == null) return NotFound("The Selected Task Not Exist");
+        if (task.CreatedBy != User.GetId()) return Unauthorized("Unauthorized: due to invalid credentials");
+
+        var check = await _taskService.DeleteTaskAsync(taskId);
         if (check) return Ok("Deleted successfully");
 
         return BadRequest("Failed to delete task");

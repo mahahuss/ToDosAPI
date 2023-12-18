@@ -82,4 +82,12 @@ public class UserTaskRepository
          return attachment;
 
     }
+
+    public async Task<TasksDto?> GetTaskByIdAsync(int taskId)
+    {
+        await using var con = new SqlConnection(_context.ConnectionString);
+        var userTask = await con.QueryFirstOrDefaultAsync<TasksDto>("sp_TasksGetById",
+            new { Id = taskId });
+        return userTask;
+    }
 }

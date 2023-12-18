@@ -1,5 +1,6 @@
 ﻿using Microsoft.IdentityModel.Logging;
 using System.IO;
+using System.Net.Mail;
 using ToDosAPI.Data;
 using ToDosAPI.Models;
 using ToDosAPI.Models.Dtos;
@@ -72,5 +73,16 @@ public class UserService
         var check = await _userRepo.EditUserProfileAsync(updateUserInfo.Name, id);
 
         return check;
+    }
+
+    public  Task<List<GetUsers>> GetUsersAsync()
+    {
+        return _userRepo.GetUsersAsync();
+
+    }
+
+    public Task<bool> ChangeUserStatusAsync(int userId, string status)
+    {
+        return _userRepo.ChangeUserStatusAsync(userId, status);
     }
 }

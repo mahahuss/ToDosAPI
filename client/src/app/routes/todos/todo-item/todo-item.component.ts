@@ -49,7 +49,6 @@ export class TodoItemComponent implements OnInit {
 
   updateStatus(task: ToDoTask) {
     task.status = !task.status;
-
     this.todosService.updateTask(task).subscribe({
       next: () => {
         this.taskUpdated.emit(task);
@@ -63,6 +62,8 @@ export class TodoItemComponent implements OnInit {
 
   toggleEdit() {
     this.updateClickStatus = !this.updateClickStatus;
+    console.log(this.updateClickStatus);
+
     if (this.updateClickStatus) {
       this.cdRef.detectChanges();
       this.focusTaskInput!.nativeElement.focus();
@@ -77,9 +78,9 @@ export class TodoItemComponent implements OnInit {
     task.taskContent = this.content;
     this.todosService.updateTask(task).subscribe({
       next: () => {
+        this.toggleEdit();
         this.taskUpdated.emit(task);
         this.toastr.success('The task updated successfully');
-        this.toggleEdit();
       },
       error: (res) => {
         console.log(res.error.message);

@@ -16,4 +16,10 @@ public static class ClaimsPrincipalExtensions
 
         return currentUserId;
     }
+
+    public static List<string> GetRoles(this ClaimsPrincipal user)
+    {
+        var roles = user.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToList();
+        return roles;
+    }
 }

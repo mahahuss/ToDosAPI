@@ -7,4 +7,6 @@ public class AppUser
     public string Password { get; set; } = default!;
     public string Salt { get; set; } = default!;
     public string FullName { get; set; } = default!;
+    public string Status { get; set; } = default!;
+
 }

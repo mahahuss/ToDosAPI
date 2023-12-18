@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { jwtDecode } from 'jwt-decode';
 import { BehaviorSubject, Observable, firstValueFrom, map } from 'rxjs';
 import { environment } from '../../environments/environment.development';
-import { User, UserProfile } from '../shared/models/auth';
+import { User, UserInfo, UserProfile } from '../shared/models/auth';
 import { ToDoTask } from '../shared/models/todo';
 import { ApiResponse } from '../shared/models/common';
 
@@ -62,6 +62,18 @@ export class AuthService {
 
   updateUserProfile(userInfo: FormData): Observable<ApiResponse> {
     return this.http.put<ApiResponse>(this.baseUrl + 'Users', userInfo).pipe(
+      map((res) => {
+        return res;
+      }),
+    );
+  }
+
+  getUsers(): Observable<UserInfo[]> {
+    return this.http.get<UserInfo[]>(this.baseUrl + 'users');
+  }
+
+  changeUserStatus(userId: number, status: string): Observable<ApiResponse> {
+    return this.http.put<ApiResponse>(this.baseUrl + 'Users/status', { userId: userId, status: status }).pipe(
       map((res) => {
         return res;
       }),

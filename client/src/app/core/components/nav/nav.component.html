@@ -7,11 +7,13 @@
         </svg>
       </label>
       <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-        <li><a routerLink="/todos">Toddos</a></li>
+        <li><a routerLink="/todos">Todos</a></li>
         <li><a routerLink="/profile">Profile</a></li>
         @if (isAdmin) {
           <li><a>Settings (SHOW ONLY TO ADMIN)</a></li>
-          <li><a routerLink="/users">Profile</a></li>
+        }
+        @if (isAdmin || isModerator) {
+          <li><a routerLink="/users">Users</a></li>
         }
       </ul>
     </div>

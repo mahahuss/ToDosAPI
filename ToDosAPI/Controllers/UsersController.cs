@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 using ToDosAPI.Extensions;
 using ToDosAPI.Models;
 using ToDosAPI.Models.Dtos;
@@ -50,6 +52,13 @@ public class UsersController : BaseController
         return PhysicalFile(imagePath, "image/png");
     }
 
+    [HttpGet]
+    [Authorize(Roles = "Admin,Moderator")]
+    public async Task<ActionResult> GetUsers()
+    {
+        var users = await _userService.GetUsersAsync();
+        return Ok(users);
+    }
 
     [HttpPut]
     public async Task<ActionResult> EditProfile([FromForm] UpdateUserProfileDto updateUserProfileDto)
@@ -59,5 +68,15 @@ public class UsersController : BaseController
         if (check) return Ok("Profile updated successfully");
 
         return BadRequest("Failed to update profile");
+    }
+
+    [HttpPut("status")]
+    [Authorize(Roles = "Admin")]
+    public async Task<ActionResult> ChangeUserStatus(ChangeUserStatusDto changeUserStatusDto)
+    {
+        var check = await _userService.ChangeUserStatusAsync(changeUserStatusDto.userId, changeUserStatusDto.status);
+        if (check) return Ok("User status changed successfully");
+
+        return BadRequest("Failed to change user status");
     }
 }

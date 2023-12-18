@@ -57,11 +57,11 @@
 
 ### 12-12-2023
 
-- check entity existance & validate entity owner on updating or deleting.
+- check entity existance & validate entity owner on updating or deleting. -
 - set current user name in localstorage -
 - change task completion behavior (edit) in the frontend, make a completion button with a different icon based on the status. -
 - uploaded attachments should be in folders which are named after the user id, every file inside the folder should have a unique name (GUID). -
 - on profile edit, update image without refresh -
-- add users page which only viewed by admins and moderators (authorized in API also), admins and moderators can view users tasks, and only admins can block any user
+- add users page which only viewed by admins and moderators (authorized in API also) - , admins and moderators can view users tasks, and only admins can block any user -
 - download attachments -
 - delete task not work -

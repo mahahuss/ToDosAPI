@@ -23,6 +23,7 @@
         </div>
         <div class="pl-4">
           <button
+            (click)="updateStatus(todoTask!)"
             [class.btn-primary]="todoTask.status"
             [class.btn-default]="!todoTask.status"
             class="btn btn-outline btn-xs btn-circle"
@@ -53,7 +54,7 @@
             <i class="fas fa-check text-success"></i>
           </button>
           <button class="btn btn-ghost btn-xs btn-circle" (click)="toggleEdit()">
-            <i class="fas fa-text-error"></i>
+            <i class="fa-solid fa-xmark text-red-600"></i>
           </button>
         </div>
       }

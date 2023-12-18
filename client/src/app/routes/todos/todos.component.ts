@@ -37,6 +37,7 @@ export class TodosComponent implements OnInit {
   taskUpdated(updatedtask: ToDoTask) {
     const indexToUpdate = this.todos.findIndex((item) => item.id === updatedtask.id);
     if (indexToUpdate !== -1) this.todos[indexToUpdate] = updatedtask;
+    console.log(updatedtask);
   }
 
   taskDeleted(canceled: boolean) {

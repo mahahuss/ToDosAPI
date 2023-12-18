@@ -1,4 +1,6 @@
 ﻿using System.IO;
+using System.Net.Mail;
+using System.Threading.Tasks;
 using ToDosAPI.Data;
 using ToDosAPI.Models.Dtos;
 using ToDosAPI.Models.Entities;
@@ -64,9 +66,14 @@ public class TaskService
         return _userTaskRepo.GetUserTasksAsync(userId);
     }
 
-    internal Task<TaskAttachment?> GetTaskAttachmentAsync(int attachmentId)
+    public Task<TaskAttachment?> GetTaskAttachmentAsync(int attachmentId)
     {
         return _userTaskRepo.GetTaskAttachmentAsync(attachmentId);
 
+    }
+
+    public Task<TasksDto?> GetTaskByIdAsync(int taskId)
+    {
+        return _userTaskRepo.GetTaskByIdAsync(taskId);
     }
 }
