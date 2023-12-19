@@ -23,11 +23,10 @@
         </div>
         <div class="pl-4">
           <button
-            (click)="updateStatus(todoTask!)"
             [class.btn-primary]="todoTask.status"
             [class.btn-default]="!todoTask.status"
             class="btn btn-outline btn-xs btn-circle"
-            (click)="todoTask.status = !todoTask.status"
+            (click)="updateStatus(todoTask!)"
           >
             <i class="fa-solid" [class.fa-check]="todoTask.status" [class.fa-minus]="!todoTask.status"></i>
           </button>
