@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System.Security.Claims;
+using Microsoft.AspNetCore.StaticFiles;
 using ToDosAPI.Extensions;
 using ToDosAPI.Models.Dtos;
 using ToDosAPI.Services;
@@ -33,7 +34,8 @@ public class TasksController : BaseController
         var currentUserId = User.GetId();
         var roles = User.GetRoles();
 
-        if (userId != currentUserId && !roles.Contains("Admin") && !roles.Contains("Moderator")) return Unauthorized("Unauthorized: due to invalid credentials");
+        if (userId != currentUserId && !roles.Contains("Admin") && !roles.Contains("Moderator"))
+            return Unauthorized("Unauthorized: due to invalid credentials");
 
         var tasks = await _taskService.GetUserTasksAsync(userId);
         return Ok(tasks);
@@ -41,7 +43,7 @@ public class TasksController : BaseController
 
     [HttpPost]
     public async Task<ActionResult> AddTask([FromForm] AddTaskDto addTaskDto)
-    {   
+    {
         addTaskDto.CreatedBy = User.GetId();
         var userTask = await _taskService.AddNewTaskAsync(addTaskDto);
         return Ok(userTask);
@@ -81,10 +83,13 @@ public class TasksController : BaseController
         var file = await _taskService.GetTaskAttachmentAsync(attachmentId);
         if (file == null) return NotFound();
 
-        var filePath = Path.Combine(Directory.GetCurrentDirectory(), _filesDir, User.GetId().ToString() ,file.FileName);
+        var filePath = Path.Combine(Directory.GetCurrentDirectory(), _filesDir, User.GetId().ToString(), file.FileName);
         if (!System.IO.File.Exists(filePath)) return NotFound();
-        var contectType = file.FileName.Split('.').Last().ToUpper() == "PDF" ? "application/PDF" : "image/PNG";
-        return PhysicalFile(filePath, contectType);
 
+        new FileExtensionContentTypeProvider().TryGetContentType(file.FileName, out var contentType);
+
+        if (string.IsNullOrEmpty(contentType)) contentType = "application/octet-stream";
+        
+        return PhysicalFile(filePath, contentType);
     }
 }

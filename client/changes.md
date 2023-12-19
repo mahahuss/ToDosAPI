@@ -57,11 +57,24 @@
 
 ### 12-12-2023
 
-- check entity existance & validate entity owner on updating or deleting. -
-- set current user name in localstorage -
-- change task completion behavior (edit) in the frontend, make a completion button with a different icon based on the status. -
-- uploaded attachments should be in folders which are named after the user id, every file inside the folder should have a unique name (GUID). -
-- on profile edit, update image without refresh -
-- add users page which only viewed by admins and moderators (authorized in API also) - , admins and moderators can view users tasks, and only admins can block any user -
-- download attachments -
-- delete task not work -
+- ~~check entity existance & validate entity owner on updating or deleting.~~ -
+- ~~set current user name in localstorage -~~
+- ~~change task completion behavior (edit) in the frontend, make a completion button with a different icon based on the status. -~~
+- ~~uploaded attachments should be in folders which are named after the user id, every file inside the folder should have a unique name (GUID). -~~
+- ~~on profile edit, update image without refresh -~~
+- ~~ add users page which only viewed by admins and moderators (authorized in API also) - , admins and moderators can view users tasks, and only admins can block any user -~~
+- ~~download attachments -~~
+
+### 12-19-2023
+
+- change user active type to boolean
+- remove all console.log
+- add a new interceptor to handle errors
+- move content type checking to a function
+- use FileSaver.js library 
+- fix roles badge for single role
+- fix name field not updating after profile update
+- create new token after refresh, also create a function in the background that refreshes the token every expTime - 5mins
+- move task date to be under the title (make it smaller)
+- make the task sharable, there are two types of share, share with edit, or without, the task can be shared with one user or more
+- if a user has a task that's shared with them, it appears with their tasks, but it should be noted that it's a shared task

@@ -1,9 +1,7 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ToDoTask, UserTaskFile } from '../../../shared/models/todo';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { TodosService } from '../../../services/todos.service';
-import { environment } from '../../../../environments/environment.development';
-import { DomSanitizer } from '@angular/platform-browser';
+import { ToDoTask, UserTaskFile } from '../../../shared/models/todo';
 
 @Component({
   selector: 'app-todo-files-dialog',
@@ -15,11 +13,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 export class TodoFilesDialogComponent implements OnInit {
   @Input() todoTask: ToDoTask | undefined = undefined;
   @Output() filesViewClosed = new EventEmitter();
-  attachmentInfo: any;
-  constructor(
-    private todosService: TodosService,
-    private sanitizer: DomSanitizer,
-  ) {}
+  constructor(private todosService: TodosService) {}
 
   ngOnInit(): void {}
 

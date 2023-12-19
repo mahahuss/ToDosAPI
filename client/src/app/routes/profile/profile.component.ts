@@ -35,8 +35,7 @@ export class ProfileComponent implements OnInit {
     this.authService.currentUser$.subscribe({
       next: (res) => {
         this.userInfo = res!;
-        this.userInfo.given_name = localStorage.getItem('fullname')!;
-        this.getImageLink();
+        this.setPhotoPath();
       },
     });
   }
@@ -60,18 +59,17 @@ export class ProfileComponent implements OnInit {
       next: (result) => {
         this.updateClickStatus = false;
         localStorage.setItem('fullname', this.name);
-        this.userInfo.given_name = localStorage.getItem('fullname')!;
+        this.userInfo.given_name = this.name;
         this.toastr.success(result.message);
       },
       error: (res) => {
-        this.toastr.success(res.message);
+        this.toastr.error(res.message);
       },
     });
   }
 
-  getImageLink() {
+  setPhotoPath() {
     this.photoPath = environment.apiUrl + 'users/images/' + this.userInfo.nameid;
     this.photoPath = this.photoPath.concat('?', new Date().getTime().toString());
-    return this.photoPath;
   }
 }

@@ -25,10 +25,10 @@ public class UserTaskRepository
         return userTask;
     }
 
-    public async Task<TaskAttachment?> CreateTaskAttachmentAsync(int taskId, string fileName)
+    public async Task<TaskAttachment> CreateTaskAttachmentAsync(int taskId, string fileName)
     {
         await using var con = new SqlConnection(_context.ConnectionString);
-        var taskFile = await con.QueryFirstOrDefaultAsync<TaskAttachment>("sp_TasksAttachmentsAddFiles",
+        var taskFile = await con.QuerySingleAsync<TaskAttachment>("sp_TasksAttachmentsAddFiles",
             new { Id = taskId, fileName });
         return taskFile;
     }

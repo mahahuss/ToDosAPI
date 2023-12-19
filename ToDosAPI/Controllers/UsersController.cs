@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 using ToDosAPI.Extensions;
 using ToDosAPI.Models;
 using ToDosAPI.Models.Dtos;
@@ -16,7 +15,8 @@ public class UsersController : BaseController
     public UsersController(UserService userService, IConfiguration configuration)
     {
         _userService = userService;
-        _imageDir = configuration.GetValue<string>("Files:ImagesPath")!;
+        _imageDir = configuration.GetValue<string>("Files:ImagesPath") ??
+                    throw new Exception("Configuration Files:ImagesPath not found");
     }
 
     [HttpPost("register")]
@@ -45,10 +45,10 @@ public class UsersController : BaseController
     [HttpGet("images/{userId}")]
     public ActionResult GetUserPhoto(int userId)
     {
-        var imagePath = Path.Combine(Directory.GetCurrentDirectory(), _imageDir!, userId + ".png");
+        var imagePath = Path.Combine(Directory.GetCurrentDirectory(), _imageDir, userId + ".png");
 
         if (!System.IO.File.Exists(imagePath)) return NotFound();
-        
+
         return PhysicalFile(imagePath, "image/png");
     }
 

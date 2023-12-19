@@ -23,25 +23,22 @@ public class TaskService
         //f.ContentType.ToLower() == "application/pdf" || f.ContentType.ToLower() == "image/png")
         var createdTask = await _userTaskRepo.CreateTaskAsync(task);
 
-        if (createdTask == null || task.Files.Count == 0  ) return createdTask;
+        if (createdTask == null || task.Files.Count == 0) return createdTask;
 
         var filePath = Path.Combine(_filesDir, task.CreatedBy.ToString());
         Directory.CreateDirectory(filePath!);
 
-        if (!Directory.Exists(filePath)) return createdTask;
-
         foreach (var file in task.Files)
         {
-            if (file.ContentType.ToLower() == "application/pdf" || file.ContentType.ToLower() == "image/png") {
+            if (file.ContentType.ToLower() == "application/pdf" || file.ContentType.ToLower() == "image/png")
+            {
+                var filename =
+                    $"{Path.GetFileNameWithoutExtension(file.FileName)}{Guid.NewGuid().ToString("N")}{Path.GetExtension(file.FileName)}";
 
-                var filename = $"{Path.GetFileNameWithoutExtension(file.FileName)}{Guid.NewGuid().ToString("N")}{Path.GetExtension(file.FileName)}";
+                await using var fileStream = new FileStream(Path.Combine(filePath, filename), FileMode.Create);
+                await file.CopyToAsync(fileStream);
                 var taskFile = await _userTaskRepo.CreateTaskAttachmentAsync(createdTask.Id, filename);
-                if (taskFile != null)
-                {
-                    createdTask.Files.Add(taskFile);
-                    await using var fileStream = new FileStream(Path.Combine(filePath, filename), FileMode.Create);
-                    await file.CopyToAsync(fileStream);
-                }
+                createdTask.Files.Add(taskFile);
             }
         }
 
@@ -71,7 +68,6 @@ public class TaskService
     public Task<TaskAttachment?> GetTaskAttachmentAsync(int attachmentId)
     {
         return _userTaskRepo.GetTaskAttachmentAsync(attachmentId);
-
     }
 
     public Task<TasksDto?> GetTaskByIdAsync(int taskId)

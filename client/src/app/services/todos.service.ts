@@ -32,11 +32,11 @@ export class TodosService {
     return this.http.post<ToDoTask>(this.baseUrl + 'tasks', task);
   }
 
-  getTaskAttachment(attachmentId: number): Observable<any> {
+  getTaskAttachment(attachmentId: number): Observable<Blob> {
     const httpOptions = {
       responseType: 'blob' as 'json',
     };
 
-    return this.http.get<any>(this.baseUrl + 'Tasks/attachments/' + attachmentId, httpOptions);
+    return this.http.get<Blob>(this.baseUrl + 'Tasks/attachments/' + attachmentId, httpOptions);
   }
 }
