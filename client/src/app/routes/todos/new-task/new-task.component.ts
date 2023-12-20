@@ -48,7 +48,7 @@ export class NewTaskComponent {
         this.toastr.success('The task added successfully');
       },
       error: (res) => {
-        console.log(res.error.message);
+        this.toastr.error(res.error.message);
       },
     });
   }

@@ -8,6 +8,7 @@ import { TodoItemComponent } from './todo-item/todo-item.component';
 import { NewTaskComponent } from './new-task/new-task.component';
 import { TodoDialogComponent } from './todo-dialog/todo-dialog.component';
 import { TodoFilesDialogComponent } from './todo-files-dialog/todo-files-dialog.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-todos',
@@ -24,6 +25,7 @@ export class TodosComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private todosService: TodosService,
+    private toastr: ToastrService,
   ) {}
 
   ngOnInit(): void {
@@ -37,7 +39,6 @@ export class TodosComponent implements OnInit {
   taskUpdated(updatedtask: ToDoTask) {
     const indexToUpdate = this.todos.findIndex((item) => item.id === updatedtask.id);
     if (indexToUpdate !== -1) this.todos[indexToUpdate] = updatedtask;
-    console.log(updatedtask);
   }
 
   taskDeleted(canceled: boolean) {
@@ -61,7 +62,7 @@ export class TodosComponent implements OnInit {
             this.todos = res;
           },
           error: (res) => {
-            console.log(res.error.message);
+            this.toastr.error(res.error.message);
           },
         });
       },

@@ -35,6 +35,7 @@ export class ProfileComponent implements OnInit {
     this.authService.currentUser$.subscribe({
       next: (res) => {
         this.userInfo = res!;
+        this.userInfo.roles = Array.isArray(this.userInfo.roles) ? this.userInfo.roles : [this.userInfo.roles];
         this.setPhotoPath();
       },
     });
@@ -57,6 +58,7 @@ export class ProfileComponent implements OnInit {
     formData.append('Name', this.name);
     this.authService.updateUserProfile(formData).subscribe({
       next: (result) => {
+        this.setPhotoPath();
         this.updateClickStatus = false;
         localStorage.setItem('fullname', this.name);
         this.userInfo.given_name = this.name;

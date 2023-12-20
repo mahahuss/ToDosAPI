@@ -71,7 +71,7 @@ public class UserRepository
         return (await con.QueryAsync<GetUsers>("sp_UserGetAll")).ToList();
     }
 
-    public async Task<bool> ChangeUserStatusAsync(int userId, string status)
+    public async Task<bool> ChangeUserStatusAsync(int userId, bool status)
     {
         await using var con = new SqlConnection(_context.ConnectionString);
         return await con.ExecuteAsync("sp_UserChangeStatus", new { userId, status }) > 0;

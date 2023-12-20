@@ -40,7 +40,6 @@ export class LoginComponent implements OnInit {
           this.route.navigate(['/home']);
         },
         error: (res) => {
-          console.log(res.error.message);
           this.toastr.error(res.error.message, 'Login Faild');
           this.loginStatus = false;
         },

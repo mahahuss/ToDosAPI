@@ -30,7 +30,7 @@ export class TodoDialogComponent {
         this.toastr.success(res.message);
       },
       error: (res) => {
-        console.log(res.error.message);
+        this.toastr.error(res.error.message);
       },
     });
   }

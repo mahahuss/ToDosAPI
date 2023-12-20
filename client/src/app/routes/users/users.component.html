@@ -13,17 +13,14 @@
         <tbody>
           @for (user of users; track $index) {
             <tr class="odd:bg-white even:bg-gray-50 border-b -700 text-center">
-              <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap ">
+              <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                 {{ user.username }}
               </th>
-              <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap ">
+              <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                 {{ user.fullName }}
               </th>
               <td class="px-6 py-4">
-                <button
-                  (click)="viewTasks(user.id)"
-                  class="font-medium text-blue-600 -500 hover:underline"
-                >
+                <button (click)="viewTasks(user.id)" class="font-medium text-blue-600 -500 hover:underline">
                   {{ user.totalTasks > 0 ? "View Tasks" : "" }}
                 </button>
               </td>
@@ -31,14 +28,14 @@
                 <td class="px-6 py-4">
                   <button
                     (click)="changeUserStatus(user.id, user.status)"
-                    [class.bg-white]="user.status == 'Active'"
-                    [class.text-gray-900]="user.status == 'Active'"
-                    [class.bg-gray-300]="user.status != 'Active'"
-                    [class.text-gray-800]="user.status != 'Active'"
+                    [class.bg-white]="user.status"
+                    [class.text-gray-900]="user.status"
+                    [class.bg-gray-300]="!user.status"
+                    [class.text-gray-800]="!user.status"
                     type="button"
-                    class="h-6 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-full text-xs px-5  -600 -gray-700 -gray-600 -gray-700"
+                    class="h-6 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-full text-xs px-5 -600 -gray-700 -gray-600 -gray-700"
                   >
-                    {{ user.status == "Active" ? "Block" : "Unblock" }}
+                    {{ user.status ? "Block" : "Unblock" }}
                   </button>
                 </td>
               }

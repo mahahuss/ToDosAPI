@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { ToDoTask, UserTaskFile } from '../../../shared/models/todo';
 import { AuthService } from '../../../services/auth.service';
 import { TodosService } from '../../../services/todos.service';
+import { ToastrService } from 'ngx-toastr';
+import saveAs from 'file-saver';
 
 @Component({
   selector: 'app-users-tasks-dialog',
@@ -19,6 +21,7 @@ export class UsersTasksDialogComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private todosService: TodosService,
+    private toastr: ToastrService,
   ) {}
   ngOnInit(): void {
     this.loadTodos();
@@ -34,8 +37,8 @@ export class UsersTasksDialogComponent implements OnInit {
         next: (res) => {
           this.todos = res;
         },
-        error: (res) => {
-          console.log(res.error.message);
+        error: (err) => {
+          this.toastr.error(err.error.message);
         },
       });
     }
@@ -44,15 +47,10 @@ export class UsersTasksDialogComponent implements OnInit {
   getFile(attachment: UserTaskFile) {
     this.todosService.getTaskAttachment(attachment.id).subscribe({
       next: (res) => {
-        new Blob([res], { type: 'application/' + attachment.fileName.split('.').pop()?.toUpperCase() });
-        var downloadURL = window.URL.createObjectURL(res);
-        var link = document.createElement('a');
-        link.href = downloadURL;
-        link.download = attachment.fileName;
-        link.click();
+        saveAs.saveAs(res, attachment.fileName);
       },
-      error: (res) => {
-        console.log('error: ' + res.error.message);
+      error: (err) => {
+        this.toastr.error(err.error.message);
       },
     });
   }

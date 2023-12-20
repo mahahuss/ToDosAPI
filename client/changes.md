@@ -67,13 +67,13 @@
 
 ### 12-19-2023
 
-- change user active type to boolean
-- remove all console.log
-- add a new interceptor to handle errors
-- move content type checking to a function
-- use FileSaver.js library 
-- fix roles badge for single role
-- fix name field not updating after profile update
+- change user active type to boolean -
+- remove all console.log -
+- add a new interceptor to handle errors (exception)
+- move content type checking to a function (API) -
+- use FileSaver.js library -
+- fix roles badge for single role -
+- fix name field not updating after profile update --
 - create new token after refresh, also create a function in the background that refreshes the token every expTime - 5mins
 - move task date to be under the title (make it smaller)
 - make the task sharable, there are two types of share, share with edit, or without, the task can be shared with one user or more

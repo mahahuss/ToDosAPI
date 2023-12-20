@@ -55,14 +55,13 @@ export class TodoItemComponent implements OnInit {
         this.toastr.success('The task updated successfully');
       },
       error: (res) => {
-        console.log(res.error.message);
+        this.toastr.error(res.error.message);
       },
     });
   }
 
   toggleEdit() {
     this.updateClickStatus = !this.updateClickStatus;
-    console.log(this.updateClickStatus);
 
     if (this.updateClickStatus) {
       this.cdRef.detectChanges();
@@ -83,7 +82,7 @@ export class TodoItemComponent implements OnInit {
         this.toastr.success('The task updated successfully');
       },
       error: (res) => {
-        console.log(res.error.message);
+        this.toastr.error(res.error.message);
       },
     });
   }

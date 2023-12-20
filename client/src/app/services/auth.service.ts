@@ -72,7 +72,7 @@ export class AuthService {
     return this.http.get<UserInfo[]>(this.baseUrl + 'users');
   }
 
-  changeUserStatus(userId: number, status: string): Observable<ApiResponse> {
+  changeUserStatus(userId: number, status: boolean): Observable<ApiResponse> {
     return this.http.put<ApiResponse>(this.baseUrl + 'Users/status', { userId: userId, status: status }).pipe(
       map((res) => {
         return res;

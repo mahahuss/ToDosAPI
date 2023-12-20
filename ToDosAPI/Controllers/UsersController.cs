@@ -11,12 +11,14 @@ public class UsersController : BaseController
 {
     private readonly UserService _userService;
     private readonly string _imageDir;
+    private readonly FileService _fileService;
 
-    public UsersController(UserService userService, IConfiguration configuration)
+    public UsersController(UserService userService, IConfiguration configuration, FileService fileService)
     {
         _userService = userService;
         _imageDir = configuration.GetValue<string>("Files:ImagesPath") ??
                     throw new Exception("Configuration Files:ImagesPath not found");
+        _fileService = fileService;
     }
 
     [HttpPost("register")]
@@ -49,7 +51,7 @@ public class UsersController : BaseController
 
         if (!System.IO.File.Exists(imagePath)) return NotFound();
 
-        return PhysicalFile(imagePath, "image/png");
+        return PhysicalFile(imagePath, _fileService.CheckContentType(imagePath));
     }
 
     [HttpGet]

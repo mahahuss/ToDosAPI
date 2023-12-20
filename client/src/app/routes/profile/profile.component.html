@@ -34,9 +34,9 @@
         {{ userInfo.given_name }}
       </h5>
     }
-    <span class="text-sm text-gray-500 dark:text-gray-400">&#64;{{ userInfo.unique_name }}</span>
+    <span class="text-sm text-gray-500 dark:text-gray-400">{{ userInfo.unique_name }}</span>
     <div class="flex mt-4 md:mt-6">
-      @for (role of userInfo.roles; track role) {
+      @for (role of userInfo.roles; track $index) {
         <ul class="text-gray-500 dark:text-gray-400 flex flex-wrap items-center justify-center">
           <li class="flex items-center justify-center space-x-3 rtl:space-x-reverse md:me-6 me-4">
             <div class="badge badge-primary text-xs">{{ role }}</div>

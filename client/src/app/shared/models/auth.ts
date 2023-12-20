@@ -2,8 +2,7 @@ export type User = {
   nameid: number;
   unique_name: string;
   given_name: string;
-  sub: string;
-  roles: Array<string>;
+  roles: string[];
 };
 
 export type UserProfile = {
@@ -15,6 +14,6 @@ export type UserInfo = {
   id: number;
   username: string;
   fullName: string;
-  status: string;
+  status: boolean;
   totalTasks: number;
 };

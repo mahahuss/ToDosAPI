@@ -23,7 +23,6 @@ public class TokenService
             new(JwtRegisteredClaimNames.NameId, userWithRolesDto.Id.ToString()),
             new(JwtRegisteredClaimNames.UniqueName, userWithRolesDto.Username),
             new(JwtRegisteredClaimNames.GivenName, userWithRolesDto.FullName),
-            new(JwtRegisteredClaimNames.Sub, userWithRolesDto.Status),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 

@@ -14,15 +14,17 @@ public class UserService
     private readonly UserRepository _userRepo;
     private readonly TokenService _userToken;
     private readonly string _imageDir;
+    private readonly FileService _fileService;
 
 
     public UserService(PasswordHasherService passwordHasherService, UserRepository userRepo, TokenService userToken,
-        IConfiguration configuration)
+        IConfiguration configuration, FileService fileService)
     {
         _passwordHasherService = passwordHasherService;
         _userRepo = userRepo;
         _userToken = userToken;
         _imageDir = configuration.GetValue<string>("Files:ImagesPath")!;
+        _fileService = fileService;
     }
 
     public async Task<UserWithRolesDto?> AddNewUserAsync(RegisterDto registerDto)
@@ -55,14 +57,15 @@ public class UserService
         if (!result) return null;
 
         var userInfo = await _userRepo.GetUserWithRolesAsync(username);
-        return userInfo != null ? _userToken.GenerateToken(userInfo!) : null;
+        return userInfo != null && userInfo.Status ? _userToken.GenerateToken(userInfo!) : null;
     }
 
     public async Task<bool> EditProfileAsync(UpdateUserProfileDto updateUserInfo, int id)
         
         
     {
-        if (updateUserInfo.Image != null && updateUserInfo.Image.Length < 200000 && System.IO.Path.GetExtension(updateUserInfo.Image.FileName).ToLower() == ".png" )
+        
+        if (updateUserInfo.Image != null && updateUserInfo.Image.Length < 200000 && _fileService.CheckContentType(updateUserInfo.Image.FileName) == "image/png")
         {
            
             var filename = id.ToString()+ System.IO.Path.GetExtension(updateUserInfo.Image.FileName);
@@ -81,7 +84,7 @@ public class UserService
 
     }
 
-    public Task<bool> ChangeUserStatusAsync(int userId, string status)
+    public Task<bool> ChangeUserStatusAsync(int userId, bool status)
     {
         return _userRepo.ChangeUserStatusAsync(userId, status);
     }

@@ -22,6 +22,8 @@ builder.Services.AddSingleton<DapperDbContext>();
 builder.Services.AddSingleton<TaskService>();
 builder.Services.AddSingleton<PasswordHasherService>();
 builder.Services.AddSingleton<TokenService>();
+builder.Services.AddSingleton<FileService>();
+
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
