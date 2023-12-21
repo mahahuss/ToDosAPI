@@ -18,13 +18,14 @@ import { ToastrService } from 'ngx-toastr';
 import { TodoDialogComponent } from '../todo-dialog/todo-dialog.component';
 import { FormsModule } from '@angular/forms';
 import { TodoFilesDialogComponent } from '../todo-files-dialog/todo-files-dialog.component';
+import { ShareTaskDialogComponent } from '../share-task-dialog/share-task-dialog.component';
 
 @Component({
   selector: 'app-todo-item',
   standalone: true,
   templateUrl: './todo-item.component.html',
   styleUrl: './todo-item.component.scss',
-  imports: [CommonModule, TodoDialogComponent, FormsModule, TodoFilesDialogComponent],
+  imports: [CommonModule, TodoDialogComponent, FormsModule, TodoFilesDialogComponent, ShareTaskDialogComponent],
 })
 export class TodoItemComponent implements OnInit {
   @Input() todoTask: ToDoTask | undefined = undefined;
@@ -34,6 +35,7 @@ export class TodoItemComponent implements OnInit {
   updateClickStatus = false;
   taskFilesExistence = false;
   filesClickStatus = false;
+  shareClickStatus = false;
   @ViewChild('focusTaskInput') focusTaskInput?: ElementRef;
 
   constructor(
@@ -88,9 +90,15 @@ export class TodoItemComponent implements OnInit {
   }
 
   viewFiles() {
-    this.filesClickStatus = !this.filesClickStatus;
+    this.filesClickStatus = true;
+  }
+  shareTask() {
+    this.shareClickStatus = true;
   }
   filesViewClosed() {
     this.filesClickStatus = false;
+  }
+  shareViewClosed() {
+    this.shareClickStatus = false;
   }
 }

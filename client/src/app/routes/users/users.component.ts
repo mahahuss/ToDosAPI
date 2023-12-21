@@ -36,7 +36,6 @@ export class UsersComponent implements OnInit {
     this.authService.getUsers().subscribe({
       next: (res) => {
         this.users = res;
-        this.users.forEach((element) => {});
       },
       error: (res) => {
         this.toastr.error(res.error.message);

@@ -12,3 +12,11 @@ public class UserTask
     public List<TaskAttachment> Files { get; set; } = new();
 
 }
+
+
+public class UserWithSharedTask : UserTask
+{
+    public bool? IsEditable { get; set; }
+    public string? SharedBy { get; set; }
+
+}

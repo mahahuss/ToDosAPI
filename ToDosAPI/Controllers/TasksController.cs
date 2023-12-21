@@ -32,7 +32,7 @@ public class TasksController : BaseController
     public async Task<ActionResult> GetAllTasks(int userId)
     {
         var currentUserId = User.GetId();
-        var roles = User.GetRoles();
+        var roles = User.GetRoles(); // send as a parameters
 
         if (userId != currentUserId && !roles.Contains("Admin") && !roles.Contains("Moderator"))
             return Unauthorized("Unauthorized: due to invalid credentials");
@@ -49,13 +49,22 @@ public class TasksController : BaseController
         return Ok(userTask);
     }
 
+    [HttpPost]
+    public async Task<ActionResult> ShareTask(ShareTaskDto shareTaskDto)
+    {
+        var result = await _taskService.ShareTaskAsync(shareTaskDto);
+        if (!result) return BadRequest("Failed to share task");
+        return Ok(result);
+    }
+
     [HttpPut]
     public async Task<ActionResult> EditTask(EditTaskDto editTaskDto)
     {
         var task = await _taskService.GetTaskByIdAsync(editTaskDto.Id);
 
         if (task == null) return NotFound("The Selected Task Not Exist");
-        if (task.CreatedBy != User.GetId()) return Unauthorized("Unauthorized: due to invalid credentials");
+        //check also if the task shared with the user 
+       // if (task.CreatedBy != User.GetId()) return Unauthorized("Unauthorized: due to invalid credentials");
 
         var check = await _taskService.EditTaskAsync(editTaskDto);
         if (check) return Ok("Updated successfully");

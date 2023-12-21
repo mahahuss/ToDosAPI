@@ -78,14 +78,14 @@ public class UserService
         return check;
     }
 
-    public  Task<List<GetUsers>> GetUsersAsync()
+    public async Task<List<GetUsers>> GetUsersAsync()
     {
-        return _userRepo.GetUsersAsync();
+        return await _userRepo.GetUsersAsync();
 
     }
 
-    public Task<bool> ChangeUserStatusAsync(int userId, bool status)
+    public async Task<bool> ChangeUserStatusAsync(int userId, bool status)
     {
-        return _userRepo.ChangeUserStatusAsync(userId, status);
+        return await _userRepo.ChangeUserStatusAsync(userId, status);
     }
 }

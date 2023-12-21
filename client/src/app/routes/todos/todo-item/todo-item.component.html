@@ -1,43 +1,64 @@
 @if (todoTask) {
   <div class="py-3 text-sm">
     <div
-      class="flex justify-start cursor-pointer bg-base-100 text-gray-700 hover:text-gray-400 hover:bg-gray-100 rounded-md px-2 py-4 my-2 shadow"
+      class="flex justify-between cursor-pointer bg-base-100 text-gray-700 hover:text-gray-400 hover:bg-gray-100 rounded-md px-2 py-4 my-2 shadow"
     >
       @if (!updateClickStatus) {
         <div class="flex justify-start flex-col pl-4">
-          <div class="flex-grow font-medium text-base px-2 whitespace-pre" (click)="updateStatus(todoTask!)">
+          <div class="flex-grow font-medium text-lg whitespace-pre" (click)="updateStatus(todoTask!)">
             {{ todoTask.taskContent }}
           </div>
 
-          <div class="text-xs font-normal text-gray-500 tracking-wide">
+          <div class="text-[13px] font-normal text-gray-500 tracking-wide">
             {{ todoTask.createdDate | date }}
           </div>
+          @if (todoTask.sharedBy != null) {
+            <div class="flex flex-row">
+              <div class="text-[11px] font-medium text-indigo-700 tracking-wide">
+                <i class="fa-solid fa-share text-indigo-700 fa-xs"></i>
+                Shared By: {{ todoTask.sharedBy }}
+              </div>
+            </div>
+          }
         </div>
         <div class="flex justify-end">
-          <div class="pl-4">
-            <button class="btn btn-outline btn-warning btn-xs btn-circle" (click)="toggleEdit()">
-              <li class="fa-solid fa-pen-to-square"></li>
-            </button>
-          </div>
-          <div class="pl-4">
-            <button class="btn btn-outline btn-error btn-xs btn-circle" (click)="onDeleteClick()">
-              <i class="fa-solid fa-trash"></i>
-            </button>
-          </div>
-          <div class="pl-4">
-            <button
-              [class.btn-primary]="todoTask.status"
-              [class.btn-default]="!todoTask.status"
-              class="btn btn-outline btn-xs btn-circle"
-              (click)="updateStatus(todoTask!)"
-            >
-              <i class="fa-solid" [class.fa-check]="todoTask.status" [class.fa-minus]="!todoTask.status"></i>
-            </button>
-          </div>
+          @if (todoTask.isEditable != false) {
+            <div class="pl-4">
+              <button class="btn btn-outline btn-warning btn-xs btn-circle" (click)="toggleEdit()">
+                <li class="fa-solid fa-pen-to-square"></li>
+              </button>
+            </div>
+          }
+          @if (todoTask.sharedBy == null) {
+            <div class="pl-4">
+              <button class="btn btn-outline btn-error btn-xs btn-circle" (click)="onDeleteClick()">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </div>
+          }
+          @if (todoTask.isEditable != false) {
+            <div class="pl-4">
+              <button
+                [class.btn-primary]="todoTask.status"
+                [class.btn-default]="!todoTask.status"
+                class="btn btn-outline btn-xs btn-circle"
+                (click)="updateStatus(todoTask!)"
+              >
+                <i class="fa-solid" [class.fa-check]="todoTask.status" [class.fa-minus]="!todoTask.status"></i>
+              </button>
+            </div>
+          }
           @if (taskFilesExistence) {
             <div class="pl-4">
               <button class="btn btn-outline btn-default btn-xs btn-circle" (click)="viewFiles()">
                 <i class="fa-solid fa-file"></i>
+              </button>
+            </div>
+          }
+          @if (todoTask.sharedBy == null) {
+            <div class="pl-4">
+              <button class="btn btn-outline btn-default btn-xs btn-circle" (click)="shareTask()">
+                <i class="fa fa-share-alt"></i>
               </button>
             </div>
           }
@@ -65,5 +86,8 @@
   </div>
   @if (filesClickStatus) {
     <app-todo-files-dialog [todoTask]="this.todoTask" (filesViewClosed)="filesViewClosed()"></app-todo-files-dialog>
+  }
+  @if (shareClickStatus) {
+    <app-share-task-dialog [todoTask]="this.todoTask" (shareViewClosed)="shareViewClosed()"></app-share-task-dialog>
   }
 }

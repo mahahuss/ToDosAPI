@@ -51,13 +51,13 @@ public class UserTaskRepository
         return (await con.QueryAsync<UserTask>("sp_TaskGetAll")).ToList();
     }
 
-    public async Task<List<UserTask>> GetUserTasksAsync(int userId)
+    public async Task<List<UserWithSharedTask>> GetUserTasksAsync(int userId)
     {
         await using var con = new SqlConnection(_context.ConnectionString);
 
-        var tasks = new Dictionary<int, UserTask>();
+        var tasks = new Dictionary<int, UserWithSharedTask>();
 
-        await con.QueryAsync<UserTask, TaskAttachment?, UserTask>("sp_TaskGetUserTasks",
+        await con.QueryAsync<UserWithSharedTask, TaskAttachment?, UserWithSharedTask>("sp_TaskGetUserTasks",
             (task, file) =>
             {
                 if (!tasks.TryGetValue(task.Id, out var taskInDictionary))
@@ -89,5 +89,12 @@ public class UserTaskRepository
         var userTask = await con.QueryFirstOrDefaultAsync<TasksDto>("sp_TasksGetById",
             new { Id = taskId });
         return userTask;
+    }
+
+    public async Task<bool> ShareTaskAsync(int userId, int taskId, bool isEditable)
+    {
+        await using var con = new SqlConnection(_context.ConnectionString);
+        return await con.ExecuteAsync("sp_TasksAttachmentsAddFiles", new { userId, taskId, isEditable }) > 0;
+    
     }
 }

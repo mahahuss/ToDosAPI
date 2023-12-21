@@ -47,35 +47,42 @@ public class TaskService
         return createdTask;
     }
 
-    public Task<bool> DeleteTaskAsync(int taskId)
+    public async Task<bool> DeleteTaskAsync(int taskId)
     {
-        return _userTaskRepo.DeleteTaskAsync(taskId);
+        return await _userTaskRepo.DeleteTaskAsync(taskId);
     }
 
-    public Task<bool> EditTaskAsync(EditTaskDto editTaskDto)
+    public async Task<bool> EditTaskAsync(EditTaskDto editTaskDto)
     {
-        return _userTaskRepo.EditTaskAsync(editTaskDto);
+        return await _userTaskRepo.EditTaskAsync(editTaskDto);
     }
 
-    public Task<List<UserTask>> GetAllTasksAsync()
+    public async Task<List<UserTask>> GetAllTasksAsync()
     {
-        return _userTaskRepo.GetAllTasksAsync();
+        return await _userTaskRepo.GetAllTasksAsync();
     }
 
-    public Task<List<UserTask>> GetUserTasksAsync(int userId)
+    public async Task<List<UserWithSharedTask>> GetUserTasksAsync(int userId)
     {
-        return _userTaskRepo.GetUserTasksAsync(userId);
+        return await _userTaskRepo.GetUserTasksAsync(userId);
     }
 
-    public Task<TaskAttachment?> GetTaskAttachmentAsync(int attachmentId)
+    public async Task<TaskAttachment?> GetTaskAttachmentAsync(int attachmentId)
     {
-        return _userTaskRepo.GetTaskAttachmentAsync(attachmentId);
+        return await _userTaskRepo.GetTaskAttachmentAsync(attachmentId);
     }
 
-    public Task<TasksDto?> GetTaskByIdAsync(int taskId)
+    public async Task<TasksDto?> GetTaskByIdAsync(int taskId)
     {
-        return _userTaskRepo.GetTaskByIdAsync(taskId);
+        return await _userTaskRepo.GetTaskByIdAsync(taskId);
     }
 
-
+    public async Task<bool> ShareTaskAsync(ShareTaskDto shareTaskDto)
+    {
+        var created = false;
+        foreach (int user in shareTaskDto.SharedTo) {
+           var status = await _userTaskRepo.ShareTaskAsync(user, shareTaskDto.TaskId, shareTaskDto.IsEditable);
+        }
+        return created;
+    }
 }
