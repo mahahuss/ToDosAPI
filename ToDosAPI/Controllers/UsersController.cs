@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using ToDosAPI.Extensions;
 using ToDosAPI.Models;
 using ToDosAPI.Models.Dtos;
@@ -55,11 +56,22 @@ public class UsersController : BaseController
     }
 
     [HttpGet]
-    [Authorize(Roles = "Admin,Moderator")]
     public async Task<ActionResult> GetUsers()
     {
         var users = await _userService.GetUsersAsync();
         return Ok(users);
+    }
+
+    [HttpGet("token")]
+    public async Task<ActionResult> RefreshToken()
+    {
+        var token = await _userService.RefreshTokenAsync(User.GetId(), User.GetUsername(), User.GetFullname(), User.GetRoles());
+        if (!string.IsNullOrEmpty(token))
+        {
+            return Ok(token);
+        }
+
+        return Unauthorized();
     }
 
     [HttpPut]

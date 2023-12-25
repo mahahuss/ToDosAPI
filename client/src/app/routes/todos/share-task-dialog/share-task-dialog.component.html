@@ -16,52 +16,18 @@
         </button>
       </div>
       <div class="p-4 md:p-5 text-center">
-        <div class="hs-dropdown relative inline-flex" data-hs-dropdown-auto-close="inside">
-          <button
-            id="hs-dropdown-item-checkbox"
-            type="button"
-            class="hs-dropdown-toggle py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-          >
-            Select Users
-            <svg
-              class="hs-dropdown-open:rotate-180 w-4 h-4"
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="m6 9 6 6 6-6" />
-            </svg>
-          </button>
-
-          <div
-            class="hs-dropdown-menu transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 hidden min-w-[15rem] bg-white shadow-md rounded-lg p-2 mt-2 dark:bg-gray-800 dark:border dark:border-gray-700"
-            aria-labelledby="hs-dropdown-item-checkbox"
-          >
-            <div class="relative flex items-start py-2 px-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
-              @for (user of users; track $index) {
-                <div class="flex items-center h-5 mt-1">
-                  <input
-                    id="hs-dropdown-item-checkbox-delete"
-                    name="hs-dropdown-item-checkbox-delete"
-                    type="checkbox"
-                    class="shrink-0 border-gray-200 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-gray-800 dark:border-gray-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800"
-                    aria-describedby="hs-dropdown-item-checkbox-delete-description"
-                    checked
-                  />
-                </div>
-                <label for="hs-dropdown-item-checkbox-delete" class="ms-3.5">
-                  <span class="block text-sm font-semibold text-gray-800 dark:text-gray-300">{{ user.fullName }}</span>
-                </label>
-              }
-            </div>
-          </div>
-        </div>
+        <span
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        >
+          <p-autoComplete
+            [(ngModel)]="selectedUsers"
+            [suggestions]="usersSuggestions"
+            (completeMethod)="filterUsers($event)"
+            [multiple]="true"
+            field="fullName"
+            (onSelect)="onSelect($event)"
+          ></p-autoComplete>
+        </span>
         <div class="flex items-center mt-5">
           <input
             checked

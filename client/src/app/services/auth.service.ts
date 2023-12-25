@@ -79,4 +79,18 @@ export class AuthService {
       }),
     );
   }
+
+  refreshToken() {
+    return this.http.get<ApiResponse>(this.baseUrl + 'users/token', {}).pipe(
+      map((res) => {
+        localStorage.setItem('token', res.message); //message includes the token
+        const user = jwtDecode<User>(res.message);
+        this.currentUserSource$.next(user);
+        localStorage.setItem('fullname', user.given_name);
+        localStorage.setItem('expireTime', jwtDecode(localStorage.getItem('token')!).exp!.toString());
+
+        return user;
+      }),
+    );
+  }
 }

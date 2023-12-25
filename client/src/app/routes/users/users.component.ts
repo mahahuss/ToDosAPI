@@ -26,7 +26,7 @@ export class UsersComponent implements OnInit {
     this.authService.currentUser$.subscribe({
       next: (res) => {
         this.userInfo = res!;
-        this.isAdmin = res!.roles.includes('Admin');
+        this.isAdmin = this.userInfo!.roles.includes('Admin');
       },
     });
     this.loadUsers();

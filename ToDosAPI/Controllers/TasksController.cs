@@ -49,7 +49,7 @@ public class TasksController : BaseController
         return Ok(userTask);
     }
 
-    [HttpPost]
+    [HttpPost("share")]
     public async Task<ActionResult> ShareTask(ShareTaskDto shareTaskDto)
     {
         var result = await _taskService.ShareTaskAsync(shareTaskDto);

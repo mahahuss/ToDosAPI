@@ -22,4 +22,16 @@ public static class ClaimsPrincipalExtensions
         var roles = user.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToList();
         return roles;
     }
+
+    public static string? GetUsername(this ClaimsPrincipal user)
+    {
+        var username = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+        return username;
+    }
+
+    public static string? GetFullname(this ClaimsPrincipal user)
+    {
+        var username = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.GivenName)?.Value;
+        return username;
+    }
 }

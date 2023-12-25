@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { User } from '../../shared/models/auth';
+import { User, UserInfo } from '../../shared/models/auth';
 import { ToDoTask } from '../../shared/models/todo';
 import { AuthService } from '../../services/auth.service';
 import { TodosService } from '../../services/todos.service';
@@ -9,13 +9,23 @@ import { NewTaskComponent } from './new-task/new-task.component';
 import { TodoDialogComponent } from './todo-dialog/todo-dialog.component';
 import { TodoFilesDialogComponent } from './todo-files-dialog/todo-files-dialog.component';
 import { ToastrService } from 'ngx-toastr';
+import { AutoCompleteCompleteEvent, AutoCompleteModule } from 'primeng/autocomplete';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-todos',
   standalone: true,
   templateUrl: './todos.component.html',
   styleUrl: './todos.component.scss',
-  imports: [CommonModule, TodoItemComponent, NewTaskComponent, TodoDialogComponent, TodoFilesDialogComponent],
+  imports: [
+    CommonModule,
+    TodoItemComponent,
+    NewTaskComponent,
+    TodoDialogComponent,
+    TodoFilesDialogComponent,
+    FormsModule,
+    AutoCompleteModule,
+  ],
 })
 export class TodosComponent implements OnInit {
   userInfo!: User;

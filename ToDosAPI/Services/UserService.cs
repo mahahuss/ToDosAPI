@@ -1,6 +1,7 @@
 ﻿using Microsoft.IdentityModel.Logging;
 using System.IO;
 using System.Net.Mail;
+using System.Runtime.InteropServices;
 using ToDosAPI.Data;
 using ToDosAPI.Models;
 using ToDosAPI.Models.Dtos;
@@ -87,5 +88,10 @@ public class UserService
     public async Task<bool> ChangeUserStatusAsync(int userId, bool status)
     {
         return await _userRepo.ChangeUserStatusAsync(userId, status);
+    }
+
+    public async Task<string?> RefreshTokenAsync(int id, string username, string fullname, List<string> roles)
+    {
+        return  _userToken.GenerateToken(new UserWithRolesDto { FullName = fullname, Id = id, Roles = roles, Username = username, Status = true }); 
     }
 }
