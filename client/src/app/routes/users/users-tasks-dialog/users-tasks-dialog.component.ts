@@ -33,9 +33,9 @@ export class UsersTasksDialogComponent implements OnInit {
 
   private loadTodos() {
     {
-      this.todosService.getUserTodos(this.userId!).subscribe({
+      this.todosService.getUserTodos(this.userId!, 1, 5).subscribe({
         next: (res) => {
-          this.todos = res;
+          this.todos = res.tasks;
         },
         error: (err) => {
           this.toastr.error(err.error.message);

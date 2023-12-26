@@ -94,4 +94,10 @@ public class UserService
     {
         return  _userToken.GenerateToken(new UserWithRolesDto { FullName = fullname, Id = id, Roles = roles, Username = username, Status = true }); 
     }
+
+    public async Task<List<Role>> GetUserRolesAsync(int userId)
+    {
+        return await _userRepo.GetUserRolesAsync(userId);
+
+    }
 }

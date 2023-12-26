@@ -16,35 +16,22 @@
         </button>
       </div>
       <div class="p-4 md:p-5 text-center">
-        <ng-select
-          [multiple]="true"
-          [items]="users"
-          bindLabel="fullName"
-          placeholder="Select users to share with.."
-          [(ngModel)]="selectedUsers"
-        >
-        </ng-select>
+        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select roles</label>
+        <ng-select [multiple]="true" bindLabel="fullName" placeholder="Select users to share with.."> </ng-select>
+        <div class="pt-5">
+          <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Edit name</label>
 
-        <div class="flex items-center mt-5">
           <input
-            (change)="isEditable = !isEditable"
-            value="{{ isEditable }}"
-            id="checked-checkbox"
-            type="checkbox"
-            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            [(ngModel)]="user!.fullName"
+            type="text"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           />
-          <label for="checked-checkbox" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-            >Enable users to edit
-          </label>
         </div>
         <div class="pt-5">
           <button
-            (click)="shareTaskWithUsers()"
             class="h-8 px-4 m-2 text-sm text-indigo-100 transition-colors duration-150 bg-indigo-700 rounded-lg focus:shadow-outline hover:bg-indigo-800"
           >
-            <i class="fa fa-share-alt" aria-hidden="true"></i>
-
-            Share Task
+            Update
           </button>
         </div>
       </div>

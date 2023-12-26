@@ -1,29 +1,34 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ToDoTask } from '../../../shared/models/todo';
-import { User, UserInfo } from '../../../shared/models/auth';
+import { ShareTask, UserInfo } from '../../../shared/models/auth';
 import { AuthService } from '../../../services/auth.service';
 import { ToastrService } from 'ngx-toastr';
-import { AutoCompleteCompleteEvent, AutoCompleteModule } from 'primeng/autocomplete';
 import { FormsModule } from '@angular/forms';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { TodosService } from '../../../services/todos.service';
 
 @Component({
   selector: 'app-share-task-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule, AutoCompleteModule],
+  imports: [CommonModule, FormsModule, NgSelectModule],
   templateUrl: './share-task-dialog.component.html',
   styleUrl: './share-task-dialog.component.scss',
 })
 export class ShareTaskDialogComponent implements OnInit {
+  isChangeToggle(arg0: string) {
+    throw new Error('Method not implemented.');
+  }
   @Input() todoTask: ToDoTask | undefined = undefined;
   @Output() shareViewClosed = new EventEmitter();
   users: UserInfo[] = [];
-  usersSuggestions: UserInfo[] = [];
   selectedUsers: UserInfo[] = [];
+  isEditable = false;
 
   constructor(
     private authService: AuthService,
     private toastr: ToastrService,
+    private TodosService: TodosService,
   ) {}
 
   ngOnInit(): void {
@@ -44,18 +49,23 @@ export class ShareTaskDialogComponent implements OnInit {
     this.shareViewClosed.emit();
   }
 
-  filterUsers($event: any) {
-    this.usersSuggestions = this.users.filter(
-      (user) => user.fullName.toLocaleLowerCase().search($event.query.toLocaleLowerCase()) > -1,
-    );
-    console.log('before:' + this.users);
+  shareTaskWithUsers() {
+    const sharedtask: ShareTask = {
+      taskId: this.todoTask!.id,
+      isEditable: this.isEditable,
+      sharedTo: this.selectedUsers.map((user) => user.id),
+    };
 
-    // this.users = this.users.filter((x) => this.selectedUsers.find((y) => y.fullName != x.fullName));
-
-    console.log('after:' + this.selectedUsers);
-  }
-
-  onSelect(event: any) {
-    console.log('onSelect' + event);
+    this.TodosService.shareTask(sharedtask).subscribe({
+      next: (res) => {
+        console.log(res);
+        this.onClose();
+        this.toastr.success('shred successfully');
+      },
+      error: (res) => {
+        console.log(res.error.message);
+        this.toastr.error('faild to share: ' + res.error.message);
+      },
+    });
   }
 }

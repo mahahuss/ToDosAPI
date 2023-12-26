@@ -6,8 +6,8 @@ export type User = {
 };
 
 export type UserProfile = {
-  Name: string;
-  Image: FormData;
+  name: string;
+  image: FormData;
 };
 
 export type UserInfo = {
@@ -16,4 +16,16 @@ export type UserInfo = {
   fullName: string;
   status: boolean;
   totalTasks: number;
+  roles: Map<number, string>;
+};
+
+export type ShareTask = {
+  taskId: number;
+  isEditable: boolean;
+  sharedTo: number[];
+};
+
+export type Role = {
+  Id: number;
+  UserType: string;
 };

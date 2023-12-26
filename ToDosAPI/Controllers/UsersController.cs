@@ -62,10 +62,18 @@ public class UsersController : BaseController
         return Ok(users);
     }
 
+    [HttpGet("roles")]
+    public async Task<ActionResult> GetUserRoles(int userId)
+    {
+        var roles = await _userService.GetUserRolesAsync(userId);
+            return Ok(roles);
+        
+    }
+
     [HttpGet("token")]
     public async Task<ActionResult> RefreshToken()
     {
-        var token = await _userService.RefreshTokenAsync(User.GetId(), User.GetUsername(), User.GetFullname(), User.GetRoles());
+        var token = await _userService.RefreshTokenAsync(User.GetId(), User.GetUsername()!, User.GetFullname()!, User.GetRoles());
         if (!string.IsNullOrEmpty(token))
         {
             return Ok(token);

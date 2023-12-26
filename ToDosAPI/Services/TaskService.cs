@@ -2,6 +2,7 @@
 using System.Net.Mail;
 using System.Threading.Tasks;
 using ToDosAPI.Data;
+using ToDosAPI.Models;
 using ToDosAPI.Models.Dtos;
 using ToDosAPI.Models.Entities;
 
@@ -62,9 +63,9 @@ public class TaskService
         return await _userTaskRepo.GetAllTasksAsync();
     }
 
-    public async Task<List<UserWithSharedTask>> GetUserTasksAsync(int userId)
+    public async Task<GetUserTasksResponse> GetUserTasksAsync(int userId, int pageNumber, int pageSize)
     {
-        return await _userTaskRepo.GetUserTasksAsync(userId);
+        return await _userTaskRepo.GetUserTasksAsync(userId, pageNumber, pageSize);
     }
 
     public async Task<TaskAttachment?> GetTaskAttachmentAsync(int attachmentId)
@@ -77,12 +78,12 @@ public class TaskService
         return await _userTaskRepo.GetTaskByIdAsync(taskId);
     }
 
-    public async Task<bool> ShareTaskAsync(ShareTaskDto shareTaskDto)
+    public async Task<bool> ShareTaskAsync(ShareTaskDto shareTaskDto, int userId)
     {
-        var created = false;
-        foreach (int user in shareTaskDto.SharedTo) {
-           var status = await _userTaskRepo.ShareTaskAsync(user, shareTaskDto.TaskId, shareTaskDto.IsEditable);
+       
+        foreach (int userToShare in shareTaskDto.SharedTo) {
+           var status = await _userTaskRepo.ShareTaskAsync(userToShare, shareTaskDto.TaskId, shareTaskDto.IsEditable, userId);
         }
-        return created;
+        return true;
     }
 }

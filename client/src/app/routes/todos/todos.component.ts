@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { User, UserInfo } from '../../shared/models/auth';
-import { ToDoTask } from '../../shared/models/todo';
+import { GetUserTasksResponse, ToDoTask } from '../../shared/models/todo';
 import { AuthService } from '../../services/auth.service';
 import { TodosService } from '../../services/todos.service';
 import { TodoItemComponent } from './todo-item/todo-item.component';
@@ -31,6 +31,9 @@ export class TodosComponent implements OnInit {
   userInfo!: User;
   todos: ToDoTask[] = [];
   toDoTask: ToDoTask | undefined;
+  tasksResponse: GetUserTasksResponse | undefined;
+  pages: number[] = [];
+  currentpage = 1;
 
   constructor(
     private authService: AuthService,
@@ -67,10 +70,12 @@ export class TodosComponent implements OnInit {
     this.authService.currentUser$.subscribe({
       next: (res) => {
         this.userInfo = res!;
-        this.todosService.getUserTodos(this.userInfo.nameid).subscribe({
+        this.todosService.getUserTodos(this.userInfo.nameid, this.currentpage, 5).subscribe({
           next: (res) => {
-            this.todos = res;
-            console.log(this.todos);
+            this.tasksResponse = res;
+            this.todos = res.tasks;
+            this.pages = Array.from(new Array(res.totalPages), (x, i) => i + 1);
+            this.currentpage = res.pageNumber;
           },
           error: (res) => {
             this.toastr.error(res.error.message);
@@ -78,5 +83,10 @@ export class TodosComponent implements OnInit {
         });
       },
     });
+  }
+
+  changePage(pageNumber: number) {
+    this.currentpage = pageNumber;
+    this.loadTodos();
   }
 }

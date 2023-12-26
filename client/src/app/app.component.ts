@@ -25,6 +25,9 @@ export class AppComponent {
     var fiveMinBefore = new Date(currentExpiryTime - 300000);
     var timeNow = new Date(Date.now());
 
-    if (fiveMinBefore > timeNow) this.authService.refreshToken().subscribe({});
+    if (fiveMinBefore > timeNow) {
+      this.authService.refreshToken().subscribe({});
+      console.log('hello');
+    }
   }, 1000);
 }

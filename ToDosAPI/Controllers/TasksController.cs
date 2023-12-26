@@ -28,8 +28,8 @@ public class TasksController : BaseController
         return Ok(tasks);
     }
 
-    [HttpGet("{userId:int}")]
-    public async Task<ActionResult> GetAllTasks(int userId)
+    [HttpGet("usertasks")]
+    public async Task<ActionResult> GetAllTasks([FromQuery] int userId, [FromQuery] int  pageNumber, [FromQuery] int pageSize)
     {
         var currentUserId = User.GetId();
         var roles = User.GetRoles(); // send as a parameters
@@ -37,7 +37,7 @@ public class TasksController : BaseController
         if (userId != currentUserId && !roles.Contains("Admin") && !roles.Contains("Moderator"))
             return Unauthorized("Unauthorized: due to invalid credentials");
 
-        var tasks = await _taskService.GetUserTasksAsync(userId);
+        var tasks = await _taskService.GetUserTasksAsync(userId, pageNumber, pageSize);
         return Ok(tasks);
     }
 
@@ -52,7 +52,7 @@ public class TasksController : BaseController
     [HttpPost("share")]
     public async Task<ActionResult> ShareTask(ShareTaskDto shareTaskDto)
     {
-        var result = await _taskService.ShareTaskAsync(shareTaskDto);
+        var result = await _taskService.ShareTaskAsync(shareTaskDto, User.GetId());
         if (!result) return BadRequest("Failed to share task");
         return Ok(result);
     }

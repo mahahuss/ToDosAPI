@@ -19,6 +19,7 @@ import { TodoDialogComponent } from '../todo-dialog/todo-dialog.component';
 import { FormsModule } from '@angular/forms';
 import { TodoFilesDialogComponent } from '../todo-files-dialog/todo-files-dialog.component';
 import { ShareTaskDialogComponent } from '../share-task-dialog/share-task-dialog.component';
+import { User } from '../../../shared/models/auth';
 
 @Component({
   selector: 'app-todo-item',
@@ -29,6 +30,7 @@ import { ShareTaskDialogComponent } from '../share-task-dialog/share-task-dialog
 })
 export class TodoItemComponent implements OnInit {
   @Input() todoTask: ToDoTask | undefined = undefined;
+  @Input() currentUser: User | undefined = undefined;
   @Output() taskUpdated = new EventEmitter<ToDoTask>();
   @Output() deleteStatusChanged = new EventEmitter();
   content = '';

@@ -4,10 +4,11 @@ import { User, UserInfo } from '../../shared/models/auth';
 import { AuthService } from '../../services/auth.service';
 import { UsersTasksDialogComponent } from './users-tasks-dialog/users-tasks-dialog.component';
 import { ToastrService } from 'ngx-toastr';
+import { UsersEditDialogComponent } from './users-edit-dialog/users-edit-dialog.component';
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [CommonModule, UsersTasksDialogComponent],
+  imports: [CommonModule, UsersTasksDialogComponent, UsersEditDialogComponent],
   templateUrl: './users.component.html',
   styleUrl: './users.component.scss',
 })
@@ -15,8 +16,10 @@ export class UsersComponent implements OnInit {
   userInfo!: User;
   isAdmin = false;
   tasksViewStatus = false;
+  editViewStatus = false;
+  user: UserInfo | undefined;
   users: UserInfo[] = [];
-  crrrentUserId: number | undefined;
+  currentUserId: number | undefined;
   constructor(
     private authService: AuthService,
     private toastr: ToastrService,
@@ -59,10 +62,19 @@ export class UsersComponent implements OnInit {
 
   viewTasks(userId: number) {
     this.tasksViewStatus = !this.tasksViewStatus;
-    this.crrrentUserId = userId;
+    this.currentUserId = userId;
   }
 
   tasksViewClosed() {
     this.tasksViewStatus = false;
+  }
+
+  editViewClosed() {
+    this.editViewStatus = false;
+  }
+
+  openEditDialog(user: UserInfo) {
+    this.editViewStatus = !this.editViewStatus;
+    this.user = user;
   }
 }

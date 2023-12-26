@@ -5,14 +5,18 @@
     >
       @if (!updateClickStatus) {
         <div class="flex justify-start flex-col pl-4">
-          <div class="flex-grow font-medium text-lg whitespace-pre" (click)="updateStatus(todoTask!)">
+          <div
+            [class.line-through]="todoTask.status"
+            class="flex-grow font-medium text-lg whitespace-pre"
+            (click)="updateStatus(todoTask!)"
+          >
             {{ todoTask.taskContent }}
           </div>
 
           <div class="text-[13px] font-normal text-gray-500 tracking-wide">
             {{ todoTask.createdDate | date }}
           </div>
-          @if (todoTask.sharedBy != null) {
+          @if (todoTask.createdBy != currentUser?.nameid) {
             <div class="flex flex-row">
               <div class="text-[11px] font-medium text-indigo-700 tracking-wide">
                 <i class="fa-solid fa-share text-indigo-700 fa-xs"></i>
@@ -29,7 +33,7 @@
               </button>
             </div>
           }
-          @if (todoTask.sharedBy == null) {
+          @if (todoTask.createdBy == currentUser?.nameid) {
             <div class="pl-4">
               <button class="btn btn-outline btn-error btn-xs btn-circle" (click)="onDeleteClick()">
                 <i class="fa-solid fa-trash"></i>
@@ -55,7 +59,7 @@
               </button>
             </div>
           }
-          @if (todoTask.sharedBy == null) {
+          @if (todoTask.createdBy == currentUser?.nameid) {
             <div class="pl-4">
               <button class="btn btn-outline btn-default btn-xs btn-circle" (click)="shareTask()">
                 <i class="fa fa-share-alt"></i>

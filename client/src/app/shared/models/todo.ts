@@ -26,3 +26,10 @@ export type UserTaskFile = {
   taskId: number;
   fileName: string;
 };
+
+export type GetUserTasksResponse = {
+  pageNumber: number;
+  totalPages: number;
+  pageSize: number;
+  tasks: ToDoTask[];
+};

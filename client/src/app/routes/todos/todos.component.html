@@ -8,6 +8,7 @@
         @for (todo of todos; track $index) {
           <app-todo-item
             [todoTask]="todo"
+            [currentUser]="userInfo"
             (taskUpdated)="taskUpdated($event)"
             (deleteStatusChanged)="deleteStatusChanged(todo)"
           />
@@ -16,6 +17,26 @@
           <app-todo-dialog [todoTask]="toDoTask" (taskDeleted)="taskDeleted($event)"></app-todo-dialog>
         }
       </div>
+      <nav aria-label="Page navigation example" class="flex justify-center">
+        <ul class="inline-flex -space-x-px text-sm">
+          @for (page of pages; track $index) {
+            <li>
+              <button
+                (click)="changePage(page)"
+                [class.text-gray-500]="tasksResponse!.pageNumber != page"
+                [class.bg-white]="tasksResponse!.pageNumber != page"
+                [class.border-gray-300]="tasksResponse!.pageNumber != page"
+                [class.text-blue-600]="tasksResponse!.pageNumber == page"
+                [class.border-gray-300]="tasksResponse!.pageNumber == page"
+                [class.bg-blue-50]="tasksResponse!.pageNumber == page"
+                class="flex items-center justify-center px-3 h-8 leading-tight border hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+              >
+                {{ page }}
+              </button>
+            </li>
+          }
+        </ul>
+      </nav>
     </div>
   </div>
 </div>
