@@ -125,8 +125,9 @@ public class UserRepository
     public async Task<bool> EditUserProfileAsync(EditProfileByAdminDto editProfileByAdminDto)
     {
         await using var con = new SqlConnection(_context.ConnectionString);
-       var check = await con.ExecuteAsync("sp_UsersRolesDelete", new { editProfileByAdminDto.Id }) > 0;
-        if (!check) return false;
+        /*var check = */
+        await con.ExecuteAsync("sp_UsersRolesDelete", new { editProfileByAdminDto.Id }); /* > 0;*/
+        //if (!check) return false;
 
         foreach (Role role in editProfileByAdminDto.Roles)
         {

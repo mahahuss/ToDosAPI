@@ -29,9 +29,6 @@ export class TodoDialogComponent {
         this.taskDeleted.emit(false);
         this.toastr.success(res.message);
       },
-      error: (res) => {
-        this.toastr.error(res.error.message);
-      },
     });
   }
 }

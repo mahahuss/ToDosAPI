@@ -40,9 +40,6 @@ export class UsersComponent implements OnInit {
       next: (res) => {
         this.users = res;
       },
-      error: (res) => {
-        this.toastr.error(res.error.message);
-      },
     });
   }
 
@@ -53,9 +50,6 @@ export class UsersComponent implements OnInit {
       next: (res) => {
         const indexToUpdate = this.users.findIndex((user) => user.id === userId);
         if (indexToUpdate !== -1) this.users[indexToUpdate].status = status;
-      },
-      error: (res) => {
-        this.toastr.error(res.error.message);
       },
     });
   }
@@ -85,6 +79,5 @@ export class UsersComponent implements OnInit {
       this.users[indexToUpdate].roles.clear();
       user.roles.forEach((role) => this.users[indexToUpdate].roles.set(role.id, role.userType));
     }
-    this.toastr.success('updated successfully');
   }
 }

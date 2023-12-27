@@ -36,10 +36,6 @@ export class UsersEditDialogComponent implements OnInit {
     this.authService.getUserRoles(this.user!.id).subscribe({
       next: (res) => {
         this.userRoles = res;
-        console.log(res);
-      },
-      error: (err) => {
-        console.log(err.error.message);
       },
     });
   }
@@ -47,10 +43,6 @@ export class UsersEditDialogComponent implements OnInit {
     this.authService.getRoles().subscribe({
       next: (res) => {
         this.roles = res;
-        console.log(res);
-      },
-      error: (err) => {
-        console.log(err.error.message);
       },
     });
   }
@@ -65,15 +57,12 @@ export class UsersEditDialogComponent implements OnInit {
       fullname: this.user!.fullName,
       roles: this.userRoles,
     };
-    console.log(this.userInfo);
 
     this.authService.updateUser(this.userInfo).subscribe({
       next: (res) => {
+        this.toastr.success('updated successfully');
         this.userUpdated.emit(this.userInfo);
         this.onClose();
-      },
-      error: (err) => {
-        console.log(err.error.message);
       },
     });
   }

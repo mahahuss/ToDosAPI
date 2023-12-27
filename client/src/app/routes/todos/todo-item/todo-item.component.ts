@@ -58,9 +58,6 @@ export class TodoItemComponent implements OnInit {
         this.taskUpdated.emit(task);
         this.toastr.success('The task updated successfully');
       },
-      error: (res) => {
-        this.toastr.error(res.error.message);
-      },
     });
   }
 
@@ -84,9 +81,6 @@ export class TodoItemComponent implements OnInit {
         this.toggleEdit();
         this.taskUpdated.emit(task);
         this.toastr.success('The task updated successfully');
-      },
-      error: (res) => {
-        this.toastr.error(res.error.message);
       },
     });
   }

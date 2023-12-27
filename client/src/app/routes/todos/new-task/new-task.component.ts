@@ -47,9 +47,6 @@ export class NewTaskComponent {
         this.files = [];
         this.toastr.success('The task added successfully');
       },
-      error: (res) => {
-        this.toastr.error(res.error.message);
-      },
     });
   }
 }

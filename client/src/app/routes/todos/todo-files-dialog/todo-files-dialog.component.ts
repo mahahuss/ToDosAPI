@@ -31,9 +31,6 @@ export class TodoFilesDialogComponent implements OnInit {
       next: (res) => {
         saveAs.saveAs(res, attachment.fileName);
       },
-      error: (res) => {
-        this.toastr.error(res.error.message);
-      },
     });
   }
 }

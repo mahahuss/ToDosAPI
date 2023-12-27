@@ -84,3 +84,4 @@
 - autocomplete field for sharing task to users -
 - pagination for tasks -
 - enable admin to edit user's name and roles (roles as a multiselect dropdownlist) -
+- remove errors from subscribes -

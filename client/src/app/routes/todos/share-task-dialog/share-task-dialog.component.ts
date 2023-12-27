@@ -36,9 +36,6 @@ export class ShareTaskDialogComponent implements OnInit {
       next: (res) => {
         this.users = res;
       },
-      error: (res) => {
-        this.toastr.error(res.error.message);
-      },
     });
   }
 
@@ -55,13 +52,8 @@ export class ShareTaskDialogComponent implements OnInit {
 
     this.TodosService.shareTask(sharedtask).subscribe({
       next: (res) => {
-        console.log(res);
         this.onClose();
-        this.toastr.success('shred successfully');
-      },
-      error: (res) => {
-        console.log(res.error.message);
-        this.toastr.error('faild to share: ' + res.error.message);
+        this.toastr.success('shared successfully');
       },
     });
   }

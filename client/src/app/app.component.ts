@@ -27,7 +27,6 @@ export class AppComponent {
 
     if (fiveMinBefore > timeNow) {
       this.authService.refreshToken().subscribe({});
-      console.log('hello');
     }
   }, 1000);
 }

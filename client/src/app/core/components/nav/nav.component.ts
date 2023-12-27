@@ -35,9 +35,6 @@ export class NavComponent {
           this.isLoggedin = true;
         }
       },
-      error: (err) => {
-        this.toastr.error(err.error.message);
-      },
     });
   }
 

@@ -6,7 +6,6 @@ import { environment } from '../../../environments/environment.development';
 import { FileTypes } from 'glob/dist/commonjs/glob';
 import { FormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-// import path from 'path';
 
 @Component({
   selector: 'app-profile',
@@ -63,9 +62,6 @@ export class ProfileComponent implements OnInit {
         localStorage.setItem('fullname', this.name);
         this.userInfo.given_name = this.name;
         this.toastr.success(result.message);
-      },
-      error: (res) => {
-        this.toastr.error(res.message);
       },
     });
   }

@@ -37,9 +37,6 @@ export class UsersTasksDialogComponent implements OnInit {
         next: (res) => {
           this.todos = res.tasks;
         },
-        error: (err) => {
-          this.toastr.error(err.error.message);
-        },
       });
     }
   }
@@ -48,9 +45,6 @@ export class UsersTasksDialogComponent implements OnInit {
     this.todosService.getTaskAttachment(attachment.id).subscribe({
       next: (res) => {
         saveAs.saveAs(res, attachment.fileName);
-      },
-      error: (err) => {
-        this.toastr.error(err.error.message);
       },
     });
   }

@@ -75,9 +75,6 @@ export class TodosComponent implements OnInit {
             this.pages = Array.from(new Array(res.totalPages), (x, i) => i + 1);
             this.currentpage = res.pageNumber;
           },
-          error: (res) => {
-            this.toastr.error(res.error.message);
-          },
         });
       },
     });
