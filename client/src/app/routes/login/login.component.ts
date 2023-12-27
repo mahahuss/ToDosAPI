@@ -34,16 +34,14 @@ export class LoginComponent implements OnInit {
   login() {
     if (!this.loginForm.valid) return;
     this.loginStatus = true;
-    setTimeout(() => {
-      this.authService.login(this.f.username.value, this.f.password.value).subscribe({
-        next: () => {
-          this.route.navigate(['/home']);
-        },
-        error: (res) => {
-          this.loginStatus = false;
-        },
-      });
-    }, 3000);
+    this.authService.login(this.f.username.value, this.f.password.value).subscribe({
+      next: () => {
+        this.route.navigate(['/home']);
+      },
+      error: (res) => {
+        this.loginStatus = false;
+      },
+    });
   }
 
   private initForm() {

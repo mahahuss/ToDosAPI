@@ -1,9 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { saveAs } from 'file-saver';
 import { TodosService } from '../../../services/todos.service';
 import { ToDoTask, UserTaskFile } from '../../../shared/models/todo';
-import { ToastrService } from 'ngx-toastr';
-import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-todo-files-dialog',
@@ -16,8 +15,7 @@ export class TodoFilesDialogComponent implements OnInit {
   @Input() todoTask: ToDoTask | undefined = undefined;
   @Output() filesViewClosed = new EventEmitter();
   constructor(
-    private todosService: TodosService,
-    private toastr: ToastrService,
+    private todosService: TodosService
   ) {}
 
   ngOnInit(): void {}
@@ -29,7 +27,7 @@ export class TodoFilesDialogComponent implements OnInit {
   getFile(attachment: UserTaskFile) {
     this.todosService.getTaskAttachment(attachment.id).subscribe({
       next: (res) => {
-        saveAs.saveAs(res, attachment.fileName);
+        saveAs(res, attachment.fileName);
       },
     });
   }

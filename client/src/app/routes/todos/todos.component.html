@@ -5,10 +5,10 @@
       <div class="bg-white shadow-md rounded-lg px-3 py-2 mb-4">
         <div class="block text-indigo-700 text-lg font-semibold py-2 px-2">Todos List</div>
         <app-new-task (onTaskCreated)="taskAdded($event)" />
-        @for (todo of todos; track $index) {
+        @for (todo of todos; track todo) {
           <app-todo-item
             [todoTask]="todo"
-            [currentUser]="userInfo"
+            [currentUserId]="currentUserId"
             (taskUpdated)="taskUpdated($event)"
             (deleteStatusChanged)="deleteStatusChanged(todo)"
           />

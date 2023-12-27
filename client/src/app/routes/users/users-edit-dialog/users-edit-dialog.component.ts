@@ -1,11 +1,10 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../../../services/auth.service';
-import { TodosService } from '../../../services/todos.service';
-import { ToastrService } from 'ngx-toastr';
-import { Role, UpdateUser, UserInfo } from '../../../shared/models/auth';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { ToastrService } from 'ngx-toastr';
+import { AuthService } from '../../../services/auth.service';
+import { Role, UpdateUser, UserInfo } from '../../../shared/models/auth';
 
 @Component({
   selector: 'app-users-edit-dialog',
@@ -21,17 +20,17 @@ export class UsersEditDialogComponent implements OnInit {
 
   roles: Role[] = [];
   userRoles: Role[] = [];
-  userInfo: UpdateUser | undefined = undefined;
 
   constructor(
     private authService: AuthService,
-    private todosService: TodosService,
     private toastr: ToastrService,
   ) {}
+
   ngOnInit(): void {
     this.loadRoles();
     this.loadUserRoles();
   }
+
   loadUserRoles() {
     this.authService.getUserRoles(this.user!.id).subscribe({
       next: (res) => {
@@ -39,6 +38,7 @@ export class UsersEditDialogComponent implements OnInit {
       },
     });
   }
+
   loadRoles() {
     this.authService.getRoles().subscribe({
       next: (res) => {
@@ -52,16 +52,16 @@ export class UsersEditDialogComponent implements OnInit {
   }
 
   updateUser() {
-    this.userInfo = {
+    const userInfo: UpdateUser = {
       id: this.user!.id,
       fullname: this.user!.fullName,
       roles: this.userRoles,
     };
 
-    this.authService.updateUser(this.userInfo).subscribe({
-      next: (res) => {
+    this.authService.updateUser(userInfo).subscribe({
+      next: () => {
         this.toastr.success('updated successfully');
-        this.userUpdated.emit(this.userInfo);
+        this.userUpdated.emit(userInfo);
         this.onClose();
       },
     });

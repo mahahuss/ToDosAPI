@@ -48,28 +48,30 @@ public class UserService
         return null;
     }
 
-    public async Task<string?> LoginAsync(string username, string password)
+    public async Task<Result<string>> LoginAsync(string username, string password)
     {
         var userCredential = await _userRepo.GetUserCredentialsAsync(username);
 
-        if (userCredential is null) return null;
+        if (userCredential is null) return Result<string>.Failure("User was not found");
 
         var result = _passwordHasherService.CheckPassword(password, userCredential.Password!, userCredential.Salt!);
-        if (!result) return null;
+
+        if (!result) return Result<string>.Failure("Username or password incorrect");
 
         var userInfo = await _userRepo.GetUserWithRolesAsync(username);
-        return userInfo != null && userInfo.Status ? _userToken.GenerateToken(userInfo!) : null;
+        return userInfo != null && userInfo.Status
+            ? _userToken.GenerateToken(userInfo!)
+            : Result<string>.Failure("Failed to generate token");
     }
 
     public async Task<bool> EditProfileAsync(UpdateUserProfileDto updateUserInfo, int id)
-        
-        
+
+
     {
-        
-        if (updateUserInfo.Image != null && updateUserInfo.Image.Length < 200000 && _fileService.CheckContentType(updateUserInfo.Image.FileName) == "image/png")
+        if (updateUserInfo.Image != null && updateUserInfo.Image.Length < 200000 &&
+            _fileService.CheckContentType(updateUserInfo.Image.FileName) == "image/png")
         {
-           
-            var filename = id.ToString()+ System.IO.Path.GetExtension(updateUserInfo.Image.FileName);
+            var filename = id.ToString() + System.IO.Path.GetExtension(updateUserInfo.Image.FileName);
             await using var fileStream = new FileStream(Path.Combine(_imageDir, filename), FileMode.Create);
             await updateUserInfo.Image.CopyToAsync(fileStream);
         }
@@ -82,7 +84,6 @@ public class UserService
     public async Task<List<GetUsers>> GetUsersAsync()
     {
         return await _userRepo.GetUsersAsync();
-
     }
 
     public async Task<bool> ChangeUserStatusAsync(int userId, bool status)
@@ -90,15 +91,15 @@ public class UserService
         return await _userRepo.ChangeUserStatusAsync(userId, status);
     }
 
-    public async Task<string?> RefreshTokenAsync(int id, string username, string fullname, List<string> roles)
+    public string RefreshToken(int id, string username, string fullname, List<string> roles)
     {
-        return  _userToken.GenerateToken(new UserWithRolesDto { FullName = fullname, Id = id, Roles = roles, Username = username, Status = true }); 
+        return _userToken.GenerateToken(new UserWithRolesDto
+            { FullName = fullname, Id = id, Roles = roles, Username = username, Status = true });
     }
 
     public async Task<List<Role>> GetUserRolesAsync(int userId)
     {
         return await _userRepo.GetUserRolesAsync(userId);
-
     }
 
     public async Task<List<Role>> GetAllRolesAsync()

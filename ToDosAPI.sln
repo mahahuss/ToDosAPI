@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.7.34221.43
-MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToDosAPI", "ToDosAPI\ToDosAPI.csproj", "{F005FF89-FA0F-4A4A-B394-6E61C7A8640E}"
 EndProject
 Global

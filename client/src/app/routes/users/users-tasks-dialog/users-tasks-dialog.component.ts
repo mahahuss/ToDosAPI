@@ -1,10 +1,8 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ToDoTask, UserTaskFile } from '../../../shared/models/todo';
-import { AuthService } from '../../../services/auth.service';
-import { TodosService } from '../../../services/todos.service';
-import { ToastrService } from 'ngx-toastr';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import saveAs from 'file-saver';
+import { TodosService } from '../../../services/todos.service';
+import { ToDoTask, UserTaskFile } from '../../../shared/models/todo';
 
 @Component({
   selector: 'app-users-tasks-dialog',
@@ -18,11 +16,7 @@ export class UsersTasksDialogComponent implements OnInit {
   @Output() tasksViewClosed = new EventEmitter();
   todos: ToDoTask[] = [];
 
-  constructor(
-    private authService: AuthService,
-    private todosService: TodosService,
-    private toastr: ToastrService,
-  ) {}
+  constructor(private todosService: TodosService) {}
   ngOnInit(): void {
     this.loadTodos();
   }
@@ -44,7 +38,7 @@ export class UsersTasksDialogComponent implements OnInit {
   getFile(attachment: UserTaskFile) {
     this.todosService.getTaskAttachment(attachment.id).subscribe({
       next: (res) => {
-        saveAs.saveAs(res, attachment.fileName);
+        saveAs(res, attachment.fileName);
       },
     });
   }

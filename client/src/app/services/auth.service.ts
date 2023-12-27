@@ -1,10 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { jwtDecode } from 'jwt-decode';
-import { BehaviorSubject, Observable, firstValueFrom, map } from 'rxjs';
+import { BehaviorSubject, Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment.development';
-import { Role, UpdateUser, User, UserInfo, UserProfile } from '../shared/models/auth';
-import { ToDoTask } from '../shared/models/todo';
+import { Role, UpdateUser, User, UserInfo } from '../shared/models/auth';
 import { ApiResponse } from '../shared/models/common';
 
 @Injectable({

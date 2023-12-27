@@ -34,7 +34,7 @@ public class TokenService
         var token = new JwtSecurityToken(_configuration["Jwt:Issuer"],
             _configuration["Jwt:Issuer"],
             claims,
-            expires: DateTime.Now.AddMinutes(120),
+            expires: DateTime.Now.AddMinutes(15),
             signingCredentials: credentials);
 
         var handler = new JwtSecurityTokenHandler();

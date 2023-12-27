@@ -29,7 +29,7 @@ public class TasksController : BaseController
     }
 
     [HttpGet("usertasks")]
-    public async Task<ActionResult> GetAllTasks([FromQuery] int userId, [FromQuery] int  pageNumber, [FromQuery] int pageSize)
+    public async Task<ActionResult> GetAllTasks([FromQuery] int userId, [FromQuery] int pageNumber, [FromQuery] int pageSize)
     {
         var currentUserId = User.GetId();
         var roles = User.GetRoles(); // send as a parameters
@@ -52,9 +52,8 @@ public class TasksController : BaseController
     [HttpPost("share")]
     public async Task<ActionResult> ShareTask(ShareTaskDto shareTaskDto)
     {
-        var result = await _taskService.ShareTaskAsync(shareTaskDto, User.GetId());
-        if (!result) return BadRequest("Failed to share task");
-        return Ok(result);
+        await _taskService.ShareTaskAsync(shareTaskDto, User.GetId());
+        return Ok();
     }
 
     [HttpPut]
@@ -64,7 +63,7 @@ public class TasksController : BaseController
 
         if (task == null) return NotFound("The Selected Task Not Exist");
         //check also if the task shared with the user 
-       // if (task.CreatedBy != User.GetId()) return Unauthorized("Unauthorized: due to invalid credentials");
+        // if (task.CreatedBy != User.GetId()) return Unauthorized("Unauthorized: due to invalid credentials");
 
         var check = await _taskService.EditTaskAsync(editTaskDto);
         if (check) return Ok("Updated successfully");
@@ -98,7 +97,7 @@ public class TasksController : BaseController
         new FileExtensionContentTypeProvider().TryGetContentType(file.FileName, out var contentType);
 
         if (string.IsNullOrEmpty(contentType)) contentType = "application/octet-stream";
-        
+
         return PhysicalFile(filePath, contentType);
     }
 }

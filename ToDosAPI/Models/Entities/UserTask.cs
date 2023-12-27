@@ -1,6 +1,4 @@
-﻿using ToDosAPI.Models.Dtos;
-
-namespace ToDosAPI.Models.Entities;
+﻿namespace ToDosAPI.Models.Entities;
 
 public class UserTask
 {
@@ -10,13 +8,10 @@ public class UserTask
     public int CreatedBy { get; set; }
     public bool Status { get; set; }
     public List<TaskAttachment> Files { get; set; } = new();
-
 }
-
 
 public class UserWithSharedTask : UserTask
 {
     public bool? IsEditable { get; set; }
     public string? SharedBy { get; set; }
-
 }

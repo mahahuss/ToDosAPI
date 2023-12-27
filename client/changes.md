@@ -67,21 +67,27 @@
 
 ### 12-19-2023
 
-- change user active type to boolean -
-- remove all console.log -
-- add a new interceptor to handle errors (exception) -
-- move content type checking to a function (API) -
-- use FileSaver.js library -
-- fix roles badge for single role -
-- fix name field not updating after profile update -
-- create new token after refresh, also create a function in the background that refreshes the token every expTime - 5mins x -
-- move task date to be under the title (make it smaller) -
-- make the task sharable , there are two types of share, share with edit, or without, the task can be shared with one user or more -
-- if a user has a task that's shared with them, it appears with their tasks, but it should be noted that it's a shared task -
+- ~~change user active type to boolean -~~
+- ~~remove all console.log -~~
+- ~~add a new interceptor to handle errors (exception) -~~ /
+- ~~move content type checking to a function (API) -~~
+- ~~use FileSaver.js library -~~
+- ~~fix roles badge for single role -~~ / -> get user from db when refreshing token
+- ~~fix name field not updating after profile update -~~
+- ~~create new token after refresh, also create a function in the background that refreshes the token every expTime - 5mins -~~
+- ~~move task date to be under the title (make it smaller) -~~ /
+- make the task sharable , there are two types of share, share with edit, or without, the task can be shared with one user or more - XX
+~~- if a user has a task that's shared with them, it appears with their tasks, but it should be noted that it's a shared task -~~
 
-## 12-21-2023
+### 12-21-2023
 
-- autocomplete field for sharing task to users -
-- pagination for tasks -
-- enable admin to edit user's name and roles (roles as a multiselect dropdownlist) -
-- remove errors from subscribes -
+~~- autocomplete field for sharing task to users -~~
+~~- pagination for tasks - ~~/
+~~- enable admin to edit user's name and roles (roles as a multiselect dropdownlist) -~~ /
+~~- remove errors from subscribes -~~
+
+### 12-27-2023
+
+- fix all errors in console.
+- fix sharing
+- fix roles updating

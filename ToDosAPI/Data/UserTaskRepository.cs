@@ -1,8 +1,10 @@
 ﻿using Dapper;
 using Microsoft.Data.SqlClient;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Transactions;
 using ToDosAPI.Models;
 using ToDosAPI.Models.Dtos;
 using ToDosAPI.Models.Entities;
@@ -52,27 +54,27 @@ public class UserTaskRepository
         return (await con.QueryAsync<UserTask>("sp_TasksGetAll")).ToList();
     }
 
-    public async Task<GetUserTasksResponse> GetUserTasksAsync(int userId,int pageNumber, int pageSize)
+    public async Task<GetUserTasksResponse> GetUserTasksAsync(int userId, int pageNumber, int pageSize)
     {
         await using var con = new SqlConnection(_context.ConnectionString);
-        var tasks = new Dictionary<int, UserWithSharedTask>();
-        var response = new GetUserTasksResponse();
         //1- get tasks count
         var totalTasks = await con.QuerySingleAsync<int>("sp_TasksGetCount",
-            new { userId} );
+            new { userId });
 
         //assign values
-        response.TotalPages = 0;
-        response.PageSize = pageSize;
-        response.PageNumber = pageNumber;
-        response.Tasks = tasks.Values.ToList();
+        var response = new GetUserTasksResponse
+        {
+            PageSize = pageSize,
+            PageNumber = pageNumber
+        };
 
         //2- check
         if (totalTasks == 0) return response;
 
-        var totalPages = (int)Math.Ceiling((double) totalTasks / pageSize);
+        var totalPages = (int)Math.Ceiling((double)totalTasks / pageSize);
         response.TotalPages = totalPages;
         var fromIndex = (pageNumber - 1) * pageSize;
+        var tasks = new Dictionary<int, UserWithSharedTask>();
 
         //get tasks
         await con.QueryAsync<UserWithSharedTask, TaskAttachment?, UserWithSharedTask>("sp_TasksGetUserTasks",
@@ -88,7 +90,7 @@ public class UserTaskRepository
                     taskInDictionary.Files.Add(file);
 
                 return task;
-            }, new { userId, fromIndex, toIndex= pageSize });
+            }, new { userId, fromIndex, toIndex = pageSize });
 
         response.Tasks = tasks.Values.ToList();
         return response;
@@ -97,9 +99,8 @@ public class UserTaskRepository
     public async Task<TaskAttachment?> GetTaskAttachmentAsync(int userId)
     {
         await using var con = new SqlConnection(_context.ConnectionString);
-        var attachment =  await con.QueryFirstOrDefaultAsync<TaskAttachment>("sp_TasksAttachmentsGet", new { Id = userId });
-         return attachment;
-
+        var attachment = await con.QueryFirstOrDefaultAsync<TaskAttachment>("sp_TasksAttachmentsGet", new { Id = userId });
+        return attachment;
     }
 
     public async Task<TasksDto?> GetTaskByIdAsync(int taskId)
@@ -110,10 +111,22 @@ public class UserTaskRepository
         return userTask;
     }
 
-    public async Task<bool> ShareTaskAsync(int userToShare, int taskId, bool isEditable, int userId)
+    public async Task ShareTaskAsync(ShareTaskDto shareTaskDto, int userId)
     {
         await using var con = new SqlConnection(_context.ConnectionString);
-        return await con.ExecuteAsync("sp_TasksShare", new { userToShare, taskId, isEditable, userId }) > 0;
-    
+        await con.OpenAsync();
+        await using var tran = await con.BeginTransactionAsync();
+        foreach (var shareWith in shareTaskDto.SharedTo)
+        {
+            await con.ExecuteAsync("sp_TasksShare", new
+            {
+                userToShare = shareWith,
+                shareTaskDto.TaskId,
+                shareTaskDto.IsEditable,
+                userId
+            }, transaction: tran);
+        }
+
+        await tran.CommitAsync();
     }
 }

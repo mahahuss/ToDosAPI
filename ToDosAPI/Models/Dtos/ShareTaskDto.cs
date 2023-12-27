@@ -4,7 +4,6 @@
     {
         public int TaskId { get; set; } = default!;
         public bool IsEditable { get; set; } = default!;
-        public List<int> SharedTo { get; set; } = new List<int>();
-
+        public List<int> SharedTo { get; set; } = [];
     }
 }

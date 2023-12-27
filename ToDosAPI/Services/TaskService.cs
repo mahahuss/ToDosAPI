@@ -31,9 +31,9 @@ public class TaskService
         Directory.CreateDirectory(filePath!);
 
         foreach (var file in task.Files)
-            
         {
-            if (_fileService.CheckContentType(file.FileName) == "application/pdf" || _fileService.CheckContentType(file.FileName) == "image/png")
+            var contentType = _fileService.CheckContentType(file.FileName);
+            if (contentType is "application/pdf" or "image/png")
             {
                 var filename =
                     $"{Path.GetFileNameWithoutExtension(file.FileName)}{Guid.NewGuid().ToString("N")}{Path.GetExtension(file.FileName)}";
@@ -63,27 +63,23 @@ public class TaskService
         return await _userTaskRepo.GetAllTasksAsync();
     }
 
-    public async Task<GetUserTasksResponse> GetUserTasksAsync(int userId, int pageNumber, int pageSize)
+    public Task<GetUserTasksResponse> GetUserTasksAsync(int userId, int pageNumber, int pageSize)
     {
-        return await _userTaskRepo.GetUserTasksAsync(userId, pageNumber, pageSize);
+        return _userTaskRepo.GetUserTasksAsync(userId, pageNumber, pageSize);
     }
 
-    public async Task<TaskAttachment?> GetTaskAttachmentAsync(int attachmentId)
+    public Task<TaskAttachment?> GetTaskAttachmentAsync(int attachmentId)
     {
-        return await _userTaskRepo.GetTaskAttachmentAsync(attachmentId);
+        return _userTaskRepo.GetTaskAttachmentAsync(attachmentId);
     }
 
-    public async Task<TasksDto?> GetTaskByIdAsync(int taskId)
+    public Task<TasksDto?> GetTaskByIdAsync(int taskId)
     {
-        return await _userTaskRepo.GetTaskByIdAsync(taskId);
+        return _userTaskRepo.GetTaskByIdAsync(taskId);
     }
 
-    public async Task<bool> ShareTaskAsync(ShareTaskDto shareTaskDto, int userId)
+    public Task ShareTaskAsync(ShareTaskDto shareTaskDto, int userId)
     {
-       
-        foreach (int userToShare in shareTaskDto.SharedTo) {
-           var status = await _userTaskRepo.ShareTaskAsync(userToShare, shareTaskDto.TaskId, shareTaskDto.IsEditable, userId);
-        }
-        return true;
+        return _userTaskRepo.ShareTaskAsync(shareTaskDto, userId);
     }
 }

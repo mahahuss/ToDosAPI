@@ -28,7 +28,9 @@ export class UsersComponent implements OnInit {
   ngOnInit(): void {
     this.authService.currentUser$.subscribe({
       next: (res) => {
-        this.userInfo = res!;
+        if (!res) return;
+
+        this.userInfo = res;
         this.isAdmin = this.userInfo!.roles.includes('Admin');
       },
     });

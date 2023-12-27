@@ -1,11 +1,10 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { User, UserProfile } from '../../shared/models/auth';
-import { AuthService } from '../../services/auth.service';
-import { environment } from '../../../environments/environment.development';
-import { FileTypes } from 'glob/dist/commonjs/glob';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+import { environment } from '../../../environments/environment.development';
+import { AuthService } from '../../services/auth.service';
+import { User } from '../../shared/models/auth';
 
 @Component({
   selector: 'app-profile',
@@ -15,7 +14,7 @@ import { ToastrService } from 'ngx-toastr';
   styleUrl: './profile.component.scss',
 })
 export class ProfileComponent implements OnInit {
-  userInfo!: User;
+  userInfo: User | undefined;
   photoPath = '';
   name = '';
   timeStamp = '';
@@ -23,7 +22,7 @@ export class ProfileComponent implements OnInit {
   fileToUpload: File | undefined = undefined;
 
   constructor(
-    private authService: AuthService,
+    public authService: AuthService,
     private toastr: ToastrService,
   ) {}
   ngOnInit(): void {
@@ -33,6 +32,9 @@ export class ProfileComponent implements OnInit {
   private initProfile() {
     this.authService.currentUser$.subscribe({
       next: (res) => {
+        if (!res) return;
+        console.log(res);
+
         this.userInfo = res!;
         this.userInfo.roles = Array.isArray(this.userInfo.roles) ? this.userInfo.roles : [this.userInfo.roles];
         this.setPhotoPath();
@@ -41,6 +43,8 @@ export class ProfileComponent implements OnInit {
   }
 
   toggleEdit() {
+    if (!this.userInfo) return;
+
     this.name = this.userInfo.given_name;
     this.updateClickStatus = !this.updateClickStatus;
   }
@@ -50,6 +54,8 @@ export class ProfileComponent implements OnInit {
   }
 
   editProfile() {
+    if (!this.userInfo) return;
+
     const formData = new FormData();
     if (this.fileToUpload && this.fileToUpload.size < 200000) {
       formData.append('Image', this.fileToUpload);
@@ -60,13 +66,15 @@ export class ProfileComponent implements OnInit {
         this.setPhotoPath();
         this.updateClickStatus = false;
         localStorage.setItem('fullname', this.name);
-        this.userInfo.given_name = this.name;
+        this.userInfo!.given_name = this.name;
         this.toastr.success(result.message);
       },
     });
   }
 
   setPhotoPath() {
+    if (!this.userInfo) return;
+
     this.photoPath = environment.apiUrl + 'users/images/' + this.userInfo.nameid;
     this.photoPath = this.photoPath.concat('?', new Date().getTime().toString());
   }

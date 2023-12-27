@@ -1,15 +1,14 @@
-import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { User, UserInfo } from '../../shared/models/auth';
-import { GetUserTasksResponse, ToDoTask } from '../../shared/models/todo';
+import { Component, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { TodosService } from '../../services/todos.service';
-import { TodoItemComponent } from './todo-item/todo-item.component';
+import { User } from '../../shared/models/auth';
+import { GetUserTasksResponse, ToDoTask } from '../../shared/models/todo';
 import { NewTaskComponent } from './new-task/new-task.component';
 import { TodoDialogComponent } from './todo-dialog/todo-dialog.component';
 import { TodoFilesDialogComponent } from './todo-files-dialog/todo-files-dialog.component';
-import { ToastrService } from 'ngx-toastr';
-import { FormsModule } from '@angular/forms';
+import { TodoItemComponent } from './todo-item/todo-item.component';
 
 @Component({
   selector: 'app-todos',
@@ -26,20 +25,20 @@ import { FormsModule } from '@angular/forms';
   ],
 })
 export class TodosComponent implements OnInit {
-  userInfo!: User;
   todos: ToDoTask[] = [];
   toDoTask: ToDoTask | undefined;
   tasksResponse: GetUserTasksResponse | undefined;
   pages: number[] = [];
   currentpage = 1;
+  currentUserId!: number;
 
   constructor(
     private authService: AuthService,
     private todosService: TodosService,
-    private toastr: ToastrService,
   ) {}
 
   ngOnInit(): void {
+    this.currentUserId = this.authService.getCurrentUserFromToken()?.nameid ?? -1;
     this.loadTodos();
   }
 
@@ -65,17 +64,12 @@ export class TodosComponent implements OnInit {
   }
 
   private loadTodos() {
-    this.authService.currentUser$.subscribe({
+    this.todosService.getUserTodos(this.currentUserId, this.currentpage, 5).subscribe({
       next: (res) => {
-        this.userInfo = res!;
-        this.todosService.getUserTodos(this.userInfo.nameid, this.currentpage, 5).subscribe({
-          next: (res) => {
-            this.tasksResponse = res;
-            this.todos = res.tasks;
-            this.pages = Array.from(new Array(res.totalPages), (x, i) => i + 1);
-            this.currentpage = res.pageNumber;
-          },
-        });
+        this.tasksResponse = res;
+        this.todos = res.tasks;
+        this.pages = Array.from(new Array(res.totalPages), (x, i) => i + 1);
+        this.currentpage = res.pageNumber;
       },
     });
   }

@@ -29,8 +29,8 @@ import { User } from '../../../shared/models/auth';
   imports: [CommonModule, TodoDialogComponent, FormsModule, TodoFilesDialogComponent, ShareTaskDialogComponent],
 })
 export class TodoItemComponent implements OnInit {
-  @Input() todoTask: ToDoTask | undefined = undefined;
-  @Input() currentUser: User | undefined = undefined;
+  @Input({ required: true }) todoTask!: ToDoTask;
+  @Input({ required: true }) currentUserId!: number;
   @Output() taskUpdated = new EventEmitter<ToDoTask>();
   @Output() deleteStatusChanged = new EventEmitter();
   content = '';
@@ -47,7 +47,6 @@ export class TodoItemComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.content = this.todoTask!.taskContent;
     this.taskFilesExistence = this.todoTask!.files.length > 0 ? true : false;
   }
 
@@ -62,6 +61,7 @@ export class TodoItemComponent implements OnInit {
   }
 
   toggleEdit() {
+    this.content = this.todoTask!.taskContent;
     this.updateClickStatus = !this.updateClickStatus;
 
     if (this.updateClickStatus) {

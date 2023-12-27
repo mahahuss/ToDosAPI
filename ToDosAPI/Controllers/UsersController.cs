@@ -35,14 +35,8 @@ public class UsersController : BaseController
     [HttpPost("login")]
     public async Task<ActionResult> Login(LoginDto loginDto)
     {
-        var token = await _userService.LoginAsync(loginDto.Username, loginDto.Password);
-
-        if (!string.IsNullOrEmpty(token))
-        {
-            return Ok(token);
-        }
-
-        return Unauthorized("Username or password incorrect");
+        var result = await _userService.LoginAsync(loginDto.Username, loginDto.Password);
+        return result.Match<ActionResult>(Ok, Unauthorized);
     }
 
     [HttpGet("images/{userId}")]
@@ -66,21 +60,20 @@ public class UsersController : BaseController
     public async Task<ActionResult> GetRoles(int userId)
     {
         var roles = await _userService.GetUserRolesAsync(userId);
-            return Ok(roles);
-        
+        return Ok(roles);
     }
+
     [HttpGet("roles")]
     public async Task<ActionResult> GetallRoles()
     {
         var roles = await _userService.GetAllRolesAsync();
         return Ok(roles);
-
     }
 
     [HttpGet("token")]
-    public async Task<ActionResult> RefreshToken()
+    public ActionResult RefreshToken()
     {
-        var token = await _userService.RefreshTokenAsync(User.GetId(), User.GetUsername()!, User.GetFullname()!, User.GetRoles());
+        var token = _userService.RefreshToken(User.GetId(), User.GetUsername()!, User.GetFullname()!, User.GetRoles());
         if (!string.IsNullOrEmpty(token))
         {
             return Ok(token);
@@ -98,6 +91,7 @@ public class UsersController : BaseController
 
         return BadRequest("Failed to update profile");
     }
+
     [HttpPut("editRoles")]
     public async Task<ActionResult> EditProfileByAdmin(EditProfileByAdminDto editProfileByAdminDto)
     {
@@ -106,6 +100,7 @@ public class UsersController : BaseController
 
         return BadRequest("Failed to update profile");
     }
+
     [HttpPut("status")]
     [Authorize(Roles = "Admin")]
     public async Task<ActionResult> ChangeUserStatus(ChangeUserStatusDto changeUserStatusDto)

@@ -16,20 +16,27 @@
         </button>
       </div>
       <div class="p-4 md:p-5 text-center">
-        <label class="block mb-2 text-sm font-medium text-gray-900 ">Select roles</label>
-        <ng-select [items]="roles"  [(ngModel)]="userRoles" [multiple]="true" bindLabel="userType" placeholder="Select users to share with.."> </ng-select>
+        <label class="block mb-2 text-sm font-medium text-gray-900">Select roles</label>
+        <ng-select
+          [items]="roles"
+          [(ngModel)]="userRoles"
+          [multiple]="true"
+          bindLabel="userType"
+          placeholder="Select users to share with.."
+        >
+        </ng-select>
         <div class="pt-5">
-          <label class="block mb-2 text-sm font-medium text-gray-900 ">Edit name</label>
+          <label class="block mb-2 text-sm font-medium text-gray-900">Edit name</label>
 
           <input
             [(ngModel)]="user!.fullName"
             type="text"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
           />
         </div>
         <div class="pt-5">
           <button
-          (click)="updateUser()"
+            (click)="updateUser()"
             class="h-8 px-4 m-2 text-sm text-indigo-100 transition-colors duration-150 bg-indigo-700 rounded-lg focus:shadow-outline hover:bg-indigo-800"
           >
             Update

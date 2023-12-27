@@ -4,19 +4,17 @@
       class="flex justify-between cursor-pointer bg-base-100 text-gray-700 hover:text-gray-400 hover:bg-gray-100 rounded-md px-2 py-4 my-2 shadow"
     >
       @if (!updateClickStatus) {
-        <div class="flex justify-start flex-col pl-4">
+        <div class="flex justify-start flex-col gap-2">
           <div
             [class.line-through]="todoTask.status"
-            class="flex-grow font-medium text-lg whitespace-pre"
+            class="max-w-[330px] font-medium text-lg whitespace-pre-wrap"
             (click)="updateStatus(todoTask!)"
-          >
-            {{ todoTask.taskContent }}
-          </div>
+          >{{ todoTask.taskContent }}</div>
 
-          <div class="text-[13px] font-normal text-gray-500 tracking-wide">
+          <div class="text-[10px] font-normal text-gray-500 tracking-wide">
             {{ todoTask.createdDate | date }}
           </div>
-          @if (todoTask.createdBy != currentUser?.nameid) {
+          @if (todoTask.createdBy != currentUserId) {
             <div class="flex flex-row">
               <div class="text-[11px] font-medium text-indigo-700 tracking-wide">
                 <i class="fa-solid fa-share text-indigo-700 fa-xs"></i>
@@ -33,7 +31,7 @@
               </button>
             </div>
           }
-          @if (todoTask.createdBy == currentUser?.nameid) {
+          @if (todoTask.createdBy == currentUserId) {
             <div class="pl-4">
               <button class="btn btn-outline btn-error btn-xs btn-circle" (click)="onDeleteClick()">
                 <i class="fa-solid fa-trash"></i>
@@ -59,7 +57,7 @@
               </button>
             </div>
           }
-          @if (todoTask.createdBy == currentUser?.nameid) {
+          @if (todoTask.createdBy == currentUserId) {
             <div class="pl-4">
               <button class="btn btn-outline btn-default btn-xs btn-circle" (click)="shareTask()">
                 <i class="fa fa-share-alt"></i>
