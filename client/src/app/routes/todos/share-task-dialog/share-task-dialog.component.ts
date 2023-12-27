@@ -16,9 +16,6 @@ import { TodosService } from '../../../services/todos.service';
   styleUrl: './share-task-dialog.component.scss',
 })
 export class ShareTaskDialogComponent implements OnInit {
-  isChangeToggle(arg0: string) {
-    throw new Error('Method not implemented.');
-  }
   @Input() todoTask: ToDoTask | undefined = undefined;
   @Output() shareViewClosed = new EventEmitter();
   users: UserInfo[] = [];

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { User, UserInfo } from '../../shared/models/auth';
+import { UpdateUser, User, UserInfo } from '../../shared/models/auth';
 import { AuthService } from '../../services/auth.service';
 import { UsersTasksDialogComponent } from './users-tasks-dialog/users-tasks-dialog.component';
 import { ToastrService } from 'ngx-toastr';
@@ -76,5 +76,15 @@ export class UsersComponent implements OnInit {
   openEditDialog(user: UserInfo) {
     this.editViewStatus = !this.editViewStatus;
     this.user = user;
+  }
+
+  userUpdated(user: UpdateUser) {
+    const indexToUpdate = this.users.findIndex((user) => user.id === user.id);
+    if (indexToUpdate !== -1) {
+      this.users[indexToUpdate].fullName = user.fullname;
+      this.users[indexToUpdate].roles.clear();
+      user.roles.forEach((role) => this.users[indexToUpdate].roles.set(role.id, role.userType));
+    }
+    this.toastr.success('updated successfully');
   }
 }

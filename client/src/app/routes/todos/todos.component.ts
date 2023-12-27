@@ -9,7 +9,6 @@ import { NewTaskComponent } from './new-task/new-task.component';
 import { TodoDialogComponent } from './todo-dialog/todo-dialog.component';
 import { TodoFilesDialogComponent } from './todo-files-dialog/todo-files-dialog.component';
 import { ToastrService } from 'ngx-toastr';
-import { AutoCompleteCompleteEvent, AutoCompleteModule } from 'primeng/autocomplete';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -24,7 +23,6 @@ import { FormsModule } from '@angular/forms';
     TodoDialogComponent,
     TodoFilesDialogComponent,
     FormsModule,
-    AutoCompleteModule,
   ],
 })
 export class TodosComponent implements OnInit {

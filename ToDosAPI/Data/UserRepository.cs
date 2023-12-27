@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Microsoft.Data.SqlClient;
 using System.ComponentModel;
+using System.Net.NetworkInformation;
 using ToDosAPI.Models;
 using ToDosAPI.Models.Dtos;
 using ToDosAPI.Models.Entities;
@@ -115,9 +116,23 @@ public class UserRepository
         return (await con.QueryAsync<Role>("sp_UsersRolesGet", new { userId }) ).ToList();
     }
 
-    public async Task<List<Role>> GetAllRolesAsync(int userId)
+    public async Task<List<Role>> GetAllRolesAsync()
     {
         await using var con = new SqlConnection(_context.ConnectionString);
-        return (await con.QueryAsync<Role>("sp_RolesGet", new { userId })).ToList();
+        return (await con.QueryAsync<Role>("sp_RolesGet")).ToList();
+    }
+
+    public async Task<bool> EditUserProfileAsync(EditProfileByAdminDto editProfileByAdminDto)
+    {
+        await using var con = new SqlConnection(_context.ConnectionString);
+       var check = await con.ExecuteAsync("sp_UsersRolesDelete", new { editProfileByAdminDto.Id }) > 0;
+        if (!check) return false;
+
+        foreach (Role role in editProfileByAdminDto.Roles)
+        {
+            await con.QueryAsync<Role>("sp_UsersEditRoles", new { editProfileByAdminDto.Id, editProfileByAdminDto.Fullname, Role= role.Id });
+        }
+
+        return true;
     }
 }

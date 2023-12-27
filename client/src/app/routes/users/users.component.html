@@ -8,6 +8,8 @@
             <th scope="col" class="px-6 py-3">Full Name</th>
             <th scope="col" class="px-6 py-3"></th>
             <th scope="col" class="px-6 py-3"></th>
+            <th scope="col" class="px-6 py-3"></th>
+
           </tr>
         </thead>
         <tbody>
@@ -60,5 +62,5 @@
 }
 
 @if (editViewStatus) {
-  <app-users-edit-dialog [user]="user" (editViewClosed)="editViewClosed()"></app-users-edit-dialog>
+  <app-users-edit-dialog [user]="user" (userUpdated)="userUpdated($event)" (editViewClosed)="editViewClosed()"></app-users-edit-dialog>
 }

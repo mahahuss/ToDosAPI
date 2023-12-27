@@ -26,6 +26,12 @@ export type ShareTask = {
 };
 
 export type Role = {
-  Id: number;
-  UserType: string;
+  id: number;
+  userType: string;
+};
+
+export type UpdateUser = {
+  id: number;
+  fullname: string;
+  roles: Role[];
 };

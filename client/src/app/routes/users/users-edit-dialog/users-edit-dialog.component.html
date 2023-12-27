@@ -4,31 +4,32 @@
   class="grid place-items-center h-screen overflow-y-auto fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 max-h-full bg-black bg-opacity-40"
 >
   <div class="relative p-4 w-full max-w-md max-h-full">
-    <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+    <div class="relative bg-white rounded-lg shadow">
       <div class="p-4 md:p-5 text-center">
         <button
           (click)="onClose()"
           type="button"
-          class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+          class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
           data-modal-hide="popup-modal"
         >
           <li class="fas fa-x"></li>
         </button>
       </div>
       <div class="p-4 md:p-5 text-center">
-        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select roles</label>
-        <ng-select [multiple]="true" bindLabel="fullName" placeholder="Select users to share with.."> </ng-select>
+        <label class="block mb-2 text-sm font-medium text-gray-900 ">Select roles</label>
+        <ng-select [items]="roles"  [(ngModel)]="userRoles" [multiple]="true" bindLabel="userType" placeholder="Select users to share with.."> </ng-select>
         <div class="pt-5">
-          <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Edit name</label>
+          <label class="block mb-2 text-sm font-medium text-gray-900 ">Edit name</label>
 
           <input
             [(ngModel)]="user!.fullName"
             type="text"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
           />
         </div>
         <div class="pt-5">
           <button
+          (click)="updateUser()"
             class="h-8 px-4 m-2 text-sm text-indigo-100 transition-colors duration-150 bg-indigo-700 rounded-lg focus:shadow-outline hover:bg-indigo-800"
           >
             Update

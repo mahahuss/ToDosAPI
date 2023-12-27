@@ -62,12 +62,19 @@ public class UsersController : BaseController
         return Ok(users);
     }
 
-    [HttpGet("roles")]
-    public async Task<ActionResult> GetUserRoles(int userId)
+    [HttpGet("userRoles/{userId}")]
+    public async Task<ActionResult> GetRoles(int userId)
     {
         var roles = await _userService.GetUserRolesAsync(userId);
             return Ok(roles);
         
+    }
+    [HttpGet("roles")]
+    public async Task<ActionResult> GetallRoles()
+    {
+        var roles = await _userService.GetAllRolesAsync();
+        return Ok(roles);
+
     }
 
     [HttpGet("token")]
@@ -91,7 +98,14 @@ public class UsersController : BaseController
 
         return BadRequest("Failed to update profile");
     }
+    [HttpPut("editRoles")]
+    public async Task<ActionResult> EditProfileByAdmin(EditProfileByAdminDto editProfileByAdminDto)
+    {
+        var check = await _userService.EditProfileByAdminAsync(editProfileByAdminDto);
+        if (check) return Ok("Profile updated successfully");
 
+        return BadRequest("Failed to update profile");
+    }
     [HttpPut("status")]
     [Authorize(Roles = "Admin")]
     public async Task<ActionResult> ChangeUserStatus(ChangeUserStatusDto changeUserStatusDto)

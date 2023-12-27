@@ -2,7 +2,7 @@
   <button
     (click)="toggleEdit()"
     type="button"
-    class="text-gray-900 w-24 bg-white border border-gray-300 hover:outline-none hover:bg-gray-100 hover:ring-4 hover:ring-gray-200 font-medium rounded-lg text-sm dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+    class="text-gray-900 w-24 bg-white border border-gray-300 hover:outline-none hover:bg-gray-100 hover:ring-4 hover:ring-gray-200 font-medium rounded-lg text-sm"
   >
     <i class="fas fa-edit"></i>
     Edit Profile
@@ -26,18 +26,18 @@
       <input
         autofocus="true"
         type="text"
-        class="mt-5 mb-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-24 p-1 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        class="mt-5 mb-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-24 p-1"
         [(ngModel)]="name"
       />
     } @else {
-      <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white mt-5">
+      <h5 class="mb-1 text-xl font-medium text-gray-900 mt-5">
         {{ userInfo.given_name }}
       </h5>
     }
-    <span class="text-sm text-gray-500 dark:text-gray-400">{{ userInfo.unique_name }}</span>
+    <span class="text-sm text-gray-500 ">{{ userInfo.unique_name }}</span>
     <div class="flex mt-4 md:mt-6">
       @for (role of userInfo.roles; track $index) {
-        <ul class="text-gray-500 dark:text-gray-400 flex flex-wrap items-center justify-center">
+        <ul class="text-gray-500  flex flex-wrap items-center justify-center">
           <li class="flex items-center justify-center space-x-3 rtl:space-x-reverse md:me-6 me-4">
             <div class="badge badge-primary text-xs">{{ role }}</div>
           </li>
@@ -51,14 +51,14 @@
     <button
       (click)="toggleEdit()"
       type="button"
-      class="text-gray-900 w-24 bg-white border border-gray-300 hover:outline-none hover:bg-gray-100 hover:ring-4 hover:ring-gray-200 font-medium rounded-lg text-sm dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+      class="text-gray-900 w-24 bg-white border border-gray-300 hover:outline-none hover:bg-gray-100 hover:ring-4 hover:ring-gray-200 font-medium rounded-lg text-sm "
     >
       Cancel
     </button>
     <button
       (click)="editProfile()"
       type="button"
-      class="text-gray-900 w-24 bg-white border border-gray-300 hover:outline-none hover:bg-gray-100 hover:ring-4 hover:ring-gray-200 font-medium rounded-lg text-sm dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+      class="text-gray-900 w-24 bg-white border border-gray-300 hover:outline-none hover:bg-gray-100 hover:ring-4 hover:ring-gray-200 font-medium rounded-lg text-sm "
     >
       Save
     </button>

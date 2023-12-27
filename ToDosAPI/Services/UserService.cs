@@ -100,4 +100,15 @@ public class UserService
         return await _userRepo.GetUserRolesAsync(userId);
 
     }
+
+    public async Task<List<Role>> GetAllRolesAsync()
+    {
+        return await _userRepo.GetAllRolesAsync();
+    }
+
+    public async Task<bool> EditProfileByAdminAsync(EditProfileByAdminDto editProfileByAdminDto)
+    {
+        var check = await _userRepo.EditUserProfileAsync(editProfileByAdminDto);
+        return check;
+    }
 }
