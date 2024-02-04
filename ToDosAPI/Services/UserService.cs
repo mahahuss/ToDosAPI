@@ -112,4 +112,9 @@ public class UserService
         var check = await _userRepo.EditUserProfileAsync(editProfileByAdminDto);
         return check;
     }
+
+    internal Task<string?> GetSharedWithAsync()
+    {
+        return await _userRepo.GetSharedWithAsync();
+    }
 }

@@ -116,7 +116,7 @@ public class UserTaskRepository
         await using var con = new SqlConnection(_context.ConnectionString);
         await con.OpenAsync();
         await using var tran = await con.BeginTransactionAsync();
-        foreach (var shareWith in shareTaskDto.SharedTo)
+        foreach (var shareWith in shareTaskDto.SharedWith)
         {
             await con.ExecuteAsync("sp_TasksShare", new
             {

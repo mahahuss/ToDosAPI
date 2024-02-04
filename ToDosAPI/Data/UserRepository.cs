@@ -136,4 +136,9 @@ public class UserRepository
 
         return true;
     }
+
+    internal Task<Task<string?>> GetSharedWithAsync()
+    {
+        throw new NotImplementedException();
+    }
 }

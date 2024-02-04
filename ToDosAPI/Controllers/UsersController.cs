@@ -63,6 +63,13 @@ public class UsersController : BaseController
         return Ok(roles);
     }
 
+    [HttpGet("sharedWith")]
+    public async Task<ActionResult> GetSharedWith()
+    {
+        var usersShareddWith = await _userService.GetSharedWithAsync();
+        return Ok(usersShareddWith);
+    }
+
     [HttpGet("roles")]
     public async Task<ActionResult> GetallRoles()
     {

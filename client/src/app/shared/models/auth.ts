@@ -22,7 +22,7 @@ export type UserInfo = {
 export type ShareTask = {
   taskId: number;
   isEditable: boolean;
-  sharedTo: number[];
+  sharedWith: number[];
 };
 
 export type Role = {

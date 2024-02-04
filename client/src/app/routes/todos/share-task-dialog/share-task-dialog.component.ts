@@ -47,7 +47,7 @@ export class ShareTaskDialogComponent implements OnInit {
     const sharedtask: ShareTask = {
       taskId: this.todoTask!.id,
       isEditable: this.isEditable,
-      sharedTo: this.selectedUsers.map((user) => user.id),
+      sharedWith: this.selectedUsers.map((user) => user.id),
     };
 
     this.TodosService.shareTask(sharedtask).subscribe({
