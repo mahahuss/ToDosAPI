@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { CSP_NONCE, Injectable } from '@angular/core';
 import { jwtDecode } from 'jwt-decode';
 import { BehaviorSubject, Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment.development';
-import { Role, UpdateUser, User, UserInfo } from '../shared/models/auth';
+import { Role, UpdateUser, User, UserInfo, UserToShareWith } from '../shared/models/auth';
 import { ApiResponse } from '../shared/models/common';
 
 @Injectable({
@@ -53,7 +53,6 @@ export class AuthService {
           const user = jwtDecode<User>(res.message);
           this.currentUserSource$.next(user);
           localStorage.setItem('fullname', user.given_name);
-
           return user;
         }),
       );
@@ -105,5 +104,9 @@ export class AuthService {
         return res;
       }),
     );
+  }
+
+  getUsersToShareWith(taskId: number): Observable<UserToShareWith[]> {
+    return this.http.get<UserToShareWith[]>(this.baseUrl + 'users/shareWith/' + taskId);
   }
 }

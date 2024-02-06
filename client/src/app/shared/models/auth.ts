@@ -35,3 +35,9 @@ export type UpdateUser = {
   fullname: string;
   roles: Role[];
 };
+
+export type UserToShareWith = {
+  id: number;
+  username: string;
+  fullname: string;
+};

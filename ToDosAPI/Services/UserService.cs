@@ -81,9 +81,9 @@ public class UserService
         return check;
     }
 
-    public async Task<List<GetUsers>> GetUsersAsync()
+    public async Task<List<GetUsers>> GetUsersAsync(int currentUserId)
     {
-        return await _userRepo.GetUsersAsync();
+        return await _userRepo.GetUsersAsync(currentUserId);
     }
 
     public async Task<bool> ChangeUserStatusAsync(int userId, bool status)
@@ -91,10 +91,10 @@ public class UserService
         return await _userRepo.ChangeUserStatusAsync(userId, status);
     }
 
-    public string RefreshToken(int id, string username, string fullname, List<string> roles)
+    public async Task<string> RefreshToken(string username)
     {
-        return _userToken.GenerateToken(new UserWithRolesDto
-            { FullName = fullname, Id = id, Roles = roles, Username = username, Status = true });
+        var userInfo = await _userRepo.GetUserWithRolesAsync(username);
+        return _userToken.GenerateToken(userInfo!);
     }
 
     public async Task<List<Role>> GetUserRolesAsync(int userId)
@@ -113,8 +113,8 @@ public class UserService
         return check;
     }
 
-    internal Task<string?> GetSharedWithAsync()
+    public async Task<List<UserToShareWith>> GetSharedWithAsync(int userId, int taskId)
     {
-        return await _userRepo.GetSharedWithAsync();
+        return await _userRepo.GetSharedWithAsync(userId, taskId);
     }
 }

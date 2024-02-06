@@ -52,7 +52,8 @@ public class UsersController : BaseController
     [HttpGet]
     public async Task<ActionResult> GetUsers()
     {
-        var users = await _userService.GetUsersAsync();
+        var currentUserId = User.GetId();
+        var users = await _userService.GetUsersAsync(currentUserId);
         return Ok(users);
     }
 
@@ -63,10 +64,11 @@ public class UsersController : BaseController
         return Ok(roles);
     }
 
-    [HttpGet("sharedWith")]
-    public async Task<ActionResult> GetSharedWith()
+    [HttpGet("shareWith/{taskId}")]
+    public async Task<ActionResult> GetSharedWith(int taskId)
     {
-        var usersShareddWith = await _userService.GetSharedWithAsync();
+        var userId = User.GetId();
+        var usersShareddWith = await _userService.GetSharedWithAsync(userId, taskId);
         return Ok(usersShareddWith);
     }
 
@@ -78,9 +80,9 @@ public class UsersController : BaseController
     }
 
     [HttpGet("token")]
-    public ActionResult RefreshToken()
+    public async Task<ActionResult> RefreshToken()
     {
-        var token = _userService.RefreshToken(User.GetId(), User.GetUsername()!, User.GetFullname()!, User.GetRoles());
+        var token = await _userService.RefreshToken(User.GetUsername()!);
         if (!string.IsNullOrEmpty(token))
         {
             return Ok(token);

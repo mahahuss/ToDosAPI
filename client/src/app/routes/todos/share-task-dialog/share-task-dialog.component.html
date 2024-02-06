@@ -18,7 +18,7 @@
       <div class="p-4 md:p-5 text-center">
         <ng-select
           [multiple]="true"
-          [items]="users"
+          [items]="usersToShareWith"
           bindLabel="fullName"
           placeholder="Select users to share.."
           [(ngModel)]="selectedUsers"
@@ -33,10 +33,8 @@
             type="checkbox"
             class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
           />
-          <label for="checked-checkbox" class="ms-2 text-sm font-medium text-gray-900 "
-            >Enable users to edit
-          </label>
-        </div> 
+          <label for="checked-checkbox" class="ms-2 text-sm font-medium text-gray-900">Enable users to edit </label>
+        </div>
         <div class="pt-5">
           <button
             (click)="shareTaskWithUsers()"

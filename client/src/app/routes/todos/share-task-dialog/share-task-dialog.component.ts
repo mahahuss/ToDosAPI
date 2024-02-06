@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ToDoTask } from '../../../shared/models/todo';
-import { ShareTask, UserInfo } from '../../../shared/models/auth';
+import { ShareTask, UserInfo, UserToShareWith } from '../../../shared/models/auth';
 import { AuthService } from '../../../services/auth.service';
 import { ToastrService } from 'ngx-toastr';
 import { FormsModule } from '@angular/forms';
@@ -18,8 +18,8 @@ import { TodosService } from '../../../services/todos.service';
 export class ShareTaskDialogComponent implements OnInit {
   @Input() todoTask: ToDoTask | undefined = undefined;
   @Output() shareViewClosed = new EventEmitter();
-  users: UserInfo[] = [];
-  selectedUsers: UserInfo[] = [];
+  usersToShareWith: UserToShareWith[] = [];
+  selectedUsers: UserToShareWith[] = [];
   isEditable = false;
 
   constructor(
@@ -32,9 +32,9 @@ export class ShareTaskDialogComponent implements OnInit {
     this.loadUsers();
   }
   loadUsers() {
-    this.authService.getUsers().subscribe({
+    this.authService.getUsersToShareWith(this.todoTask!.id).subscribe({
       next: (res) => {
-        this.users = res;
+        this.usersToShareWith = res;
       },
     });
   }

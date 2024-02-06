@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { User } from '../../shared/models/auth';
+import { retry } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -11,8 +12,7 @@ import { User } from '../../shared/models/auth';
   styleUrl: './home.component.scss',
 })
 export class HomeComponent implements OnInit {
-  userInfo!: User;
-
+  userFullname: string = ' ';
   constructor(private authService: AuthService) {}
 
   ngOnInit(): void {
@@ -20,11 +20,7 @@ export class HomeComponent implements OnInit {
   }
 
   private initHome() {
-    this.authService.currentUser$.subscribe({
-      next: (res) => {
-        this.userInfo = res!;
-        this.userInfo.given_name = localStorage.getItem('fullname')!;
-      },
-    });
+    if (!localStorage.getItem('fullname')) return;
+    this.userFullname = localStorage.getItem('fullname')!;
   }
 }

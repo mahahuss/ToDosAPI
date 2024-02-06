@@ -66,10 +66,10 @@ public class UserRepository
         return await con.ExecuteAsync("sp_UserEdit", new { name, id }) > 0;
     }
 
-    public async Task<List<GetUsers>> GetUsersAsync()
+    public async Task<List<GetUsers>> GetUsersAsync(int currentUserId)
     {
         await using var con = new SqlConnection(_context.ConnectionString);
-        return (await con.QueryAsync<GetUsers>("sp_UserGetAll")).ToList();
+        return (await con.QueryAsync<GetUsers>("sp_UserGetAll", new { userId = currentUserId })).ToList();
     }
 
 
@@ -137,8 +137,9 @@ public class UserRepository
         return true;
     }
 
-    internal Task<Task<string?>> GetSharedWithAsync()
+    public async Task<List<UserToShareWith>> GetSharedWithAsync(int userId, int taskId)
     {
-        throw new NotImplementedException();
+        await using var con = new SqlConnection(_context.ConnectionString);
+        return (await con.QueryAsync<UserToShareWith>("sp_UsersGetShareWith", new { userId, taskId })).ToList();
     }
 }
