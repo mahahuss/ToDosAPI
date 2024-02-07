@@ -57,9 +57,10 @@ public class UserTaskRepository
     public async Task<GetUserTasksResponse> GetUserTasksAsync(int userId, int pageNumber, int pageSize)
     {
         await using var con = new SqlConnection(_context.ConnectionString);
+        var fromIndex = (pageNumber - 1) * pageSize;
+        await using var reader = await con.QueryMultipleAsync("sp_TasksGetUserTasks", new { userId, fromIndex, toIndex = pageSize });
         //1- get tasks count
-        var totalTasks = await con.QuerySingleAsync<int>("sp_TasksGetCount",
-            new { userId });
+        var totalTasks = await reader.ReadSingleAsync<int>();
 
         //assign values
         var response = new GetUserTasksResponse
@@ -73,24 +74,22 @@ public class UserTaskRepository
 
         var totalPages = (int)Math.Ceiling((double)totalTasks / pageSize);
         response.TotalPages = totalPages;
-        var fromIndex = (pageNumber - 1) * pageSize;
         var tasks = new Dictionary<int, UserWithSharedTask>();
 
         //get tasks
-        await con.QueryAsync<UserWithSharedTask, TaskAttachment?, UserWithSharedTask>("sp_TasksGetUserTasks",
-            (task, file) =>
+        reader.Read<UserWithSharedTask, TaskAttachment?, UserWithSharedTask>((task, file) =>
+        {
+            if (!tasks.TryGetValue(task.Id, out var taskInDictionary))
             {
-                if (!tasks.TryGetValue(task.Id, out var taskInDictionary))
-                {
-                    if (file is not null)
-                        task.Files.Add(file);
-                    tasks.Add(task.Id, task);
-                }
-                else if (file is not null)
-                    taskInDictionary.Files.Add(file);
+                if (file is not null)
+                    task.Files.Add(file);
+                tasks.Add(task.Id, task);
+            }
+            else if (file is not null)
+                taskInDictionary.Files.Add(file);
 
-                return task;
-            }, new { userId, fromIndex, toIndex = pageSize });
+            return task;
+        });
 
         response.Tasks = tasks.Values.ToList();
         return response;

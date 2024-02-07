@@ -31,11 +31,10 @@ export class NewTaskComponent {
     const formData = new FormData();
     const userid = this.authService.getCurrentUserFromToken()?.nameid;
     if (this.content && userid) {
-      formData.append('createdBy', userid.toString());
       formData.append('taskContent', this.content);
-      formData.append('createdBy', 'false');
     }
 
+    
     Array.from(this.files).forEach((element) => {
       formData.append('files', element);
     });

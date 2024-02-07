@@ -9,7 +9,9 @@
             [class.line-through]="todoTask.status"
             class="max-w-[330px] font-medium text-lg whitespace-pre-wrap"
             (click)="updateStatus(todoTask!)"
-          >{{ todoTask.taskContent }}</div>
+          >
+            {{ todoTask.taskContent }}
+          </div>
 
           <div class="text-[10px] font-normal text-gray-500 tracking-wide">
             {{ todoTask.createdDate | date }}
@@ -24,7 +26,7 @@
           }
         </div>
         <div class="flex justify-end">
-          @if (todoTask.isEditable != false) {
+          @if (todoTask.createdBy == currentUserId || todoTask.isEditable) {
             <div class="pl-4">
               <button class="btn btn-outline btn-warning btn-xs btn-circle" (click)="toggleEdit()">
                 <li class="fa-solid fa-pen-to-square"></li>
