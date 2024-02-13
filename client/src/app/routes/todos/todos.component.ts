@@ -3,7 +3,6 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { TodosService } from '../../services/todos.service';
-import { User } from '../../shared/models/auth';
 import { GetUserTasksResponse, ToDoTask } from '../../shared/models/todo';
 import { NewTaskComponent } from './new-task/new-task.component';
 import { TodoDialogComponent } from './todo-dialog/todo-dialog.component';
@@ -31,6 +30,7 @@ export class TodosComponent implements OnInit {
   pages: number[] = [];
   currentpage = 1;
   currentUserId!: number;
+  loadTodosStatus = false;
 
   constructor(
     private authService: AuthService,
@@ -43,7 +43,8 @@ export class TodosComponent implements OnInit {
   }
 
   taskAdded(createdTask: ToDoTask) {
-    this.todos.push(createdTask);
+    this.todos.unshift(createdTask);
+    console.log(this.todos);
   }
 
   taskUpdated(updatedtask: ToDoTask) {
@@ -70,6 +71,7 @@ export class TodosComponent implements OnInit {
         this.todos = res.tasks;
         this.pages = Array.from(new Array(res.totalPages), (x, i) => i + 1);
         this.currentpage = res.pageNumber;
+        this.loadTodosStatus = true;
       },
     });
   }

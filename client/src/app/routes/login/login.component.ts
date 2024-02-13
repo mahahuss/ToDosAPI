@@ -1,8 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
-
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 
@@ -20,7 +18,6 @@ export class LoginComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private route: Router,
-    private toastr: ToastrService,
   ) {}
 
   get f() {

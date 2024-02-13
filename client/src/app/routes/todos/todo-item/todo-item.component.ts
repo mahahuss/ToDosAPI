@@ -1,5 +1,4 @@
 import {
-  AfterViewInit,
   ChangeDetectorRef,
   Component,
   ElementRef,
@@ -7,9 +6,7 @@ import {
   Input,
   OnInit,
   Output,
-  Renderer2,
   ViewChild,
-  ViewChildren,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ToDoTask } from '../../../shared/models/todo';
@@ -19,7 +16,6 @@ import { TodoDialogComponent } from '../todo-dialog/todo-dialog.component';
 import { FormsModule } from '@angular/forms';
 import { TodoFilesDialogComponent } from '../todo-files-dialog/todo-files-dialog.component';
 import { ShareTaskDialogComponent } from '../share-task-dialog/share-task-dialog.component';
-import { User } from '../../../shared/models/auth';
 
 @Component({
   selector: 'app-todo-item',

@@ -1,9 +1,9 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment.development';
 import { ApiResponse } from '../shared/models/common';
-import { AddNewTaskModel, GetUserTasksResponse, ToDoTask, UserTaskFile } from '../shared/models/todo';
+import { GetUserTasksResponse, ToDoTask } from '../shared/models/todo';
 import { ShareTask } from '../shared/models/auth';
 
 @Injectable({

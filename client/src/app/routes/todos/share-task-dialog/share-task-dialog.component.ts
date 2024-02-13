@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ToDoTask } from '../../../shared/models/todo';
-import { ShareTask, UserInfo, UserToShareWith } from '../../../shared/models/auth';
+import { ShareTask, UserToShareWith } from '../../../shared/models/auth';
 import { AuthService } from '../../../services/auth.service';
 import { ToastrService } from 'ngx-toastr';
 import { FormsModule } from '@angular/forms';
@@ -51,7 +51,7 @@ export class ShareTaskDialogComponent implements OnInit {
     };
 
     this.TodosService.shareTask(sharedtask).subscribe({
-      next: (res) => {
+      next: () => {
         this.onClose();
         this.toastr.success('shared successfully');
       },

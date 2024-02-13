@@ -8,10 +8,8 @@
     [(ngModel)]="content"
   >
   </textarea>
-  <div class="rounded-md border border-indigo-700 bg-gray-50 p-4 ml-4 shadow-md w-5 h-9/12">
-    <label for="upload" class="flex flex-col items-center gap-2 cursor-pointer">
+    <label for="upload" class="flex flex-col items-center gap-2 cursor-pointer rounded-md border border-indigo-700 bg-gray-50 p-4 ml-4 shadow-md w-5 h-9/12">
       <span class="fa fa-upload text-indigo-700"> </span>
-    </label>
     <input
       id="upload"
       type="file"
@@ -20,6 +18,6 @@
       accept="image/png, application/pdf"
       multiple
     />
-  </div>
+  </label>
   <button class="btn btn-outline ml-4" (click)="addTask()" [disabled]="content === ''">Add</button>
 </div>

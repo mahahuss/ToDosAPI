@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { UpdateUser, User, UserInfo } from '../../shared/models/auth';
 import { AuthService } from '../../services/auth.service';
 import { UsersTasksDialogComponent } from './users-tasks-dialog/users-tasks-dialog.component';
-import { ToastrService } from 'ngx-toastr';
 import { UsersEditDialogComponent } from './users-edit-dialog/users-edit-dialog.component';
 @Component({
   selector: 'app-users',
@@ -20,10 +19,7 @@ export class UsersComponent implements OnInit {
   user: UserInfo | undefined;
   users: UserInfo[] = [];
   currentUserId: number | undefined;
-  constructor(
-    private authService: AuthService,
-    private toastr: ToastrService,
-  ) {}
+  constructor(private authService: AuthService) {}
 
   ngOnInit(): void {
     this.authService.currentUser$.subscribe({
@@ -49,7 +45,7 @@ export class UsersComponent implements OnInit {
     status = status ? false : true;
 
     this.authService.changeUserStatus(userId, status).subscribe({
-      next: (res) => {
+      next: () => {
         const indexToUpdate = this.users.findIndex((user) => user.id === userId);
         if (indexToUpdate !== -1) this.users[indexToUpdate].status = status;
       },
@@ -79,7 +75,7 @@ export class UsersComponent implements OnInit {
     if (indexToUpdate !== -1) {
       this.users[indexToUpdate].fullName = user.fullname;
       this.users[indexToUpdate].roles.clear();
-      user.roles.forEach((role) => this.users[indexToUpdate].roles.set(role.id, role.userType));
+      for (let role of user.roles) this.users[indexToUpdate].roles.set(role.id, role.userType);
     }
   }
 }

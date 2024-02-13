@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { TodosService } from '../../../services/todos.service';
-import { AddNewTaskModel, ToDoTask } from '../../../shared/models/todo';
+import { ToDoTask } from '../../../shared/models/todo';
 import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-new-task',
@@ -34,10 +34,7 @@ export class NewTaskComponent {
       formData.append('taskContent', this.content);
     }
 
-    
-    Array.from(this.files).forEach((element) => {
-      formData.append('files', element);
-    });
+    for (let file of this.files) formData.append('files', file);
 
     this.todoService.addNewTask(formData).subscribe({
       next: (res) => {

@@ -14,8 +14,6 @@ import { jwtDecode } from 'jwt-decode';
 export class AppComponent implements OnInit {
   constructor(private authService: AuthService) {
     if (this.authService.isTokenValid()) {
-      //  this.authService.setCurrentUserFromToken();
-      // this.authService.refreshToken()
       setInterval(() => {
         const currentExpiryTime = jwtDecode(localStorage.getItem('token')!).exp!;
         const fiveMinBefore = new Date(currentExpiryTime * 1000 - 30_000);

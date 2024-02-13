@@ -1,6 +1,6 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { HttpEvent } from '@angular/common/http';
-import { Observable, delay, retry } from 'rxjs';
+import { Observable, delay } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 export const delayInterceptor: HttpInterceptorFn = (req, next): Observable<HttpEvent<any>> => {

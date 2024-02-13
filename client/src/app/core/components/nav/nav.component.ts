@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
-import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-nav',
@@ -19,7 +18,6 @@ export class NavComponent {
   constructor(
     public authService: AuthService,
     private router: Router,
-    private toastr: ToastrService,
   ) {}
 
   ngOnInit(): void {

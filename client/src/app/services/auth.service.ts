@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { CSP_NONCE, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { jwtDecode } from 'jwt-decode';
 import { BehaviorSubject, Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment.development';
