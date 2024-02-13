@@ -23,8 +23,14 @@
           [multiple]="true"
           bindLabel="userType"
           placeholder="Select Roles.."
+          (change)="EditUserRoles()"
+          [clearable]="false"
         >
         </ng-select>
+        <div [hidden]="!errorMessage" class="text-left text-red-600 text-sm px-1.5">
+          At least one role must be specified
+        </div>
+
         <div class="pt-5">
           <label class="block mb-2 text-sm font-medium text-gray-900">Edit name</label>
 

@@ -19,7 +19,9 @@ export class UsersEditDialogComponent implements OnInit {
   @Output() userUpdated = new EventEmitter();
 
   roles: Role[] = [];
+  userSelectedRoles: Role[] = [];
   userRoles: Role[] = [];
+  errorMessage = false;
 
   constructor(
     private authService: AuthService,
@@ -35,6 +37,7 @@ export class UsersEditDialogComponent implements OnInit {
     this.authService.getUserRoles(this.user!.id).subscribe({
       next: (res) => {
         this.userRoles = res;
+        this.userSelectedRoles = res;
       },
     });
   }
@@ -47,6 +50,16 @@ export class UsersEditDialogComponent implements OnInit {
     });
   }
 
+  EditUserRoles() {
+    if (this.userRoles.length == 0) {
+      this.errorMessage = true;
+      this.userRoles = this.userSelectedRoles;
+    } else {
+      this.userSelectedRoles = this.userRoles;
+      this.errorMessage = false;
+    }
+  }
+
   onClose() {
     this.editViewClosed.emit();
   }
@@ -55,7 +68,7 @@ export class UsersEditDialogComponent implements OnInit {
     const userInfo: UpdateUser = {
       id: this.user!.id,
       fullname: this.user!.fullName,
-      roles: this.userRoles,
+      roles: this.userSelectedRoles,
     };
 
     this.authService.updateUser(userInfo).subscribe({

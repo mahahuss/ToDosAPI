@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment.development';
 import { ApiResponse } from '../shared/models/common';
-import { GetUserTasksResponse, ToDoTask } from '../shared/models/todo';
+import { GetUserTasksResponse, ToDoTask, UserTask } from '../shared/models/todo';
 import { ShareTask } from '../shared/models/auth';
 
 @Injectable({
@@ -45,5 +45,9 @@ export class TodosService {
 
   shareTask(sharedTask: ShareTask): Observable<ToDoTask> {
     return this.http.post<ToDoTask>(this.baseUrl + 'tasks/share', sharedTask);
+  }
+
+  getUserTasks(userId: Number): Observable<UserTask[]> {
+    return this.http.get<UserTask[]>(this.baseUrl + 'Tasks/usertasksonly/' + userId);
   }
 }

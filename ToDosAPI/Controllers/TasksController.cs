@@ -40,6 +40,17 @@ public class TasksController : BaseController
         var tasks = await _taskService.GetUserTasksAsync(userId, pageNumber, pageSize);
         return Ok(tasks);
     }
+    [HttpGet("usertasksonly/{userId}")]
+    public async Task<ActionResult> GetUserTasks(int userId)
+    {
+        var roles = User.GetRoles(); // send as a parameters
+
+        if (!roles.Contains("Admin") && !roles.Contains("Moderator"))
+            return Unauthorized("Unauthorized: due to invalid credentials");
+
+        var tasks = await _taskService.GetUserTasksAsync(userId);
+        return Ok(tasks);
+    }
 
     [HttpPost]
     public async Task<ActionResult> AddTask([FromForm] AddTaskDto addTaskDto)

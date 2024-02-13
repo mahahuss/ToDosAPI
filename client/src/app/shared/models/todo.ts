@@ -27,3 +27,12 @@ export type GetUserTasksResponse = {
   pageSize: number;
   tasks: ToDoTask[];
 };
+
+export type UserTask = {
+  id: number;
+  taskContent: string;
+  createdDate: Date;
+  createdBy: number;
+  status: boolean;
+  files: UserTaskFile[];
+};

@@ -128,4 +128,28 @@ public class UserTaskRepository
 
         await tran.CommitAsync();
     }
+
+    public async Task<List<UserTask>> GetUserTasksAsync(int userId)
+    {
+        await using var con = new SqlConnection(_context.ConnectionString);
+
+        var tasks = new Dictionary<int, UserTask>();
+
+        await con.QueryAsync<UserTask, TaskAttachment?, UserTask>("sp_TasksGetUserTasksOnly",
+            (task, file) =>
+            {
+                if (!tasks.TryGetValue(task.Id, out var taskInDictionary))
+                {
+                    if (file is not null)
+                        task.Files.Add(file);
+                    tasks.Add(task.Id, task);
+                }
+                else if (file is not null)
+                    taskInDictionary.Files.Add(file);
+
+                return task;
+            }, new { userId });
+
+        return tasks.Values.ToList();
+    }
 }

@@ -82,4 +82,9 @@ public class TaskService
     {
         return _userTaskRepo.ShareTaskAsync(shareTaskDto, userId);
     }
+
+    public Task<List<UserTask>> GetUserTasksAsync(int userId)
+    {
+        return _userTaskRepo.GetUserTasksAsync(userId);
+    }
 }
