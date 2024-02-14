@@ -102,7 +102,7 @@
 - allow adding or deleting files on todo update
 - FIX UPLOAD BUTTON --
 - on new todo added, move to top of the list --
-- add profile picture preview
+- add profile picture preview --
 - ALWAYS delete unused refs/imports --
 - never use .forEach((x) => ...) -> change to for(x of array) {} --
 

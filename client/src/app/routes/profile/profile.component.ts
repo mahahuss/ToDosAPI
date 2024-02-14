@@ -20,6 +20,8 @@ export class ProfileComponent implements OnInit {
   timeStamp = '';
   updateClickStatus = false;
   fileToUpload: File | undefined = undefined;
+  avatarPreview = false;
+  previewSrc = '';
 
   constructor(
     public authService: AuthService,
@@ -43,13 +45,15 @@ export class ProfileComponent implements OnInit {
 
   toggleEdit() {
     if (!this.userInfo) return;
-
+    this.avatarPreview = false;
     this.name = this.userInfo.given_name;
     this.updateClickStatus = !this.updateClickStatus;
   }
 
   handleFileInput(event: any) {
     this.fileToUpload = event.target.files[0] as File;
+    this.previewSrc = URL.createObjectURL(this.fileToUpload);
+    this.avatarPreview = true;
   }
 
   editProfile() {
@@ -66,6 +70,7 @@ export class ProfileComponent implements OnInit {
         this.updateClickStatus = false;
         localStorage.setItem('fullname', this.name);
         this.userInfo!.given_name = this.name;
+        this.avatarPreview = false;
         this.toastr.success(result.message);
       },
     });
