@@ -3,7 +3,6 @@
     <div
       class="flex justify-between cursor-pointer bg-base-100 text-gray-700 hover:text-gray-400 hover:bg-gray-100 rounded-md px-2 py-4 my-2 shadow"
     >
-      @if (!updateClickStatus) {
         <div class="flex justify-start flex-col gap-2">
           <div
             [class.line-through]="todoTask.status"
@@ -67,25 +66,9 @@
             </div>
           }
         </div>
-      } @else {
-        <div class="flex flex-grow space-x-3 font-medium px-2 items-center">
-          <textarea
-            id="taskContent"
-            [ariaMultiLine]="true"
-            type="text"
-            class="input input-bordered input-primary w-9/12"
-            [(ngModel)]="content"
-            #focusTaskInput
-          >
-          </textarea>
-          <button class="btn btn-ghost btn-xs btn-circle" (click)="updateTask(todoTask!)">
-            <i class="fas fa-check text-success"></i>
-          </button>
-          <button class="btn btn-ghost btn-xs btn-circle" (click)="toggleEdit()">
-            <i class="fa-solid fa-xmark text-red-600"></i>
-          </button>
-        </div>
-      }
+      
+
+      
     </div>
   </div>
   @if (filesClickStatus) {
@@ -93,5 +76,8 @@
   }
   @if (shareClickStatus) {
     <app-share-task-dialog [todoTask]="this.todoTask" (shareViewClosed)="shareViewClosed()"></app-share-task-dialog>
+  }
+  @if (editTodoStatus) {
+    <app-todo-edit-dialog [todoTask]="this.todoTask" (editViewClosed)="editViewClosed()"></app-todo-edit-dialog>
   }
 }

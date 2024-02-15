@@ -16,24 +16,34 @@ import { TodoDialogComponent } from '../todo-dialog/todo-dialog.component';
 import { FormsModule } from '@angular/forms';
 import { TodoFilesDialogComponent } from '../todo-files-dialog/todo-files-dialog.component';
 import { ShareTaskDialogComponent } from '../share-task-dialog/share-task-dialog.component';
+import { TodoEditDialogComponent } from '../todo-edit-dialog/todo-edit-dialog.component';
 
 @Component({
   selector: 'app-todo-item',
   standalone: true,
   templateUrl: './todo-item.component.html',
   styleUrl: './todo-item.component.scss',
-  imports: [CommonModule, TodoDialogComponent, FormsModule, TodoFilesDialogComponent, ShareTaskDialogComponent],
+  imports: [
+    CommonModule,
+    TodoDialogComponent,
+    FormsModule,
+    TodoFilesDialogComponent,
+    ShareTaskDialogComponent,
+    TodoEditDialogComponent,
+  ],
 })
 export class TodoItemComponent implements OnInit {
   @Input({ required: true }) todoTask!: ToDoTask;
   @Input({ required: true }) currentUserId!: number;
   @Output() taskUpdated = new EventEmitter<ToDoTask>();
   @Output() deleteStatusChanged = new EventEmitter();
+
   content = '';
   updateClickStatus = false;
   taskFilesExistence = false;
   filesClickStatus = false;
   shareClickStatus = false;
+  editTodoStatus = false;
   @ViewChild('focusTaskInput') focusTaskInput?: ElementRef;
 
   constructor(
@@ -57,13 +67,7 @@ export class TodoItemComponent implements OnInit {
   }
 
   toggleEdit() {
-    this.content = this.todoTask!.taskContent;
-    this.updateClickStatus = !this.updateClickStatus;
-
-    if (this.updateClickStatus) {
-      this.cdRef.detectChanges();
-      this.focusTaskInput!.nativeElement.focus();
-    }
+    this.editTodoStatus = !this.editTodoStatus;
   }
 
   onDeleteClick() {
@@ -87,10 +91,16 @@ export class TodoItemComponent implements OnInit {
   shareTask() {
     this.shareClickStatus = true;
   }
+  editTask() {
+    this.editTodoStatus = true;
+  }
   filesViewClosed() {
     this.filesClickStatus = false;
   }
   shareViewClosed() {
     this.shareClickStatus = false;
+  }
+  editViewClosed() {
+    this.editTodoStatus = false;
   }
 }
