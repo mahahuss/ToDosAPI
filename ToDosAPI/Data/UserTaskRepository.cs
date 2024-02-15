@@ -45,7 +45,8 @@ public class UserTaskRepository
     public async Task<bool> EditTaskAsync(EditTaskDto editTaskDto)
     {
         await using var con = new SqlConnection(_context.ConnectionString);
-        return await con.ExecuteAsync("sp_TasksEdit", new { Id = editTaskDto.Id , status = editTaskDto.Status , taskContent = editTaskDto.TaskContent }) > 0;
+        return await con.ExecuteAsync("sp_TasksEdit",
+            new { Id = editTaskDto.Id, status = editTaskDto.Status, taskContent = editTaskDto.TaskContent }) > 0;
     }
 
     public async Task<List<UserTask>> GetAllTasksAsync()
@@ -58,7 +59,8 @@ public class UserTaskRepository
     {
         await using var con = new SqlConnection(_context.ConnectionString);
         var fromIndex = (pageNumber - 1) * pageSize;
-        await using var reader = await con.QueryMultipleAsync("sp_TasksGetUserTasks", new { userId, fromIndex, toIndex = pageSize });
+        await using var reader =
+            await con.QueryMultipleAsync("sp_TasksGetUserTasks", new { userId, fromIndex, toIndex = pageSize });
         //1- get tasks count
         var totalTasks = await reader.ReadSingleAsync<int>();
 
@@ -77,39 +79,26 @@ public class UserTaskRepository
         var tasks = new Dictionary<int, UserWithSharedTask>();
 
         //get tasks
-        //reader.Read<UserWithSharedTask, SharedTask?, TaskAttachment?, UserWithSharedTask>((task, sharedWith,file) =>
-        //{
-        //    if (!tasks.TryGetValue(task.Id, out var taskInDictionary))
-        //    {
-        //        if (file is not null)
-        //            task.Files.Add(file);
-        //        if (sharedWith is not null)
-        //            task.SharedTasks.Add(sharedWith);
-        //        tasks.Add(task.Id, task);
-        //    }
-        //    else {
-        //        if (file is not null)
-        //        taskInDictionary.Files.Add(file);
-        //        if (sharedWith is not null)
-        //            taskInDictionary.SharedTasks.Add(sharedWith);
-        //    }
-        //    return task;
-        //});
-
-        reader.Read<UserWithSharedTask, TaskAttachment?, UserWithSharedTask>((task, file) =>
+        reader.Read<UserWithSharedTask, SharedTask?, TaskAttachment?, UserWithSharedTask>((task, sharedWith, file) =>
         {
             if (!tasks.TryGetValue(task.Id, out var taskInDictionary))
             {
                 if (file is not null)
                     task.Files.Add(file);
+                if (sharedWith is not null)
+                    task.SharedTasks.Add(sharedWith);
                 tasks.Add(task.Id, task);
             }
-            else if (file is not null)
-                taskInDictionary.Files.Add(file);
+            else
+            {
+                if (file is not null)
+                    taskInDictionary.Files.Add(file);
+                if (sharedWith is not null)
+                    taskInDictionary.SharedTasks.Add(sharedWith);
+            }
 
             return task;
         });
-
 
         response.Tasks = tasks.Values.ToList();
         return response;
@@ -173,9 +162,9 @@ public class UserTaskRepository
         return tasks.Values.ToList();
     }
 
-    public async Task<bool> DeleteFileAsync(EditTaskDto editTaskDto)
+    public async Task<bool> DeleteFileAsync(int taskId)
     {
         await using var con = new SqlConnection(_context.ConnectionString);
-        return await con.ExecuteAsync("sp_TasksAttachmentsDelete", new { TaskId = editTaskDto.Id}) > 0;
+        return await con.ExecuteAsync("sp_TasksAttachmentsDelete", new { taskId }) > 0;
     }
 }

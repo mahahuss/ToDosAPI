@@ -53,36 +53,33 @@ public class TaskService
         return await _userTaskRepo.DeleteTaskAsync(taskId);
     }
 
-    public async Task<bool> EditTaskAsync(EditTaskDto editTaskDto)
+    public async Task<bool> EditTaskAsync(EditTaskDto editTaskDto, List<IFormFile> files)
     {
-        var editResult =  await _userTaskRepo.EditTaskAsync(editTaskDto);
-
+        var editResult = await _userTaskRepo.EditTaskAsync(editTaskDto);
 
         if (editTaskDto.Files.Count == 0)
-            await _userTaskRepo.DeleteFileAsync(editTaskDto);
-
-        else
         {
-           var deleteResult = await _userTaskRepo.DeleteFileAsync(editTaskDto);
-
-            var filePath = Path.Combine(_filesDir, editTaskDto.CreatedBy.ToString());
-            Directory.CreateDirectory(filePath!);
-
-            foreach (var file in editTaskDto.Files)
-            {
-                var contentType = _fileService.CheckContentType(file.FileName);
-                if (contentType is "application/pdf" or "image/png")
-                {
-                    var filename =
-                        $"{Path.GetFileNameWithoutExtension(file.FileName)}{Guid.NewGuid().ToString("N")}{Path.GetExtension(file.FileName)}";
-
-                    await using var fileStream = new FileStream(Path.Combine(filePath, filename), FileMode.Create);
-                    await file.CopyToAsync(fileStream);
-                    var taskFile = await _userTaskRepo.CreateTaskAttachmentAsync(editTaskDto.Id, filename);
-                }
-            }
+            await _userTaskRepo.DeleteFileAsync(editTaskDto.Id);
         }
 
+        if (files.Count == 0) return editResult;
+
+        var filePath = Path.Combine(_filesDir, editTaskDto.CreatedBy.ToString());
+        Directory.CreateDirectory(filePath!);
+
+        foreach (var file in files)
+        {
+            var contentType = _fileService.CheckContentType(file.FileName);
+            if (contentType is "application/pdf" or "image/png")
+            {
+                var filename =
+                    $"{Path.GetFileNameWithoutExtension(file.FileName)}{Guid.NewGuid():N}{Path.GetExtension(file.FileName)}";
+
+                await using var fileStream = new FileStream(Path.Combine(filePath, filename), FileMode.Create);
+                await file.CopyToAsync(fileStream);
+                var taskFile = await _userTaskRepo.CreateTaskAttachmentAsync(editTaskDto.Id, filename);
+            }
+        }
 
 
         return editResult;

@@ -12,9 +12,8 @@ public class UserTask
 
 public class UserWithSharedTask : UserTask
 {
-    // public List<SharedTask> SharedTasks { get; set; } = new();
+    public List<SharedTask> SharedTasks { get; set; } = new();
 
     public bool? IsEditable { get; set; }
     public string? SharedBy { get; set; }
-
 }

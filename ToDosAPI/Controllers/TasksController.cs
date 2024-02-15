@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System.Security.Claims;
+using System.Text.Json;
 using Microsoft.AspNetCore.StaticFiles;
 using ToDosAPI.Extensions;
 using ToDosAPI.Models.Dtos;
@@ -29,7 +30,7 @@ public class TasksController : BaseController
     }
 
     [HttpGet("usertasks")]
-    public async Task<ActionResult> GetAllTasks([FromQuery] int userId, [FromQuery] int pageNumber, [FromQuery] int pageSize)
+    public async Task<ActionResult> GetAllTasks(int userId, int pageNumber, int pageSize)
     {
         var currentUserId = User.GetId();
         var roles = User.GetRoles(); // send as a parameters
@@ -40,6 +41,7 @@ public class TasksController : BaseController
         var tasks = await _taskService.GetUserTasksAsync(userId, pageNumber, pageSize);
         return Ok(tasks);
     }
+
     [HttpGet("usertasksonly/{userId}")]
     public async Task<ActionResult> GetUserTasks(int userId)
     {
@@ -68,15 +70,19 @@ public class TasksController : BaseController
     }
 
     [HttpPut]
-    public async Task<ActionResult> EditTask([FromForm] EditTaskDto editTaskDto)
+    public async Task<ActionResult> EditTask([FromForm] EditTaskFormDto editTaskFormDto)
     {
+        var editTaskDto = JsonSerializer.Deserialize<EditTaskDto>(editTaskFormDto.TaskJson);
+
+        if (editTaskDto is null) return BadRequest("Bad task JSON");
+
         var task = await _taskService.GetTaskByIdAsync(editTaskDto.Id);
 
         if (task == null) return NotFound("The Selected Task Not Exist");
         //check also if the task shared with the user 
         // if (task.CreatedBy != User.GetId()) return Unauthorized("Unauthorized: due to invalid credentials");
 
-        var check = await _taskService.EditTaskAsync(editTaskDto);
+        var check = await _taskService.EditTaskAsync(editTaskDto, editTaskFormDto.Files);
         if (check) return Ok("Updated successfully");
 
         return BadRequest("Failed to update task");

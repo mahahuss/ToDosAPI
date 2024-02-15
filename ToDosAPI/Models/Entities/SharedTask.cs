@@ -1,15 +1,11 @@
-﻿using ToDosAPI.Models.Dtos;
+﻿namespace ToDosAPI.Models.Entities;
 
-namespace ToDosAPI.Models.Entities
+public class SharedTask
 {
-    public class SharedTask
-    {
-        public int Id { get; set; } = default!;
-        public int TaskId { get; set; } = default!;
-        public int SharedBy { get; set; } = default!;        
-        public List<int> SharedWith { get; set; } = new ();
-        public bool IsEditable  { get; set; } = default!;
-        public DateTime SharedDate { get; set; } = default!;
-
-    }
+    public int Id { get; set; }
+    public int TaskId { get; set; }
+    public int SharedBy { get; set; }
+    public int SharedWith { get; set; }
+    public bool IsEditable { get; set; }
+    public DateTime SharedDate { get; set; }
 }

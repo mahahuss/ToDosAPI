@@ -5,6 +5,14 @@ import { ToDoTask, UserTaskFile } from '../../../shared/models/todo';
 import { ToastrService } from 'ngx-toastr';
 import { TodosService } from '../../../services/todos.service';
 
+type UserFile = {
+  id: number;
+  taskId: number;
+  fileName: string;
+  file?: File;
+  isOld: boolean;
+};
+
 @Component({
   selector: 'app-todo-edit-dialog',
   standalone: true,
@@ -17,7 +25,7 @@ export class TodoEditDialogComponent implements OnInit {
   @Output() editViewClosed = new EventEmitter();
   @Output() taskUpdated = new EventEmitter();
   todoTaskCopy: ToDoTask | undefined;
-  files: File[] = [];
+  files: UserFile[] = [];
   errorMessage = false;
 
   constructor(
@@ -26,16 +34,24 @@ export class TodoEditDialogComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.todoTaskCopy = JSON.parse(JSON.stringify(this.todoTask));
+    this.todoTaskCopy = structuredClone(this.todoTask);
+    this.files = this.todoTaskCopy!.files.map((f) => ({
+      fileName: f.fileName,
+      id: f.id,
+      taskId: f.taskId,
+      isOld: true,
+    }));
   }
 
   handleFileInput(event: any) {
-    this.files = event.target.files as File[];
-    for (let file of this.files) {
-      this.todoTaskCopy?.files.push({
+    const files = event.target.files as File[];
+    for (let file of files) {
+      this.files.push({
         id: new Date().getTime(),
-        taskId: this.todoTaskCopy.id,
+        taskId: this.todoTaskCopy!.id,
         fileName: file.name,
+        file,
+        isOld: false,
       });
     }
   }
@@ -51,11 +67,19 @@ export class TodoEditDialogComponent implements OnInit {
     }
     this.errorMessage = false;
     const formData = new FormData();
-    formData.append('id', String(this.todoTaskCopy!.id));
-    formData.append('status', String(this.todoTaskCopy!.status));
-    formData.append('createdBy', String(this.todoTaskCopy!.createdBy));
-    formData.append('taskContent', this.todoTaskCopy!.taskContent);
-    for (let file of this.files) formData.append('files', file);
+    this.todoTaskCopy!.files = this.files
+      .filter((f) => f.isOld)
+      .map((f) => ({
+        id: f.id,
+        taskId: f.taskId,
+        fileName: f.fileName,
+      }));
+    formData.append('task', JSON.stringify(this.todoTaskCopy));
+    for (let file of this.files) {
+      if (file.isOld || !file.file) continue;
+
+      formData.append('files', file.file);
+    }
 
     this.todosService.updateTask(formData).subscribe({
       next: () => {

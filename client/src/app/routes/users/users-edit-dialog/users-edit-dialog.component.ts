@@ -50,10 +50,9 @@ export class UsersEditDialogComponent implements OnInit {
     });
   }
 
-  EditUserRoles() {
+  editUserRoles() {
     if (this.userRoles.length == 0) {
       this.errorMessage = true;
-      this.userRoles = this.userSelectedRoles;
     } else {
       this.userSelectedRoles = this.userRoles;
       this.errorMessage = false;

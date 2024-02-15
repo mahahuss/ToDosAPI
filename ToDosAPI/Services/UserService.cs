@@ -81,14 +81,11 @@ public class UserService
         return check;
     }
 
-    public async Task<List<GetUsers>> GetUsersAsync(int currentUserId)
-    {
-        return await _userRepo.GetUsersAsync(currentUserId);
-    }
+    public Task<List<GetUsers>> GetUsersAsync(int currentUserId) => _userRepo.GetUsersAsync(currentUserId);
 
-    public async Task<bool> ChangeUserStatusAsync(int userId, bool status)
+    public Task<bool> ChangeUserStatusAsync(int userId, bool status)
     {
-        return await _userRepo.ChangeUserStatusAsync(userId, status);
+        return _userRepo.ChangeUserStatusAsync(userId, status);
     }
 
     public async Task<string> RefreshToken(string username)
@@ -109,6 +106,7 @@ public class UserService
 
     public async Task<bool> EditProfileByAdminAsync(EditProfileByAdminDto editProfileByAdminDto)
     {
+        // TODO: validate user roles before update
         var check = await _userRepo.EditUserProfileAsync(editProfileByAdminDto);
         return check;
     }

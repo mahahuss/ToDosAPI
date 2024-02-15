@@ -94,16 +94,25 @@
 
 ### 7-2-2024
 
-- add loading indicators --
-- users must have at least one role --
-- show only user tasks in profiles page, not tasks shared with --
-- FIX UPLOAD BUTTON --
-- on new todo added, move to top of the list --
-- add profile picture preview --
-- ALWAYS delete unused refs/imports --
-- never use .forEach((x) => ...) -> change to for(x of array) {} --
-- allow adding or deleting files on todo update /
-- show shared with, allow editing shared with X
+- add loading indicators /
+- users must have at least one role XX
+- ~~show only user tasks in profiles page, not tasks shared with--~~
+- ~~FIX UPLOAD BUTTON --~~
+- ~~on new todo added, move to top of the list --~~
+- ~~add profile picture preview --~~
+- ~~ALWAYS delete unused refs/imports --~~
+- ~~never use .forEach((x) => ...) -> change to for(x of array) {} --~~
+- allow adding or deleting files on todo update X
+- show shared with, allow editing shared with /
 - get all users and cache them. Stop getting users on share click X
 
 if (createdBy === me || isEditable) allowEdit
+
+### 15-2-2024
+
+- enhance loading behavior and add loading indicators everywhere
+- user image is not showing
+- urls -> kebab case, ex: user-roles
+- remove createdBy from client
+- move all business logic to service
+- complete attachments

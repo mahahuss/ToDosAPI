@@ -8,6 +8,7 @@ using ToDosAPI.Services;
 
 namespace ToDosAPI.Controllers;
 
+[Authorize]
 public class UsersController : BaseController
 {
     private readonly UserService _userService;
@@ -22,6 +23,7 @@ public class UsersController : BaseController
         _fileService = fileService;
     }
 
+    [AllowAnonymous]
     [HttpPost("register")]
     public async Task<ActionResult> Register([FromBody] RegisterDto user)
     {
@@ -32,6 +34,7 @@ public class UsersController : BaseController
         return BadRequest("Failed to register");
     }
 
+    [AllowAnonymous]
     [HttpPost("login")]
     public async Task<ActionResult> Login(LoginDto loginDto)
     {
@@ -102,6 +105,7 @@ public class UsersController : BaseController
     }
 
     [HttpPut("editRoles")]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult> EditProfileByAdmin(EditProfileByAdminDto editProfileByAdminDto)
     {
         var check = await _userService.EditProfileByAdminAsync(editProfileByAdminDto);
