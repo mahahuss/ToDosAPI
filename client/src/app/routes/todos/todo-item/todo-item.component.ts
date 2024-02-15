@@ -57,8 +57,12 @@ export class TodoItemComponent implements OnInit {
   }
 
   updateStatus(task: ToDoTask) {
+    const formData = new FormData();
     task.status = !task.status;
-    this.todosService.updateTask(task).subscribe({
+    formData.append('taskContent', task.taskContent);
+    formData.append('status', String(task.status));
+    formData.append('id', String(task.id));
+    this.todosService.updateTask(formData).subscribe({
       next: () => {
         this.taskUpdated.emit(task);
         this.toastr.success('The task updated successfully');
@@ -74,15 +78,10 @@ export class TodoItemComponent implements OnInit {
     this.deleteStatusChanged.emit();
   }
 
-  updateTask(task: ToDoTask) {
-    task.taskContent = this.content;
-    this.todosService.updateTask(task).subscribe({
-      next: () => {
-        this.toggleEdit();
-        this.taskUpdated.emit(task);
-        this.toastr.success('The task updated successfully');
-      },
-    });
+  updatedTask(task: ToDoTask) {
+    this.todoTask = task;
+    this.taskUpdated.emit(task);
+    this.editViewClosed();
   }
 
   viewFiles() {

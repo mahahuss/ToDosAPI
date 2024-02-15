@@ -45,7 +45,7 @@ public class UserTaskRepository
     public async Task<bool> EditTaskAsync(EditTaskDto editTaskDto)
     {
         await using var con = new SqlConnection(_context.ConnectionString);
-        return await con.ExecuteAsync("sp_TasksEdit", editTaskDto) > 0;
+        return await con.ExecuteAsync("sp_TasksEdit", new { Id = editTaskDto.Id , status = editTaskDto.Status , taskContent = editTaskDto.TaskContent }) > 0;
     }
 
     public async Task<List<UserTask>> GetAllTasksAsync()
@@ -77,6 +77,25 @@ public class UserTaskRepository
         var tasks = new Dictionary<int, UserWithSharedTask>();
 
         //get tasks
+        //reader.Read<UserWithSharedTask, SharedTask?, TaskAttachment?, UserWithSharedTask>((task, sharedWith,file) =>
+        //{
+        //    if (!tasks.TryGetValue(task.Id, out var taskInDictionary))
+        //    {
+        //        if (file is not null)
+        //            task.Files.Add(file);
+        //        if (sharedWith is not null)
+        //            task.SharedTasks.Add(sharedWith);
+        //        tasks.Add(task.Id, task);
+        //    }
+        //    else {
+        //        if (file is not null)
+        //        taskInDictionary.Files.Add(file);
+        //        if (sharedWith is not null)
+        //            taskInDictionary.SharedTasks.Add(sharedWith);
+        //    }
+        //    return task;
+        //});
+
         reader.Read<UserWithSharedTask, TaskAttachment?, UserWithSharedTask>((task, file) =>
         {
             if (!tasks.TryGetValue(task.Id, out var taskInDictionary))
@@ -90,6 +109,7 @@ public class UserTaskRepository
 
             return task;
         });
+
 
         response.Tasks = tasks.Values.ToList();
         return response;
@@ -151,5 +171,11 @@ public class UserTaskRepository
             }, new { userId });
 
         return tasks.Values.ToList();
+    }
+
+    public async Task<bool> DeleteFileAsync(EditTaskDto editTaskDto)
+    {
+        await using var con = new SqlConnection(_context.ConnectionString);
+        return await con.ExecuteAsync("sp_TasksAttachmentsDelete", new { TaskId = editTaskDto.Id}) > 0;
     }
 }

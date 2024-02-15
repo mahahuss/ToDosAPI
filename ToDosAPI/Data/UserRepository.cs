@@ -72,38 +72,6 @@ public class UserRepository
         return (await con.QueryAsync<GetUsers>("sp_UserGetAll", new { userId = currentUserId })).ToList();
     }
 
-
-    //public async Task<List<GetUsersWithRoles>> GetUsersAsync()
-    //{
-    //    await using var con = new SqlConnection(_context.ConnectionString);
-    //    GetUsersWithRoles? getUsersWithRoles = null;
-    //    List<GetUsersWithRoles> allUsers = new List<GetUsersWithRoles>();
-    //    var users = new Dictionary<int, GetUsersWithRoles>();
-
-    //    //return (await con.QueryAsync<GetUsers>("sp_UserGetAll")).ToList();
-
-    //    await con.QueryAsync<GetUsers, Role, GetUsersWithRoles>("sp_UserGetAll",
-    //              (user, role) =>
-    //              {
-    //                  getUsersWithRoles ??= new GetUsersWithRoles
-    //                  {
-    //                      Id = user.Id,
-    //                      FullName = user.FullName,
-    //                      Username = user.Username,
-    //                      Status = user.Status,
-    //                      TotalTasks = user.TotalTasks,
-    //                  };
-
-    //                  getUsersWithRoles.roles.Add(role.Id, role.UserType);
-
-    //                  allUsers.Add(getUsersWithRoles);
-    //                  getUsersWithRoles.roles.Clear();
-
-    //                  return getUsersWithRoles;
-    //              });
-    //    return allUsers;
-    //}
-
     public async Task<bool> ChangeUserStatusAsync(int userId, bool status)
     {
         await using var con = new SqlConnection(_context.ConnectionString);

@@ -94,16 +94,16 @@
 
 ### 7-2-2024
 
-- show shared with, allow editing shared with
-- get all users and cache them. Stop getting users on share click
 - add loading indicators --
 - users must have at least one role --
 - show only user tasks in profiles page, not tasks shared with --
-- allow adding or deleting files on todo update
 - FIX UPLOAD BUTTON --
 - on new todo added, move to top of the list --
 - add profile picture preview --
 - ALWAYS delete unused refs/imports --
 - never use .forEach((x) => ...) -> change to for(x of array) {} --
+- allow adding or deleting files on todo update /
+- show shared with, allow editing shared with X
+- get all users and cache them. Stop getting users on share click X
 
 if (createdBy === me || isEditable) allowEdit

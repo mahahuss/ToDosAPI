@@ -68,7 +68,7 @@ public class TasksController : BaseController
     }
 
     [HttpPut]
-    public async Task<ActionResult> EditTask(EditTaskDto editTaskDto)
+    public async Task<ActionResult> EditTask([FromForm] EditTaskDto editTaskDto)
     {
         var task = await _taskService.GetTaskByIdAsync(editTaskDto.Id);
 

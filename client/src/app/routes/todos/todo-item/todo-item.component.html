@@ -3,72 +3,69 @@
     <div
       class="flex justify-between cursor-pointer bg-base-100 text-gray-700 hover:text-gray-400 hover:bg-gray-100 rounded-md px-2 py-4 my-2 shadow"
     >
-        <div class="flex justify-start flex-col gap-2">
-          <div
-            [class.line-through]="todoTask.status"
-            class="max-w-[330px] font-medium text-lg whitespace-pre-wrap"
-            (click)="updateStatus(todoTask!)"
-          >
-            {{ todoTask.taskContent }}
-          </div>
-
-          <div class="text-[10px] font-normal text-gray-500 tracking-wide">
-            {{ todoTask.createdDate | date }}
-          </div>
-          @if (todoTask.createdBy != currentUserId) {
-            <div class="flex flex-row">
-              <div class="text-[11px] font-medium text-indigo-700 tracking-wide">
-                <i class="fa-solid fa-share text-indigo-700 fa-xs"></i>
-                Shared By: {{ todoTask.sharedBy }}
-              </div>
-            </div>
-          }
+      <div class="flex justify-start flex-col gap-2">
+        <div
+          [class.line-through]="todoTask.status"
+          class="max-w-[330px] font-medium text-lg whitespace-pre-wrap"
+          (click)="updateStatus(todoTask!)"
+        >
+          {{ todoTask.taskContent }}
         </div>
-        <div class="flex justify-end">
-          @if (todoTask.createdBy == currentUserId || todoTask.isEditable) {
-            <div class="pl-4">
-              <button class="btn btn-outline btn-warning btn-xs btn-circle" (click)="toggleEdit()">
-                <li class="fa-solid fa-pen-to-square"></li>
-              </button>
-            </div>
-          }
-          @if (todoTask.createdBy == currentUserId) {
-            <div class="pl-4">
-              <button class="btn btn-outline btn-error btn-xs btn-circle" (click)="onDeleteClick()">
-                <i class="fa-solid fa-trash"></i>
-              </button>
-            </div>
-          }
-          @if (todoTask.isEditable != false) {
-            <div class="pl-4">
-              <button
-                [class.btn-primary]="todoTask.status"
-                [class.btn-default]="!todoTask.status"
-                class="btn btn-outline btn-xs btn-circle"
-                (click)="updateStatus(todoTask!)"
-              >
-                <i class="fa-solid" [class.fa-check]="todoTask.status" [class.fa-minus]="!todoTask.status"></i>
-              </button>
-            </div>
-          }
-          @if (taskFilesExistence) {
-            <div class="pl-4">
-              <button class="btn btn-outline btn-default btn-xs btn-circle" (click)="viewFiles()">
-                <i class="fa-solid fa-file"></i>
-              </button>
-            </div>
-          }
-          @if (todoTask.createdBy == currentUserId) {
-            <div class="pl-4">
-              <button class="btn btn-outline btn-default btn-xs btn-circle" (click)="shareTask()">
-                <i class="fa fa-share-alt"></i>
-              </button>
-            </div>
-          }
-        </div>
-      
 
-      
+        <div class="text-[10px] font-normal text-gray-500 tracking-wide">
+          {{ todoTask.createdDate | date }}
+        </div>
+        @if (todoTask.createdBy != currentUserId) {
+          <div class="flex flex-row">
+            <div class="text-[11px] font-medium text-indigo-700 tracking-wide">
+              <i class="fa-solid fa-share text-indigo-700 fa-xs"></i>
+              Shared By: {{ todoTask.sharedBy }}
+            </div>
+          </div>
+        }
+      </div>
+      <div class="flex justify-end">
+        @if (todoTask.createdBy == currentUserId || todoTask.isEditable) {
+          <div class="pl-4">
+            <button class="btn btn-outline btn-warning btn-xs btn-circle" (click)="toggleEdit()">
+              <li class="fa-solid fa-pen-to-square"></li>
+            </button>
+          </div>
+        }
+        @if (todoTask.createdBy == currentUserId) {
+          <div class="pl-4">
+            <button class="btn btn-outline btn-error btn-xs btn-circle" (click)="onDeleteClick()">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+        }
+        @if (todoTask.isEditable != false) {
+          <div class="pl-4">
+            <button
+              [class.btn-primary]="todoTask.status"
+              [class.btn-default]="!todoTask.status"
+              class="btn btn-outline btn-xs btn-circle"
+              (click)="updateStatus(todoTask!)"
+            >
+              <i class="fa-solid" [class.fa-check]="todoTask.status" [class.fa-minus]="!todoTask.status"></i>
+            </button>
+          </div>
+        }
+        @if (taskFilesExistence) {
+          <div class="pl-4">
+            <button class="btn btn-outline btn-default btn-xs btn-circle" (click)="viewFiles()">
+              <i class="fa-solid fa-file"></i>
+            </button>
+          </div>
+        }
+        @if (todoTask.createdBy == currentUserId) {
+          <div class="pl-4">
+            <button class="btn btn-outline btn-default btn-xs btn-circle" (click)="shareTask()">
+              <i class="fa fa-share-alt"></i>
+            </button>
+          </div>
+        }
+      </div>
     </div>
   </div>
   @if (filesClickStatus) {
@@ -78,6 +75,10 @@
     <app-share-task-dialog [todoTask]="this.todoTask" (shareViewClosed)="shareViewClosed()"></app-share-task-dialog>
   }
   @if (editTodoStatus) {
-    <app-todo-edit-dialog [todoTask]="this.todoTask" (editViewClosed)="editViewClosed()"></app-todo-edit-dialog>
+    <app-todo-edit-dialog
+      [todoTask]="this.todoTask"
+      (taskUpdated)="updatedTask($event)"
+      (editViewClosed)="editViewClosed()"
+    ></app-todo-edit-dialog>
   }
 }
