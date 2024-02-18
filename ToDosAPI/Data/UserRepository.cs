@@ -2,6 +2,7 @@
 using Microsoft.Data.SqlClient;
 using System.ComponentModel;
 using System.Net.NetworkInformation;
+using System.Threading.Tasks;
 using ToDosAPI.Models;
 using ToDosAPI.Models.Dtos;
 using ToDosAPI.Models.Entities;
@@ -105,9 +106,9 @@ public class UserRepository
         return true;
     }
 
-    public async Task<List<UserToShareWith>> GetSharedWithAsync(int userId, int taskId)
+    public async Task<List<UsersToShareDto>> GetUserstoShareAsync(int userId)
     {
         await using var con = new SqlConnection(_context.ConnectionString);
-        return (await con.QueryAsync<UserToShareWith>("sp_UsersGetShareWith", new { userId, taskId })).ToList();
+        return (await con.QueryAsync<UsersToShareDto>("sp_UsersGetToShare", userId )).ToList();
     }
 }

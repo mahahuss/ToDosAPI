@@ -17,6 +17,7 @@ import { FormsModule } from '@angular/forms';
 import { TodoFilesDialogComponent } from '../todo-files-dialog/todo-files-dialog.component';
 import { ShareTaskDialogComponent } from '../share-task-dialog/share-task-dialog.component';
 import { TodoEditDialogComponent } from '../todo-edit-dialog/todo-edit-dialog.component';
+import { UserInfo } from '../../../shared/models/auth';
 
 @Component({
   selector: 'app-todo-item',
@@ -34,6 +35,7 @@ import { TodoEditDialogComponent } from '../todo-edit-dialog/todo-edit-dialog.co
 })
 export class TodoItemComponent implements OnInit {
   @Input({ required: true }) todoTask!: ToDoTask;
+  @Input({ required: true }) users!: UserInfo[];
   @Input({ required: true }) currentUserId!: number;
   @Output() taskUpdated = new EventEmitter<ToDoTask>();
   @Output() deleteStatusChanged = new EventEmitter();

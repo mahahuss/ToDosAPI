@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { jwtDecode } from 'jwt-decode';
 import { BehaviorSubject, Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment.development';
-import { Role, UpdateUser, User, UserInfo, UserToShareWith } from '../shared/models/auth';
+import { Role, UpdateUser, User, UserInfo, UserToShare } from '../shared/models/auth';
 import { ApiResponse } from '../shared/models/common';
 
 @Injectable({
@@ -106,7 +106,7 @@ export class AuthService {
     );
   }
 
-  getUsersToShareWith(taskId: number): Observable<UserToShareWith[]> {
-    return this.http.get<UserToShareWith[]>(this.baseUrl + 'users/shareWith/' + taskId);
+  getUsersToShare(userId: number): Observable<UserToShare[]> {
+    return this.http.get<UserToShare[]>(this.baseUrl + 'users/users-to-share/' + userId);
   }
 }

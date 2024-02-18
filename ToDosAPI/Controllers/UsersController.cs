@@ -56,7 +56,19 @@ public class UsersController : BaseController
     public async Task<ActionResult> GetUsers()
     {
         var currentUserId = User.GetId();
+        var roles = User.GetRoles(); // send as a parameters
+
+        if (!roles.Contains("Admin") && !roles.Contains("Moderator"))
+            return Unauthorized("Unauthorized: due to invalid credentials");
         var users = await _userService.GetUsersAsync(currentUserId);
+        return Ok(users);
+    }
+
+    [HttpGet("users-to-share/{userId}")]
+    public async Task<ActionResult> GetUserstoShare()
+    {
+        var currentUserId = User.GetId();
+        var users = await _userService.GetUserstoShareAsync(currentUserId);
         return Ok(users);
     }
 
@@ -67,13 +79,6 @@ public class UsersController : BaseController
         return Ok(roles);
     }
 
-    [HttpGet("shareWith/{taskId}")]
-    public async Task<ActionResult> GetSharedWith(int taskId)
-    {
-        var userId = User.GetId();
-        var usersShareddWith = await _userService.GetSharedWithAsync(userId, taskId);
-        return Ok(usersShareddWith);
-    }
 
     [HttpGet("roles")]
     public async Task<ActionResult> GetallRoles()

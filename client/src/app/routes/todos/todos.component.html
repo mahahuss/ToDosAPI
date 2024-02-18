@@ -11,6 +11,7 @@
             [currentUserId]="currentUserId"
             (taskUpdated)="taskUpdated($event)"
             (deleteStatusChanged)="deleteStatusChanged(todo)"
+            [users]="users"
           />
         }
         @if (toDoTask) {

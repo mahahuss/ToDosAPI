@@ -8,6 +8,7 @@ import { NewTaskComponent } from './new-task/new-task.component';
 import { TodoDialogComponent } from './todo-dialog/todo-dialog.component';
 import { TodoFilesDialogComponent } from './todo-files-dialog/todo-files-dialog.component';
 import { TodoItemComponent } from './todo-item/todo-item.component';
+import { UserInfo } from '../../shared/models/auth';
 
 @Component({
   selector: 'app-todos',
@@ -31,6 +32,7 @@ export class TodosComponent implements OnInit {
   currentpage = 1;
   currentUserId!: number;
   loadTodosStatus = false;
+  users: UserInfo[] = [];
 
   constructor(
     private authService: AuthService,
@@ -72,6 +74,15 @@ export class TodosComponent implements OnInit {
         this.pages = Array.from(new Array(res.totalPages), (x, i) => i + 1);
         this.currentpage = res.pageNumber;
         this.loadTodosStatus = true;
+        console.log(res);
+      },
+    });
+  }
+
+  loadUsers() {
+    this.authService.getUsers().subscribe({
+      next: (res) => {
+        this.users = res;
       },
     });
   }

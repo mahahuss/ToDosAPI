@@ -4,9 +4,17 @@ export type ToDoTask = {
   createdDate: Date;
   createdBy: number;
   status: boolean;
-  isEditable: boolean;
-  sharedBy: string;
   files: UserTaskFile[];
+  sharedTasks: SharedTask[];
+};
+
+export type SharedTask = {
+  id: number;
+  taskId: number;
+  sharedBy: number;
+  sharedWith: number;
+  isEditable: boolean;
+  sharedDate: Date;
 };
 
 export type AddNewTaskModel = {
