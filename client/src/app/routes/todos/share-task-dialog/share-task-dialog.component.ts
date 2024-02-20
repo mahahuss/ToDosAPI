@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ToDoTask } from '../../../shared/models/todo';
-import { ShareTask, UserToShare } from '../../../shared/models/auth';
+import { ShareTask, ToDoTask } from '../../../shared/models/todo';
+import { UserToShare } from '../../../shared/models/auth';
 import { AuthService } from '../../../services/auth.service';
 import { ToastrService } from 'ngx-toastr';
 import { FormsModule } from '@angular/forms';
@@ -18,19 +18,39 @@ import { TodosService } from '../../../services/todos.service';
 export class ShareTaskDialogComponent implements OnInit {
   @Input() todoTask: ToDoTask | undefined = undefined;
   @Output() shareViewClosed = new EventEmitter();
+  @Output() sharedUsersUpdated = new EventEmitter();
   usersToShareWith: UserToShare[] = [];
   selectedUsers: UserToShare[] = [];
   isEditable = false;
 
   constructor(
     private toastr: ToastrService,
-    private TodosService: TodosService,
+    private todosService: TodosService,
+    private authService: AuthService,
   ) {}
 
   ngOnInit(): void {
     this.loadUsers();
   }
-  loadUsers() {}
+  loadUsers() {
+    this.authService.userList$.subscribe({
+      next: (res) => {
+        if (!res) {
+          this.toastr.error('Sorry, you cannot share task at this time');
+          console.log('res not found');
+          this.onClose();
+        }
+        let sharedWithIds = this.todoTask?.sharedTasks
+          ? this.todoTask?.sharedTasks.map(({ sharedWith }) => sharedWith)
+          : [];
+        this.usersToShareWith = res.filter((item) => !sharedWithIds.includes(item.id));
+        this.selectedUsers = res.filter((item) => sharedWithIds.includes(item.id));
+        // console.log('all users: ' + res);
+        // console.log('alreaday shared with: ' + sharedWithIds);
+        // console.log('final users list: ' + this.usersToShareWith);
+      },
+    });
+  }
 
   onClose() {
     this.shareViewClosed.emit();
@@ -43,10 +63,25 @@ export class ShareTaskDialogComponent implements OnInit {
       sharedWith: this.selectedUsers.map((user) => user.id),
     };
 
-    this.TodosService.shareTask(sharedtask).subscribe({
+    this.todosService.shareTask(sharedtask).subscribe({
       next: () => {
-        this.onClose();
         this.toastr.success('shared successfully');
+
+        if (sharedtask.sharedWith.length == 0) this.todoTask!.sharedTasks = [];
+        else {
+          this.todoTask!.sharedTasks = [];
+          for (let id of sharedtask.sharedWith) {
+            this.todoTask!.sharedTasks.push({
+              id: new Date().getTime(),
+              taskId: sharedtask.taskId,
+              sharedBy: this.todoTask!.createdBy,
+              isEditable: sharedtask.isEditable,
+              sharedDate: new Date(),
+              sharedWith: id,
+            });
+          }
+        }
+        this.sharedUsersUpdated.emit(this.todoTask);
       },
     });
   }

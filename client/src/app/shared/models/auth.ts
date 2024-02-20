@@ -19,12 +19,6 @@ export type UserInfo = {
   roles: Map<number, string>;
 };
 
-export type ShareTask = {
-  taskId: number;
-  isEditable: boolean;
-  sharedWith: number[];
-};
-
 export type Role = {
   id: number;
   userType: string;

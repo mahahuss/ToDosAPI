@@ -64,7 +64,7 @@ public class UsersController : BaseController
         return Ok(users);
     }
 
-    [HttpGet("users-to-share/{userId}")]
+    [HttpGet("users-to-share")]
     public async Task<ActionResult> GetUserstoShare()
     {
         var currentUserId = User.GetId();

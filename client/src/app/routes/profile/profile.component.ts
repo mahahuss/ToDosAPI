@@ -35,7 +35,6 @@ export class ProfileComponent implements OnInit {
     this.authService.currentUser$.subscribe({
       next: (res) => {
         if (!res) return;
-
         this.userInfo = res;
         this.userInfo.roles = Array.isArray(this.userInfo.roles) ? this.userInfo.roles : [this.userInfo.roles];
         this.setPhotoPath();

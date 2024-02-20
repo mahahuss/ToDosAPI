@@ -46,7 +46,6 @@ export class TodosComponent implements OnInit {
 
   taskAdded(createdTask: ToDoTask) {
     this.todos.unshift(createdTask);
-    console.log(this.todos);
   }
 
   taskUpdated(updatedtask: ToDoTask) {
@@ -74,7 +73,6 @@ export class TodosComponent implements OnInit {
         this.pages = Array.from(new Array(res.totalPages), (x, i) => i + 1);
         this.currentpage = res.pageNumber;
         this.loadTodosStatus = true;
-        console.log(res);
       },
     });
   }

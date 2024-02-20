@@ -1,4 +1,5 @@
 import {
+  AfterContentChecked,
   ChangeDetectorRef,
   Component,
   ElementRef,
@@ -33,7 +34,7 @@ import { UserInfo } from '../../../shared/models/auth';
     TodoEditDialogComponent,
   ],
 })
-export class TodoItemComponent implements OnInit {
+export class TodoItemComponent implements OnInit, AfterContentChecked {
   @Input({ required: true }) todoTask!: ToDoTask;
   @Input({ required: true }) users!: UserInfo[];
   @Input({ required: true }) currentUserId!: number;
@@ -56,6 +57,9 @@ export class TodoItemComponent implements OnInit {
 
   ngOnInit(): void {
     this.taskFilesExistence = this.todoTask!.files.length > 0 ? true : false;
+  }
+  ngAfterContentChecked() {
+    this.cdRef.detectChanges();
   }
 
   updateStatus(task: ToDoTask) {
@@ -103,5 +107,10 @@ export class TodoItemComponent implements OnInit {
   }
   editViewClosed() {
     this.editTodoStatus = false;
+  }
+
+  sharedUsersUpdated(task: ToDoTask) {
+    this.todoTask = task;
+    this.shareViewClosed();
   }
 }

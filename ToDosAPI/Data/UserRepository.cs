@@ -109,6 +109,6 @@ public class UserRepository
     public async Task<List<UsersToShareDto>> GetUserstoShareAsync(int userId)
     {
         await using var con = new SqlConnection(_context.ConnectionString);
-        return (await con.QueryAsync<UsersToShareDto>("sp_UsersGetToShare", userId )).ToList();
+        return (await con.QueryAsync<UsersToShareDto>("sp_UsersGetToShare", new { userId } )).ToList();
     }
 }

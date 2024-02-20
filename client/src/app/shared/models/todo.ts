@@ -44,3 +44,9 @@ export type UserTask = {
   status: boolean;
   files: UserTaskFile[];
 };
+
+export type ShareTask = {
+  taskId: number;
+  isEditable: boolean;
+  sharedWith: number[];
+};

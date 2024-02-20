@@ -68,7 +68,11 @@
     <app-todo-files-dialog [todoTask]="this.todoTask" (filesViewClosed)="filesViewClosed()"></app-todo-files-dialog>
   }
   @if (shareClickStatus) {
-    <app-share-task-dialog [todoTask]="this.todoTask" (shareViewClosed)="shareViewClosed()"></app-share-task-dialog>
+    <app-share-task-dialog
+      [todoTask]="this.todoTask"
+      (sharedUsersUpdated)="sharedUsersUpdated($event)"
+      (shareViewClosed)="shareViewClosed()"
+    ></app-share-task-dialog>
   }
   @if (editTodoStatus) {
     <app-todo-edit-dialog

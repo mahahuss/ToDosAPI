@@ -13,7 +13,8 @@ export class AuthService {
   private readonly baseUrl = environment.apiUrl;
   private currentUserSource$ = new BehaviorSubject<User | undefined>(undefined);
   currentUser$ = this.currentUserSource$.asObservable();
-
+  private userListSource$ = new BehaviorSubject<Array<UserToShare>>([]);
+  userList$ = this.userListSource$.asObservable();
   constructor(private http: HttpClient) {}
 
   isTokenValid(): boolean {
@@ -106,7 +107,12 @@ export class AuthService {
     );
   }
 
-  getUsersToShare(userId: number): Observable<UserToShare[]> {
-    return this.http.get<UserToShare[]>(this.baseUrl + 'users/users-to-share/' + userId);
+  getUsersToShare(): Observable<UserToShare[]> {
+    return this.http.get<UserToShare[]>(this.baseUrl + 'users/users-to-share').pipe(
+      map((res) => {
+        this.userListSource$.next(res);
+        return res;
+      }),
+    );
   }
 }

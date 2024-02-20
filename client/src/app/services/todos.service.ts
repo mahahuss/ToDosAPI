@@ -3,8 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment.development';
 import { ApiResponse } from '../shared/models/common';
-import { GetUserTasksResponse, ToDoTask, UserTask } from '../shared/models/todo';
-import { ShareTask } from '../shared/models/auth';
+import { GetUserTasksResponse, ShareTask, ToDoTask, UserTask } from '../shared/models/todo';
 
 @Injectable({
   providedIn: 'root',
