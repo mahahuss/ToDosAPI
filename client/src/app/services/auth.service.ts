@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { jwtDecode } from 'jwt-decode';
-import { BehaviorSubject, Observable, map } from 'rxjs';
+import { BehaviorSubject, Observable, map, of } from 'rxjs';
 import { environment } from '../../environments/environment.development';
 import { Role, UpdateUser, User, UserInfo, UserToShare } from '../shared/models/auth';
 import { ApiResponse } from '../shared/models/common';
@@ -15,6 +15,8 @@ export class AuthService {
   currentUser$ = this.currentUserSource$.asObservable();
   private userListSource$ = new BehaviorSubject<Array<UserToShare>>([]);
   userList$ = this.userListSource$.asObservable();
+  private usersToShare: UserToShare[] | undefined;
+  
   constructor(private http: HttpClient) {}
 
   isTokenValid(): boolean {
@@ -108,11 +110,29 @@ export class AuthService {
   }
 
   getUsersToShare(): Observable<UserToShare[]> {
+    if (this.usersToShare) {
+      return of(this.usersToShare);
+    }
+
     return this.http.get<UserToShare[]>(this.baseUrl + 'users/users-to-share').pipe(
       map((res) => {
-        this.userListSource$.next(res);
+        this.usersToShare = res;
         return res;
       }),
     );
+  }
+
+  startRefreshTokenInterval(): void {
+    if (this.isTokenValid()) {
+      setInterval(() => {
+        const currentExpiryTime = jwtDecode(localStorage.getItem('token')!).exp!;
+        const fiveMinBefore = new Date(currentExpiryTime * 1000 - 30_000);
+        const timeNow = new Date();
+
+        if (fiveMinBefore < timeNow) {
+          this.refreshToken().subscribe();
+        }
+      }, 1000 * 30);
+    }
   }
 }
