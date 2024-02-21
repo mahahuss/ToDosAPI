@@ -50,3 +50,11 @@ export type ShareTask = {
   isEditable: boolean;
   sharedWith: number[];
 };
+
+export type UserFile = {
+  id: number;
+  taskId: number;
+  fileName: string;
+  file?: File;
+  isOld: boolean;
+};

@@ -72,9 +72,9 @@ public class TasksController : BaseController
     [HttpPut]
     public async Task<ActionResult> EditTask([FromForm] EditTaskFormDto editTaskFormDto)
     {
-        var editTaskDto = JsonSerializer.Deserialize<EditTaskDto>(editTaskFormDto.TaskJson);
+        var editTaskDto = JsonSerializer.Deserialize<EditTaskDto>(editTaskFormDto.Task);
 
-        if (editTaskDto is null) return BadRequest("Bad task JSON");
+        if (editTaskDto is null) return BadRequest("Bad task JSON"); // why?
 
         var task = await _taskService.GetTaskByIdAsync(editTaskDto.Id);
 
@@ -82,7 +82,7 @@ public class TasksController : BaseController
         //check also if the task shared with the user 
         // if (task.CreatedBy != User.GetId()) return Unauthorized("Unauthorized: due to invalid credentials");
 
-        var check = await _taskService.EditTaskAsync(editTaskDto, editTaskFormDto.Files);
+        var check = await _taskService.EditTaskAsync(task, editTaskDto, editTaskFormDto.Files);
         if (check) return Ok("Updated successfully");
 
         return BadRequest("Failed to update task");

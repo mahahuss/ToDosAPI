@@ -10,10 +10,12 @@ public class EditTaskDto
     [Required] public string TaskContent { get; set; } = default!;
     [Required] public bool Status { get; set; }
     public List<TaskAttachment> Files { get; set; } = [];
+    public List<SharedTask> sharedTasks { get; set; } = [];
+
 }
 
 public class EditTaskFormDto
 {
-    [Required] public string TaskJson { get; set; } = default!;
+    [Required] public string Task { get; set; } = default!;
     public List<IFormFile> Files { get; set; } = [];
 }

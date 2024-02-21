@@ -110,6 +110,9 @@ if (createdBy === me || isEditable) allowEdit
 
 ### 15-2-2024
 
+- allow adding or deleting files on todo update
+- show shared with, allow editing shared with --
+- get all users and cache them. Stop getting users on share click --
 - enhance loading behavior and add loading indicators everywhere
 - user image is not showing
 - urls -> kebab case, ex: user-roles

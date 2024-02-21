@@ -1,17 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ToDoTask, UserTaskFile } from '../../../shared/models/todo';
+import { ToDoTask, UserTaskFile, UserFile } from '../../../shared/models/todo';
 import { ToastrService } from 'ngx-toastr';
 import { TodosService } from '../../../services/todos.service';
-
-type UserFile = {
-  id: number;
-  taskId: number;
-  fileName: string;
-  file?: File;
-  isOld: boolean;
-};
 
 @Component({
   selector: 'app-todo-edit-dialog',
@@ -58,6 +50,7 @@ export class TodoEditDialogComponent implements OnInit {
 
   removeFile(file: UserTaskFile) {
     this.todoTaskCopy!.files = this.todoTaskCopy!.files.filter((item) => item.id !== file!.id);
+    this.files = this.files.filter((item) => item.id !== file!.id); // i guess ?
   }
 
   editTask() {
@@ -86,11 +79,13 @@ export class TodoEditDialogComponent implements OnInit {
         this.toastr.success('The task updated successfully');
         this.taskUpdated.emit(this.todoTaskCopy);
       },
+      error: (err) => {
+        console.log(err.message);
+      },
     });
   }
-
   onClose() {
-    this.todoTaskCopy = JSON.parse(JSON.stringify(this.todoTask));
+    this.todoTaskCopy = structuredClone(this.todoTask);
     this.editViewClosed.emit();
   }
 }

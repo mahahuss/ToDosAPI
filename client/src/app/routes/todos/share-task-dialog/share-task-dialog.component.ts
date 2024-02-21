@@ -35,9 +35,8 @@ export class ShareTaskDialogComponent implements OnInit {
   loadUsers() {
     this.authService.userList$.subscribe({
       next: (res) => {
-        if (!res) {
+        if (res.length == 0) {
           this.toastr.error('Sorry, you cannot share task at this time');
-          console.log('res not found');
           this.onClose();
         }
         let sharedWithIds = this.todoTask?.sharedTasks
@@ -45,9 +44,6 @@ export class ShareTaskDialogComponent implements OnInit {
           : [];
         this.usersToShareWith = res.filter((item) => !sharedWithIds.includes(item.id));
         this.selectedUsers = res.filter((item) => sharedWithIds.includes(item.id));
-        // console.log('all users: ' + res);
-        // console.log('alreaday shared with: ' + sharedWithIds);
-        // console.log('final users list: ' + this.usersToShareWith);
       },
     });
   }

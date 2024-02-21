@@ -111,10 +111,10 @@ public class UserTaskRepository
         return attachment;
     }
 
-    public async Task<TasksDto?> GetTaskByIdAsync(int taskId)
+    public async Task<EditTaskDto?> GetTaskByIdAsync(int taskId)
     {
         await using var con = new SqlConnection(_context.ConnectionString);
-        var userTask = await con.QueryFirstOrDefaultAsync<TasksDto>("sp_TasksGetById",
+        var userTask = await con.QueryFirstOrDefaultAsync<EditTaskDto>("sp_TasksGetById",
             new { Id = taskId });
         return userTask;
     }
@@ -124,6 +124,7 @@ public class UserTaskRepository
         await using var con = new SqlConnection(_context.ConnectionString);
         await con.OpenAsync();
         await using var tran = await con.BeginTransactionAsync();
+        await con.ExecuteAsync("sp_SharedTasksDeleteSharedWith", new { taskId = shareTaskDto.TaskId }, transaction: tran);
         foreach (var shareWith in shareTaskDto.SharedWith)
         {
             await con.ExecuteAsync("sp_TasksShare", new

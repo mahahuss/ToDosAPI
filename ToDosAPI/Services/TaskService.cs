@@ -53,7 +53,7 @@ public class TaskService
         return await _userTaskRepo.DeleteTaskAsync(taskId);
     }
 
-    public async Task<bool> EditTaskAsync(EditTaskDto editTaskDto, List<IFormFile> files)
+    public async Task<bool> EditTaskAsync(EditTaskDto oldTask, EditTaskDto editTaskDto, List<IFormFile> files)
     {
         var editResult = await _userTaskRepo.EditTaskAsync(editTaskDto);
 
@@ -61,6 +61,8 @@ public class TaskService
         {
             await _userTaskRepo.DeleteFileAsync(editTaskDto.Id);
         }
+
+        var filesToDelete = oldTask.Files.Where(x => editTaskDto.Files.Any(y => y.Id == x.Id));
 
         if (files.Count == 0) return editResult;
 
@@ -100,7 +102,7 @@ public class TaskService
         return _userTaskRepo.GetTaskAttachmentAsync(attachmentId);
     }
 
-    public Task<TasksDto?> GetTaskByIdAsync(int taskId)
+    public Task<EditTaskDto?> GetTaskByIdAsync(int taskId)
     {
         return _userTaskRepo.GetTaskByIdAsync(taskId);
     }
