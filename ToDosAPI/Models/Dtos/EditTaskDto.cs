@@ -1,16 +1,23 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using ToDosAPI.Models.Entities;
 
 namespace ToDosAPI.Models.Dtos;
 
 public class EditTaskDto
 {
+    [JsonPropertyName("id")]
     [Required] public int Id { get; set; }
+    [JsonPropertyName("createdBy")]
     [Required] public int CreatedBy { get; set; }
+    [JsonPropertyName("taskContent")]
     [Required] public string TaskContent { get; set; } = default!;
+    [JsonPropertyName("status")]
     [Required] public bool Status { get; set; }
+    [JsonPropertyName("files")]
     public List<TaskAttachment> Files { get; set; } = [];
-    public List<SharedTask> sharedTasks { get; set; } = [];
+    [JsonPropertyName("sharedTasks")]
+    public List<SharedTask> SharedTasks { get; set; } = [];
 
 }
 

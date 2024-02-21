@@ -33,7 +33,7 @@ export class ShareTaskDialogComponent implements OnInit {
     this.loadUsers();
   }
   loadUsers() {
-    this.authService.userList$.subscribe({
+    this.authService.getUsersToShare().subscribe({
       next: (res) => {
         if (res.length === 0) {
           this.toastr.error('Sorry, you cannot share task at this time');
