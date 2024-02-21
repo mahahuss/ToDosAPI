@@ -13,17 +13,11 @@ import { jwtDecode } from 'jwt-decode';
 })
 export class AppComponent implements OnInit {
   constructor(private authService: AuthService) {
+    this.authService.startRefreshTokenInterval();
     if (this.authService.isTokenValid()) {
-      setInterval(() => {
-        const currentExpiryTime = jwtDecode(localStorage.getItem('token')!).exp!;
-        const fiveMinBefore = new Date(currentExpiryTime * 1000 - 30_000);
-        const timeNow = new Date();
-
-        if (fiveMinBefore < timeNow) {
-          this.authService.refreshToken().subscribe();
-        }
-      }, 1000 * 30);
-      this.authService.refreshToken().subscribe();
+      this.authService.refreshToken().subscribe(() => {
+        this.authService.getUsersToShare().subscribe();
+      });
     }
   }
 

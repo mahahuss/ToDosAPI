@@ -33,6 +33,7 @@ export class LoginComponent implements OnInit {
     this.loginStatus = true;
     this.authService.login(this.f.username.value, this.f.password.value).subscribe({
       next: () => {
+        this.authService.startRefreshTokenInterval();
         this.route.navigate(['/home']);
       },
       error: () => {
