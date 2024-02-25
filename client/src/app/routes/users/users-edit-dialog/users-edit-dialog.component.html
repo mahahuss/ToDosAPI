@@ -27,7 +27,7 @@
           [clearable]="false"
         >
         </ng-select>
-        <div [hidden]="!errorMessage" class="text-left text-red-600 text-sm px-1.5">
+        <div [class.hidden]="!errorMessage" class="text-left text-red-600 text-sm px-1.5">
           At least one role must be specified
         </div>
 

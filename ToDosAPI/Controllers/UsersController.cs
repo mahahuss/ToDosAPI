@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using ToDosAPI.Extensions;
 using ToDosAPI.Models;
 using ToDosAPI.Models.Dtos;
+using ToDosAPI.Models.Entities;
 using ToDosAPI.Services;
 
 namespace ToDosAPI.Controllers;
@@ -49,7 +50,13 @@ public class UsersController : BaseController
 
         if (!System.IO.File.Exists(imagePath)) return NotFound();
 
-        return PhysicalFile(imagePath, _fileService.CheckContentType(imagePath));
+        Byte[] bytes = System.IO.File.ReadAllBytes(imagePath);
+        String file = Convert.ToBase64String(bytes);
+        var image = new ProfileImage
+        {
+            FileBase64 = file
+        };
+        return Ok(image);
     }
 
     [HttpGet]
@@ -72,7 +79,7 @@ public class UsersController : BaseController
         return Ok(users);
     }
 
-    [HttpGet("userRoles/{userId}")]
+    [HttpGet("user-roles/{userId}")]
     public async Task<ActionResult> GetRoles(int userId)
     {
         var roles = await _userService.GetUserRolesAsync(userId);
@@ -109,7 +116,7 @@ public class UsersController : BaseController
         return BadRequest("Failed to update profile");
     }
 
-    [HttpPut("editRoles")]
+    [HttpPut("edit-roles")]
     [Authorize(Roles = "Admin")]
     public async Task<ActionResult> EditProfileByAdmin(EditProfileByAdminDto editProfileByAdminDto)
     {

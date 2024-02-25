@@ -114,9 +114,24 @@ public class UserTaskRepository
     public async Task<EditTaskDto?> GetTaskByIdAsync(int taskId)
     {
         await using var con = new SqlConnection(_context.ConnectionString);
-        var userTask = await con.QueryFirstOrDefaultAsync<EditTaskDto>("sp_TasksGetById",
-            new { Id = taskId });
-        return userTask;
+        EditTaskDto? taskWithAttachments = null;
+
+        await con.QueryAsync<EditTaskDto, TaskAttachment, EditTaskDto>("sp_TasksGetById",
+    (task, attachment) =>
+    {
+        taskWithAttachments ??= new EditTaskDto
+        {
+            Id = taskId,
+            CreatedBy = task.CreatedBy,
+            Status = task.Status,
+            TaskContent = task.TaskContent,
+        };
+
+        taskWithAttachments.Files.Add(attachment);
+        return taskWithAttachments;
+    }, new { Id = taskId });
+
+        return taskWithAttachments;
     }
 
     public async Task ShareTaskAsync(ShareTaskDto shareTaskDto, int userId)
@@ -163,9 +178,9 @@ public class UserTaskRepository
         return tasks.Values.ToList();
     }
 
-    public async Task<bool> DeleteFileAsync(int taskId)
+    public async Task<bool> DeleteFileAsync(int attachmentId)
     {
         await using var con = new SqlConnection(_context.ConnectionString);
-        return await con.ExecuteAsync("sp_TasksAttachmentsDelete", new { taskId }) > 0;
+        return await con.ExecuteAsync("sp_TasksAttachmentsDelete", new { Id = attachmentId }) > 0;
     }
 }

@@ -1,59 +1,63 @@
 <div class="w-full max-w-screen-xl mx-auto px-6">
   <div class="flex justify-center p-4 px-3 py-10">
-    <div class="relative overflow-x-auto shadow-md sm:rounded-lg w-fit">
-      <table class="w-full text-sm text-left rtl:text-right text-gray-500 -400">
-        <thead class="text-sm text-gray-700 font-medium bg-gray-50 -400">
-          <tr>
-            <th scope="col" class="px-6 py-3">Username</th>
-            <th scope="col" class="px-6 py-3">Full Name</th>
-            <th scope="col" class="px-6 py-3"></th>
-            <th scope="col" class="px-6 py-3"></th>
-            <th scope="col" class="px-6 py-3"></th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (user of users; track $index) {
-            <tr class="odd:bg-white even:bg-gray-50 border-b -700 text-center">
-              <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                {{ user.username }}
-              </th>
-              <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                {{ user.fullName }}
-              </th>
-              <td class="px-6 py-4">
-                <button (click)="viewTasks(user.id)" class="font-medium text-blue-600 -500 hover:underline">
-                  {{ user.totalTasks > 0 ? "View Tasks" : "" }}
-                </button>
-              </td>
-              @if (isAdmin) {
+    @if (loaderService.isLoading$ | async) {
+      <app-spinner> </app-spinner>
+    } @else {
+      <div class="relative overflow-x-auto shadow-md sm:rounded-lg w-fit">
+        <table class="w-full text-sm text-left rtl:text-right text-gray-500 -400">
+          <thead class="text-sm text-gray-700 font-medium bg-gray-50 -400">
+            <tr>
+              <th scope="col" class="px-6 py-3">Username</th>
+              <th scope="col" class="px-6 py-3">Full Name</th>
+              <th scope="col" class="px-6 py-3"></th>
+              <th scope="col" class="px-6 py-3"></th>
+              <th scope="col" class="px-6 py-3"></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (user of users; track $index) {
+              <tr class="odd:bg-white even:bg-gray-50 border-b -700 text-center">
+                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                  {{ user.username }}
+                </th>
+                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                  {{ user.fullName }}
+                </th>
+                <td class="px-6 py-4">
+                  <button (click)="viewTasks(user.id)" class="font-medium text-blue-600 -500 hover:underline">
+                    {{ user.totalTasks > 0 ? "View Tasks" : "" }}
+                  </button>
+                </td>
+                @if (isAdmin) {
+                  <td class="px-6 py-4">
+                    <button
+                      (click)="changeUserStatus(user.id, user.status)"
+                      [class.bg-white]="user.status"
+                      [class.text-gray-900]="user.status"
+                      [class.bg-gray-300]="!user.status"
+                      [class.text-gray-800]="!user.status"
+                      type="button"
+                      class="h-6 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-full text-xs px-5 -600 -gray-700 -gray-600 -gray-700"
+                    >
+                      {{ user.status ? "Block" : "Unblock" }}
+                    </button>
+                  </td>
+                }
                 <td class="px-6 py-4">
                   <button
-                    (click)="changeUserStatus(user.id, user.status)"
-                    [class.bg-white]="user.status"
-                    [class.text-gray-900]="user.status"
-                    [class.bg-gray-300]="!user.status"
-                    [class.text-gray-800]="!user.status"
+                    (click)="openEditDialog(user)"
                     type="button"
                     class="h-6 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-full text-xs px-5 -600 -gray-700 -gray-600 -gray-700"
                   >
-                    {{ user.status ? "Block" : "Unblock" }}
+                    Edit
                   </button>
                 </td>
-              }
-              <td class="px-6 py-4">
-                <button
-                  (click)="openEditDialog(user)"
-                  type="button"
-                  class="h-6 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-full text-xs px-5 -600 -gray-700 -gray-600 -gray-700"
-                >
-                  Edit
-                </button>
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
   </div>
 </div>
 @if (tasksViewStatus) {

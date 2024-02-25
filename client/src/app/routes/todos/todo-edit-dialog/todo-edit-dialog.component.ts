@@ -50,7 +50,7 @@ export class TodoEditDialogComponent implements OnInit {
 
   removeFile(file: UserTaskFile) {
     this.todoTaskCopy!.files = this.todoTaskCopy!.files.filter((item) => item.id !== file!.id);
-    this.files = this.files.filter((item) => item.id !== file!.id); // i guess ?
+    this.files = this.files.filter((item) => item.id !== file!.id); // I guess ?
   }
 
   editTask() {
@@ -60,6 +60,13 @@ export class TodoEditDialogComponent implements OnInit {
     }
     this.errorMessage = false;
     const formData = new FormData();
+    var todoTaskBeforeFilter = structuredClone(this.todoTaskCopy);
+    todoTaskBeforeFilter!.files = this.files.map((f) => ({
+      id: f.id,
+      taskId: f.taskId,
+      fileName: f.fileName,
+    }));
+
     this.todoTaskCopy!.files = this.files
       .filter((f) => f.isOld)
       .map((f) => ({
@@ -77,10 +84,7 @@ export class TodoEditDialogComponent implements OnInit {
     this.todosService.updateTask(formData).subscribe({
       next: () => {
         this.toastr.success('The task updated successfully');
-        this.taskUpdated.emit(this.todoTaskCopy);
-      },
-      error: (err) => {
-        console.log(err.message);
+        this.taskUpdated.emit(todoTaskBeforeFilter);
       },
     });
   }

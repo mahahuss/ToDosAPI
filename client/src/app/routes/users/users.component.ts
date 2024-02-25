@@ -4,12 +4,14 @@ import { UpdateUser, User, UserInfo } from '../../shared/models/auth';
 import { AuthService } from '../../services/auth.service';
 import { UsersTasksDialogComponent } from './users-tasks-dialog/users-tasks-dialog.component';
 import { UsersEditDialogComponent } from './users-edit-dialog/users-edit-dialog.component';
+import { LoaderService } from '../../services/loader.service';
+import { SpinnerComponent } from '../../core/components/spinner/spinner.component';
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [CommonModule, UsersTasksDialogComponent, UsersEditDialogComponent],
   templateUrl: './users.component.html',
   styleUrl: './users.component.scss',
+  imports: [CommonModule, UsersTasksDialogComponent, UsersEditDialogComponent, SpinnerComponent],
 })
 export class UsersComponent implements OnInit {
   userInfo!: User;
@@ -19,7 +21,10 @@ export class UsersComponent implements OnInit {
   user: UserInfo | undefined;
   users: UserInfo[] = [];
   currentUserId: number | undefined;
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    public loaderService: LoaderService,
+  ) {}
 
   ngOnInit(): void {
     this.authService.currentUser$.subscribe({

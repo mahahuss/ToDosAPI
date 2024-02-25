@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 using System.Net.Mail;
 using System.Threading.Tasks;
 using ToDosAPI.Data;
@@ -53,16 +54,27 @@ public class TaskService
         return await _userTaskRepo.DeleteTaskAsync(taskId);
     }
 
-    public async Task<bool> EditTaskAsync(EditTaskDto oldTask, EditTaskDto editTaskDto, List<IFormFile> files)
+    public async Task<bool> EditTaskAsync(EditTaskDto oldTasks, EditTaskDto editTaskDto, List<IFormFile> files)
     {
         var editResult = await _userTaskRepo.EditTaskAsync(editTaskDto);
-
         if (editTaskDto.Files.Count == 0)
         {
-            await _userTaskRepo.DeleteFileAsync(editTaskDto.Id);
+            foreach (var file in oldTasks.Files)
+            {
+                if (file == null) break;
+                await _userTaskRepo.DeleteFileAsync(file.Id);
+            }
         }
+        else
+        {
+            var filesIdsToDelete = oldTasks.Files.Select(a => a.Id).Except(editTaskDto.Files.Select(b => b.Id));
+            var filesToDelete = oldTasks.Files.Where(x => filesIdsToDelete.Any(y => y == x.Id));
 
-        var filesToDelete = oldTask.Files.Where(x => editTaskDto.Files.Any(y => y.Id == x.Id));
+            foreach (var file in filesToDelete)
+            {
+                await _userTaskRepo.DeleteFileAsync(file.Id);
+            }
+        }
 
         if (files.Count == 0) return editResult;
 

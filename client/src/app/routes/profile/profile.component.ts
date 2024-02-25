@@ -78,7 +78,10 @@ export class ProfileComponent implements OnInit {
   setPhotoPath() {
     if (!this.userInfo) return;
 
-    this.photoPath = environment.apiUrl + 'users/images/' + this.userInfo.nameid;
-    this.photoPath = this.photoPath.concat('?', new Date().getTime().toString());
+    this.authService.getUserPhoto(this.userInfo.nameid).subscribe({
+      next: (result) => {
+        this.photoPath = 'data:image/png;base64,' + result.fileBase64;
+      },
+    });
   }
 }

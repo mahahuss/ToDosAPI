@@ -9,6 +9,8 @@ import { TodoDialogComponent } from './todo-dialog/todo-dialog.component';
 import { TodoFilesDialogComponent } from './todo-files-dialog/todo-files-dialog.component';
 import { TodoItemComponent } from './todo-item/todo-item.component';
 import { UserInfo } from '../../shared/models/auth';
+import { LoaderService } from '../../services/loader.service';
+import { SpinnerComponent } from '../../core/components/spinner/spinner.component';
 
 @Component({
   selector: 'app-todos',
@@ -22,6 +24,7 @@ import { UserInfo } from '../../shared/models/auth';
     TodoDialogComponent,
     TodoFilesDialogComponent,
     FormsModule,
+    SpinnerComponent,
   ],
 })
 export class TodosComponent implements OnInit {
@@ -37,6 +40,7 @@ export class TodosComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private todosService: TodosService,
+    public loaderService: LoaderService,
   ) {}
 
   ngOnInit(): void {
@@ -49,6 +53,8 @@ export class TodosComponent implements OnInit {
   }
 
   taskUpdated(updatedtask: ToDoTask) {
+    console.log(updatedtask);
+
     const indexToUpdate = this.todos.findIndex((item) => item.id === updatedtask.id);
     if (indexToUpdate !== -1) this.todos[indexToUpdate] = updatedtask;
   }

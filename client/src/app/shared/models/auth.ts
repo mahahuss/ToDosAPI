@@ -34,3 +34,7 @@ export type UserToShare = {
   id: number;
   fullname: string;
 };
+
+export type UserPhoto = {
+  fileBase64: string;
+};

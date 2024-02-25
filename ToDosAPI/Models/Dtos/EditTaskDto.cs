@@ -23,6 +23,7 @@ public class EditTaskDto
 
 public class EditTaskFormDto
 {
+
     [Required] public string Task { get; set; } = default!;
     public List<IFormFile> Files { get; set; } = [];
 }

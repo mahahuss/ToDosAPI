@@ -29,7 +29,7 @@ public class TasksController : BaseController
         return Ok(tasks);
     }
 
-    [HttpGet("usertasks")]
+    [HttpGet("user-tasks")]
     public async Task<ActionResult> GetAllTasks(int userId, int pageNumber, int pageSize)
     {
         var currentUserId = User.GetId();
@@ -42,7 +42,7 @@ public class TasksController : BaseController
         return Ok(tasks);
     }
 
-    [HttpGet("usertasksonly/{userId}")]
+    [HttpGet("user-tasks-only/{userId}")]
     public async Task<ActionResult> GetUserTasks(int userId)
     {
         var roles = User.GetRoles(); // send as a parameters

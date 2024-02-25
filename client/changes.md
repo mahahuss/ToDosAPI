@@ -110,12 +110,13 @@ if (createdBy === me || isEditable) allowEdit
 
 ### 15-2-2024
 
-- allow adding or deleting files on todo update
+- allow adding or deleting files on todo update --
 - show shared with, allow editing shared with --
 - get all users and cache them. Stop getting users on share click --
-- enhance loading behavior and add loading indicators everywhere
-- user image is not showing
-- urls -> kebab case, ex: user-roles
-- remove createdBy from client
+- enhance loading behavior and add loading indicators everywhere /
+- user image is not showing --
+- urls -> kebab case, ex: user-roles --
+- remove createdBy from client -?-
 - move all business logic to service
-- complete attachments
+- complete attachments --
+- use tailwind class instead of [hidden] --

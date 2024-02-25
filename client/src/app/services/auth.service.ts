@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { jwtDecode } from 'jwt-decode';
 import { BehaviorSubject, Observable, map, of } from 'rxjs';
 import { environment } from '../../environments/environment.development';
-import { Role, UpdateUser, User, UserInfo, UserToShare } from '../shared/models/auth';
+import { Role, UpdateUser, User, UserInfo, UserPhoto, UserToShare } from '../shared/models/auth';
 import { ApiResponse } from '../shared/models/common';
 
 @Injectable({
@@ -16,7 +16,7 @@ export class AuthService {
   private userListSource$ = new BehaviorSubject<Array<UserToShare>>([]);
   userList$ = this.userListSource$.asObservable();
   private usersToShare: UserToShare[] | undefined;
-  
+
   constructor(private http: HttpClient) {}
 
   isTokenValid(): boolean {
@@ -98,11 +98,11 @@ export class AuthService {
   }
 
   getUserRoles(userId: number): Observable<Role[]> {
-    return this.http.get<Role[]>(this.baseUrl + 'users/userRoles/' + userId);
+    return this.http.get<Role[]>(this.baseUrl + 'users/user-roles/' + userId);
   }
 
   updateUser(user: UpdateUser): Observable<ApiResponse> {
-    return this.http.put<ApiResponse>(this.baseUrl + 'Users/editRoles', user).pipe(
+    return this.http.put<ApiResponse>(this.baseUrl + 'Users/edit-roles', user).pipe(
       map((res) => {
         return res;
       }),
@@ -134,5 +134,9 @@ export class AuthService {
         }
       }, 1000 * 30);
     }
+  }
+
+  getUserPhoto(userId: number): Observable<UserPhoto> {
+    return this.http.get<UserPhoto>(this.baseUrl + 'users/images/' + userId);
   }
 }
