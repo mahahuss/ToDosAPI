@@ -110,13 +110,22 @@ if (createdBy === me || isEditable) allowEdit
 
 ### 15-2-2024
 
-- allow adding or deleting files on todo update --
-- show shared with, allow editing shared with --
-- get all users and cache them. Stop getting users on share click --
-- enhance loading behavior and add loading indicators everywhere /
-- user image is not showing --
-- urls -> kebab case, ex: user-roles --
+- allow adding or deleting files on todo update /
+- ~~show shared with, allow editing shared with --~~
+- ~~get all users and cache them. Stop getting users on share click --~~
+- ~~enhance loading behavior and add loading indicators everywhere /~~
+- ~~user image is not showing --~~
+- ~~urls -> kebab case, ex: user-roles --~~
 - remove createdBy from client -?-
+- move all business logic to service XX
+- ~~use tailwind class instead of [hidden] --~~
+
+## 25-2-2024
+
+- fix expression has changed error in users-component (console error)
+- fix undefined error in users-component (console error)
+- close modal on esc
+- fix deleting files
+- fix shared by (show name, not id...)
+- move loading to a separate interceptor, and create only 1 method to toggle loading
 - move all business logic to service
-- complete attachments --
-- use tailwind class instead of [hidden] --

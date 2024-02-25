@@ -12,16 +12,12 @@ export class LoaderService {
   constructor() {}
 
   showLoader() {
-    if (this.apiCount === 0) {
-      this.isLoadingSubject.next(true);
-    }
+    this.isLoadingSubject.next(this.apiCount === 0);
     this.apiCount++;
   }
 
   hideLoader() {
     this.apiCount--;
-    if (this.apiCount === 0) {
-      this.isLoadingSubject.next(false);
-    }
+    this.isLoadingSubject.next(this.apiCount !== 0);
   }
 }

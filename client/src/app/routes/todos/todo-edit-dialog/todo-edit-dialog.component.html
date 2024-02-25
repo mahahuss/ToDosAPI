@@ -41,7 +41,7 @@
         <div class="grid grid-cols-2 gap-4 justify-between px-2 pt-2">
           @for (file of files; track file) {
             <div class="border px-2 py-2 border-2 rounded-md flex flex-row">
-              <div class="truncate w-4/5 text-sm">{{ file.fileName }}</div>
+              <div class="truncate w-4/5 text-sm" [title]="file.fileName">{{ file.fileName }}</div>
               <button class="btn btn-outline btn-error btn-xs btn-circle" (click)="removeFile(file)">
                 <i class="fa-solid fa-trash"></i>
               </button>
