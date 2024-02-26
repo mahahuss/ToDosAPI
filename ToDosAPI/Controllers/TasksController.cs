@@ -22,12 +22,12 @@ public class TasksController : BaseController
         _filesDir = configuration.GetValue<string>("Files:FilesPath")!;
     }
 
-    [HttpGet]
-    public async Task<ActionResult> GetAllTasks()
-    {
-        var tasks = await _taskService.GetAllTasksAsync();
-        return Ok(tasks);
-    }
+    //[HttpGet]
+    //public async Task<ActionResult> GetAllTasks()
+    //{
+    //    var tasks = await _taskService.GetAllTasksAsync();
+    //    return Ok(tasks);
+    //}
 
     [HttpGet("user-tasks")]
     public async Task<ActionResult> GetAllTasks(int userId, int pageNumber, int pageSize)
@@ -43,12 +43,13 @@ public class TasksController : BaseController
     }
 
     [HttpGet("user-tasks-only/{userId}")]
+    [Authorize(Roles = "Admin, Moderator")]
     public async Task<ActionResult> GetUserTasks(int userId)
     {
-        var roles = User.GetRoles(); // send as a parameters
+        //var roles = User.GetRoles(); // send as a parameters
 
-        if (!roles.Contains("Admin") && !roles.Contains("Moderator"))
-            return Unauthorized("Unauthorized: due to invalid credentials");
+        //if (!roles.Contains("Admin") && !roles.Contains("Moderator"))
+        //    return Unauthorized("Unauthorized: due to invalid credentials");
 
         var tasks = await _taskService.GetUserTasksAsync(userId);
         return Ok(tasks);
@@ -72,19 +73,21 @@ public class TasksController : BaseController
     [HttpPut]
     public async Task<ActionResult> EditTask([FromForm] EditTaskFormDto editTaskFormDto)
     {
-     
+
+        var currentUserId = User.GetId();
         var editTaskDto = JsonSerializer.Deserialize<EditTaskDto>(editTaskFormDto.Task);
 
-        if (editTaskDto is null) return BadRequest("Bad task JSON"); // why?
+        if (editTaskDto is null) return BadRequest("Bad task JSON"); // ?
 
         var task = await _taskService.GetTaskByIdAsync(editTaskDto.Id);
 
         if (task == null) return NotFound("The Selected Task Not Exist");
-        //check also if the task shared with the user 
-        // if (task.CreatedBy != User.GetId()) return Unauthorized("Unauthorized: due to invalid credentials");
 
-        var check = await _taskService.EditTaskAsync(task, editTaskDto, editTaskFormDto.Files);
-        if (check) return Ok("Updated successfully");
+        var isItShared = task.SharedTasks.Find(user => user.Id == currentUserId);
+        if (task.CreatedBy != User.GetId() && isItShared == null) return Unauthorized("Unauthorized: due to invalid credentials");
+
+        var result = await _taskService.EditTaskAsync(task, editTaskDto, editTaskFormDto.Files);
+        if (result) return Ok("Updated successfully");
 
         return BadRequest("Failed to update task");
     }

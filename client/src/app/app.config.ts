@@ -7,13 +7,14 @@ import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { exceptionsInterceptor } from './core/interceptors/exception.interceptor';
 import { delayInterceptor } from './core/interceptors/delay.interceptor';
+import { loadingInterceptor } from './core/interceptors/loading.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     provideHttpClient(
       withInterceptorsFromDi(),
-      withInterceptors([authInterceptor, exceptionsInterceptor, delayInterceptor]),
+      withInterceptors([authInterceptor, exceptionsInterceptor, delayInterceptor, loadingInterceptor]),
     ),
     provideAnimations(), //required animations providers
     provideToastr(), // Toastr providers

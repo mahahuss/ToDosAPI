@@ -1,5 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output, HostListener } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  HostListener,
+  ChangeDetectorRef,
+  AfterContentChecked,
+} from '@angular/core';
 import saveAs from 'file-saver';
 import { TodosService } from '../../../services/todos.service';
 import { UserTask, UserTaskFile } from '../../../shared/models/todo';
@@ -12,12 +21,15 @@ import { UserTask, UserTaskFile } from '../../../shared/models/todo';
   styleUrl: './users-tasks-dialog.component.scss',
   host: { '(window:keyup.esc)': 'onClose()' },
 })
-export class UsersTasksDialogComponent implements OnInit {
+export class UsersTasksDialogComponent implements OnInit, AfterContentChecked {
   @Input() userId: number | undefined;
   @Output() tasksViewClosed = new EventEmitter();
   todos: UserTask[] = [];
 
-  constructor(private todosService: TodosService) {}
+  constructor(
+    private todosService: TodosService,
+    private cdRef: ChangeDetectorRef,
+  ) {}
   ngOnInit(): void {
     this.loadTodos();
   }
@@ -31,7 +43,9 @@ export class UsersTasksDialogComponent implements OnInit {
       });
     }
   }
-
+  ngAfterContentChecked() {
+    this.cdRef.detectChanges();
+  }
   @HostListener('window:keyup.esc')
   onClose() {
     this.tasksViewClosed.emit();

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { AfterContentChecked, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { TodosService } from '../../services/todos.service';
@@ -27,7 +27,7 @@ import { SpinnerComponent } from '../../core/components/spinner/spinner.componen
     SpinnerComponent,
   ],
 })
-export class TodosComponent implements OnInit {
+export class TodosComponent implements OnInit, AfterContentChecked {
   todos: ToDoTask[] = [];
   toDoTask: ToDoTask | undefined;
   tasksResponse: GetUserTasksResponse | undefined;
@@ -36,11 +36,13 @@ export class TodosComponent implements OnInit {
   currentUserId!: number;
   loadTodosStatus = false;
   users: UserInfo[] = [];
+  loader = false;
 
   constructor(
     private authService: AuthService,
     private todosService: TodosService,
     public loaderService: LoaderService,
+    private cdRef: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -48,6 +50,9 @@ export class TodosComponent implements OnInit {
     this.loadTodos();
   }
 
+  ngAfterContentChecked() {
+    this.cdRef.detectChanges();
+  }
   taskAdded(createdTask: ToDoTask) {
     this.todos.unshift(createdTask);
   }
@@ -79,6 +84,7 @@ export class TodosComponent implements OnInit {
         this.pages = Array.from(new Array(res.totalPages), (x, i) => i + 1);
         this.currentpage = res.pageNumber;
         this.loadTodosStatus = true;
+        console.log(res.tasks);
       },
     });
   }

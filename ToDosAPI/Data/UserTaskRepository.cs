@@ -92,10 +92,14 @@ public class UserTaskRepository
             else
             {
                 if (file is not null)
-                    taskInDictionary.Files.Add(file);
+                {
+                    var fileAlreadyExist = taskInDictionary.Files.Where(x => x.Id == file.Id);
+                if (fileAlreadyExist.Count()==0)
+                        taskInDictionary.Files.Add(file);
+                }
                 if (sharedWith is not null)
                     taskInDictionary.SharedTasks.Add(sharedWith);
-            }
+            } 
 
             return task;
         });

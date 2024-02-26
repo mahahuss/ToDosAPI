@@ -43,9 +43,10 @@ public class UsersController : BaseController
         return result.Match<ActionResult>(Ok, Unauthorized);
     }
 
-    [HttpGet("images/{userId}")]
-    public ActionResult GetUserPhoto(int userId)
+    [HttpGet("image")]
+    public ActionResult GetUserPhoto()
     {
+        var userId = User.GetId();
         var imagePath = Path.Combine(Directory.GetCurrentDirectory(), _imageDir, userId + ".png");
 
         if (!System.IO.File.Exists(imagePath)) return NotFound();
@@ -60,13 +61,14 @@ public class UsersController : BaseController
     }
 
     [HttpGet]
+    [Authorize(Roles = "Admin, Moderator")]
     public async Task<ActionResult> GetUsers()
     {
         var currentUserId = User.GetId();
-        var roles = User.GetRoles(); // send as a parameters
+        //var roles = User.GetRoles(); // send as a parameters
 
-        if (!roles.Contains("Admin") && !roles.Contains("Moderator"))
-            return Unauthorized("Unauthorized: due to invalid credentials");
+        //if (!roles.Contains("Admin") && !roles.Contains("Moderator"))
+        //    return Unauthorized("Unauthorized: due to invalid credentials");
         var users = await _userService.GetUsersAsync(currentUserId);
         return Ok(users);
     }
@@ -80,6 +82,7 @@ public class UsersController : BaseController
     }
 
     [HttpGet("user-roles/{userId}")]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult> GetRoles(int userId)
     {
         var roles = await _userService.GetUserRolesAsync(userId);
@@ -88,6 +91,7 @@ public class UsersController : BaseController
 
 
     [HttpGet("roles")]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult> GetallRoles()
     {
         var roles = await _userService.GetAllRolesAsync();
@@ -110,8 +114,8 @@ public class UsersController : BaseController
     public async Task<ActionResult> EditProfile([FromForm] UpdateUserProfileDto updateUserProfileDto)
     {
         var currentUserId = User.GetId();
-        var check = await _userService.EditProfileAsync(updateUserProfileDto, currentUserId);
-        if (check) return Ok("Profile updated successfully");
+        var result = await _userService.EditProfileAsync(updateUserProfileDto, currentUserId);
+        if (result) return Ok("Profile updated successfully");
 
         return BadRequest("Failed to update profile");
     }
@@ -120,8 +124,10 @@ public class UsersController : BaseController
     [Authorize(Roles = "Admin")]
     public async Task<ActionResult> EditProfileByAdmin(EditProfileByAdminDto editProfileByAdminDto)
     {
-        var check = await _userService.EditProfileByAdminAsync(editProfileByAdminDto);
-        if (check) return Ok("Profile updated successfully");
+        if(editProfileByAdminDto.Roles.Count ==0) return BadRequest("Failed to update profile");
+
+        var result = await _userService.EditProfileByAdminAsync(editProfileByAdminDto);
+        if (result) return Ok("Profile updated successfully");
 
         return BadRequest("Failed to update profile");
     }
@@ -130,8 +136,8 @@ public class UsersController : BaseController
     [Authorize(Roles = "Admin")]
     public async Task<ActionResult> ChangeUserStatus(ChangeUserStatusDto changeUserStatusDto)
     {
-        var check = await _userService.ChangeUserStatusAsync(changeUserStatusDto.userId, changeUserStatusDto.status);
-        if (check) return Ok("User status changed successfully");
+        var result = await _userService.ChangeUserStatusAsync(changeUserStatusDto.userId, changeUserStatusDto.status);
+        if (result) return Ok("User status changed successfully");
 
         return BadRequest("Failed to change user status");
     }

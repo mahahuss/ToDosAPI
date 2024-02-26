@@ -36,10 +36,6 @@ export class ShareTaskDialogComponent implements OnInit {
   loadUsers() {
     this.authService.getUsersToShare().subscribe({
       next: (res) => {
-        if (res.length === 0) {
-          this.toastr.error('Sorry, you cannot share task at this time');
-          this.onClose();
-        }
         let sharedWithIds = this.todoTask?.sharedTasks
           ? this.todoTask?.sharedTasks.map(({ sharedWith }) => sharedWith)
           : [];
@@ -72,7 +68,6 @@ export class ShareTaskDialogComponent implements OnInit {
             this.todoTask!.sharedTasks.push({
               id: new Date().getTime(),
               taskId: sharedtask.taskId,
-              sharedBy: this.todoTask!.createdBy,
               isEditable: sharedtask.isEditable,
               sharedDate: new Date(),
               sharedWith: id,

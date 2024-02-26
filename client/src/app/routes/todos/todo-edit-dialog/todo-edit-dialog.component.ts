@@ -34,19 +34,23 @@ export class TodoEditDialogComponent implements OnInit {
       taskId: f.taskId,
       isOld: true,
     }));
+    console.log(this.files);
+    console.log(this.todoTaskCopy);
   }
 
   handleFileInput(event: any) {
     const files = event.target.files as File[];
+    console.log(files);
     for (let file of files) {
       this.files.push({
-        id: new Date().getTime(),
+        id: file.lastModified,
         taskId: this.todoTaskCopy!.id,
         fileName: file.name,
         file,
         isOld: false,
       });
     }
+    console.log(this.files);
   }
 
   removeFile(file: UserTaskFile) {

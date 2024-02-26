@@ -20,4 +20,8 @@ export class LoaderService {
     this.apiCount--;
     this.isLoadingSubject.next(this.apiCount !== 0);
   }
+
+  loader(count: number) {
+    this.isLoadingSubject.next(count == 0);
+  }
 }

@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   AfterContentChecked,
   ChangeDetectorRef,
   Component,
@@ -18,7 +19,8 @@ import { FormsModule } from '@angular/forms';
 import { TodoFilesDialogComponent } from '../todo-files-dialog/todo-files-dialog.component';
 import { ShareTaskDialogComponent } from '../share-task-dialog/share-task-dialog.component';
 import { TodoEditDialogComponent } from '../todo-edit-dialog/todo-edit-dialog.component';
-import { UserInfo } from '../../../shared/models/auth';
+import { UserInfo, UserToShare } from '../../../shared/models/auth';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-todo-item',
@@ -47,9 +49,12 @@ export class TodoItemComponent implements OnInit, AfterContentChecked {
   filesClickStatus = false;
   shareClickStatus = false;
   editTodoStatus = false;
+  sharedby = '';
+  allUsers: UserToShare[] = [];
   @ViewChild('focusTaskInput') focusTaskInput?: ElementRef;
 
   constructor(
+    private authService: AuthService,
     private todosService: TodosService,
     private toastr: ToastrService,
     private cdRef: ChangeDetectorRef,
@@ -57,7 +62,18 @@ export class TodoItemComponent implements OnInit, AfterContentChecked {
 
   ngOnInit(): void {
     this.taskFilesExistence = this.todoTask!.files.length > 0 ? true : false;
+    this.authService.getUsersToShare().subscribe({
+      next: (res) => {
+        this.allUsers = res.map((item) => item);
+        for (let user of this.allUsers) {
+          console.log(this.currentUserId);
+          console.log(user.fullname);
+        }
+        // this.sharedby = this.allUsers.find((x) => x.id == this.todoTask.createdBy)!.fullname;
+      },
+    });
   }
+
   ngAfterContentChecked() {
     this.cdRef.detectChanges();
   }
@@ -65,9 +81,7 @@ export class TodoItemComponent implements OnInit, AfterContentChecked {
   updateStatus(task: ToDoTask) {
     const formData = new FormData();
     task.status = !task.status;
-    formData.append('taskContent', task.taskContent);
-    formData.append('status', String(task.status));
-    formData.append('id', String(task.id));
+    formData.append('task', JSON.stringify(task));
     this.todosService.updateTask(formData).subscribe({
       next: () => {
         this.taskUpdated.emit(task);

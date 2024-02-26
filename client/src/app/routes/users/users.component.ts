@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterContentChecked, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UpdateUser, User, UserInfo } from '../../shared/models/auth';
 import { AuthService } from '../../services/auth.service';
@@ -13,7 +13,7 @@ import { SpinnerComponent } from '../../core/components/spinner/spinner.componen
   styleUrl: './users.component.scss',
   imports: [CommonModule, UsersTasksDialogComponent, UsersEditDialogComponent, SpinnerComponent],
 })
-export class UsersComponent implements OnInit {
+export class UsersComponent implements OnInit, AfterContentChecked {
   userInfo!: User;
   isAdmin = false;
   tasksViewStatus = false;
@@ -24,6 +24,7 @@ export class UsersComponent implements OnInit {
   constructor(
     private authService: AuthService,
     public loaderService: LoaderService,
+    private cdRef: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -46,6 +47,9 @@ export class UsersComponent implements OnInit {
     });
   }
 
+  ngAfterContentChecked() {
+    this.cdRef.detectChanges();
+  }
   changeUserStatus(userId: number, status: boolean) {
     status = status ? false : true;
 
@@ -77,7 +81,7 @@ export class UsersComponent implements OnInit {
 
   userUpdated(user: UpdateUser) {
     const indexToUpdate = this.users.findIndex((user) => user.id === user.id);
-    if (indexToUpdate !== -1) {
+    if (indexToUpdate !== -1 && this.users[indexToUpdate].roles) {
       this.users[indexToUpdate].fullName = user.fullname;
       this.users[indexToUpdate].roles.clear();
       for (let role of user.roles) this.users[indexToUpdate].roles.set(role.id, role.userType);

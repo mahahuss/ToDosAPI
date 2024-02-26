@@ -122,12 +122,11 @@ if (createdBy === me || isEditable) allowEdit
 
 ### 25-2-2024
 
-- fix expression has changed error in users-component (console error)
-- fix undefined error in users-component (console error)
-- close modal on esc
-- fix deleting files
+- fix expression has changed error in users-component (console error) --
+- fix undefined error in users-component (console error) --
+- close modal on esc --
+- fix deleting files --
 - fix shared by (show name, not id...)
 - move loading to a separate interceptor, and create only 1 method to toggle loading
-- move all business logic to service
-- remove createdBy from client
-- move all business logic to service
+- move all business logic to service --
+- remove createdBy from client --

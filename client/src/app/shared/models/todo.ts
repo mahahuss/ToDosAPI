@@ -11,7 +11,7 @@ export type ToDoTask = {
 export type SharedTask = {
   id: number;
   taskId: number;
-  sharedBy: number;
+  sharedBy?: number;
   sharedWith: number;
   isEditable: boolean;
   sharedDate: Date;

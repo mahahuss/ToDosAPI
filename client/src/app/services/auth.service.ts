@@ -136,7 +136,7 @@ export class AuthService {
     }
   }
 
-  getUserPhoto(userId: number): Observable<UserPhoto> {
-    return this.http.get<UserPhoto>(this.baseUrl + 'users/images/' + userId);
+  getUserPhoto(): Observable<UserPhoto> {
+    return this.http.get<UserPhoto>(this.baseUrl + 'users/image');
   }
 }
