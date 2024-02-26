@@ -17,16 +17,18 @@
       </div>
       <div class="p-4 md:p-5 text-center">
         <label class="block mb-2 text-sm font-medium text-gray-900">Select roles</label>
-        <ng-select
-          [items]="roles"
-          [(ngModel)]="userRoles"
-          (ngModelChange)="editUserRoles()"
-          [multiple]="true"
-          bindLabel="userType"
-          placeholder="Select Roles.."
-          [clearable]="false"
-        >
-        </ng-select>
+        @if (roles.length > 0 && userRoles.length > 0) {
+          <ng-select
+            [items]="roles"
+            [(ngModel)]="userRoles"
+            (ngModelChange)="editUserRoles()"
+            [multiple]="true"
+            bindLabel="userType"
+            placeholder="Select Roles.."
+            [clearable]="false"
+          >
+          </ng-select>
+        }
         <div [class.hidden]="!errorMessage" class="text-left text-red-600 text-sm px-1.5">
           At least one role must be specified
         </div>

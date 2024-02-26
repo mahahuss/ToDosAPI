@@ -27,7 +27,7 @@ import { SpinnerComponent } from '../../core/components/spinner/spinner.componen
     SpinnerComponent,
   ],
 })
-export class TodosComponent implements OnInit, AfterContentChecked {
+export class TodosComponent implements OnInit {
   todos: ToDoTask[] = [];
   toDoTask: ToDoTask | undefined;
   tasksResponse: GetUserTasksResponse | undefined;
@@ -42,24 +42,22 @@ export class TodosComponent implements OnInit, AfterContentChecked {
     private authService: AuthService,
     private todosService: TodosService,
     public loaderService: LoaderService,
-    private cdRef: ChangeDetectorRef,
   ) {}
 
-  ngOnInit(): void {
-    this.currentUserId = this.authService.getCurrentUserFromToken()?.nameid ?? -1;
-    this.loadTodos();
-  }
+  async ngOnInit(): Promise<void> {
+    const currentUser = this.authService.getCurrentUserFromToken();
 
-  ngAfterContentChecked() {
-    this.cdRef.detectChanges();
+    if (!currentUser) return;
+
+    this.currentUserId = currentUser.nameid;
+    await this.authService.getUsersToShare();
+    this.loadTodos();
   }
   taskAdded(createdTask: ToDoTask) {
     this.todos.unshift(createdTask);
   }
 
   taskUpdated(updatedtask: ToDoTask) {
-    console.log(updatedtask);
-
     const indexToUpdate = this.todos.findIndex((item) => item.id === updatedtask.id);
     if (indexToUpdate !== -1) this.todos[indexToUpdate] = updatedtask;
   }
@@ -84,7 +82,6 @@ export class TodosComponent implements OnInit, AfterContentChecked {
         this.pages = Array.from(new Array(res.totalPages), (x, i) => i + 1);
         this.currentpage = res.pageNumber;
         this.loadTodosStatus = true;
-        console.log(res.tasks);
       },
     });
   }

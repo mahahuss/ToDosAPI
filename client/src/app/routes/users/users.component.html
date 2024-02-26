@@ -1,6 +1,6 @@
 <div class="w-full max-w-screen-xl mx-auto px-6">
   <div class="flex justify-center p-4 px-3 py-10">
-    @if (loaderService.isLoading$ | async) {
+    @if (loaderService.isLoading$()) {
       <app-spinner> </app-spinner>
     } @else {
       <div class="relative overflow-x-auto shadow-md sm:rounded-lg w-fit">
@@ -15,7 +15,7 @@
             </tr>
           </thead>
           <tbody>
-            @for (user of users; track $index) {
+            @for (user of users; track user) {
               <tr class="odd:bg-white even:bg-gray-50 border-b -700 text-center">
                 <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                   {{ user.username }}

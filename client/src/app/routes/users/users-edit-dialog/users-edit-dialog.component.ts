@@ -31,7 +31,6 @@ export class UsersEditDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadRoles();
-    this.loadUserRoles();
   }
 
   loadUserRoles() {
@@ -39,6 +38,7 @@ export class UsersEditDialogComponent implements OnInit {
       next: (res) => {
         this.userRoles = res;
         this.userSelectedRoles = res;
+        console.log(res);
       },
     });
   }
@@ -47,6 +47,9 @@ export class UsersEditDialogComponent implements OnInit {
     this.authService.getRoles().subscribe({
       next: (res) => {
         this.roles = res;
+        this.loadUserRoles();
+        console.log(res);
+        
       },
     });
   }
@@ -68,7 +71,7 @@ export class UsersEditDialogComponent implements OnInit {
   updateUser() {
     const userInfo: UpdateUser = {
       id: this.user!.id,
-      fullname: this.user!.fullName,
+      fullName: this.user!.fullName,
       roles: this.userSelectedRoles,
     };
 

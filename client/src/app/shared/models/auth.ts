@@ -26,13 +26,13 @@ export type Role = {
 
 export type UpdateUser = {
   id: number;
-  fullname: string;
+  fullName: string;
   roles: Role[];
 };
 
 export type UserToShare = {
   id: number;
-  fullname: string;
+  fullName: string;
 };
 
 export type UserPhoto = {

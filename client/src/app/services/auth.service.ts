@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { jwtDecode } from 'jwt-decode';
-import { BehaviorSubject, Observable, map, of } from 'rxjs';
+import { BehaviorSubject, Observable, lastValueFrom, map, of } from 'rxjs';
 import { environment } from '../../environments/environment.development';
 import { Role, UpdateUser, User, UserInfo, UserPhoto, UserToShare } from '../shared/models/auth';
 import { ApiResponse } from '../shared/models/common';
@@ -37,7 +37,13 @@ export class AuthService {
   getCurrentUserFromToken(): User | undefined {
     const token = localStorage.getItem('token');
     if (!token) return undefined;
-    return jwtDecode<User>(token);
+    const user = jwtDecode<User>(token);
+
+    if (user) {
+      user.nameid = +user.nameid;
+    }
+
+    return user;
   }
 
   updateCurrentUser(user: User) {
@@ -109,17 +115,14 @@ export class AuthService {
     );
   }
 
-  getUsersToShare(): Observable<UserToShare[]> {
+  async getUsersToShare(): Promise<UserToShare[]> {
     if (this.usersToShare) {
-      return of(this.usersToShare);
+      return this.usersToShare;
     }
 
-    return this.http.get<UserToShare[]>(this.baseUrl + 'users/users-to-share').pipe(
-      map((res) => {
-        this.usersToShare = res;
-        return res;
-      }),
-    );
+    const res = await lastValueFrom(this.http.get<UserToShare[]>(this.baseUrl + 'users/users-to-share'));
+    this.usersToShare = res;
+    return res;
   }
 
   startRefreshTokenInterval(): void {

@@ -48,8 +48,9 @@ export class UsersComponent implements OnInit, AfterContentChecked {
   }
 
   ngAfterContentChecked() {
-    this.cdRef.detectChanges();
+    // this.cdRef.detectChanges();
   }
+
   changeUserStatus(userId: number, status: boolean) {
     status = status ? false : true;
 
@@ -82,7 +83,7 @@ export class UsersComponent implements OnInit, AfterContentChecked {
   userUpdated(user: UpdateUser) {
     const indexToUpdate = this.users.findIndex((user) => user.id === user.id);
     if (indexToUpdate !== -1 && this.users[indexToUpdate].roles) {
-      this.users[indexToUpdate].fullName = user.fullname;
+      this.users[indexToUpdate].fullName = user.fullName;
       this.users[indexToUpdate].roles.clear();
       for (let role of user.roles) this.users[indexToUpdate].roles.set(role.id, role.userType);
     }

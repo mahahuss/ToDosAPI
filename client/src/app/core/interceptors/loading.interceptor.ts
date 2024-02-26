@@ -1,17 +1,41 @@
-import { HttpEvent, HttpInterceptorFn } from '@angular/common/http';
+import { HttpEvent, HttpInterceptorFn, HttpRequest, HttpResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { Observable, finalize } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { LoaderService } from '../../services/loader.service';
 
+let requests: HttpRequest<unknown>[] = [];
+
 export const loadingInterceptor: HttpInterceptorFn = (req, next): Observable<HttpEvent<any>> => {
-  let apiCount = 0;
+  if (isException(req)) {
+    console.log('NO LOADING');
+
+    return next(req);
+  }
+
   const loader = inject(LoaderService);
-  loader.loader(apiCount);
-  apiCount++;
+
+  requests.push(req);
+  loader.loader(true);
   return next(req).pipe(
-    finalize(() => {
-      apiCount--;
-      loader.loader(apiCount);
+    map((event) => {
+      if (event instanceof HttpResponse) {
+        const index = requests.indexOf(req);
+
+        if (index > -1) {
+          requests.splice(index, 1);
+        }
+
+        loader.loader(requests.length > 0);
+      }
+      return event;
     }),
   );
 };
+
+function isException(req: HttpRequest<unknown>) {
+  if (req.url.includes('tasks') && req.method === 'PUT') {
+    return true;
+  }
+
+  return false;
+}

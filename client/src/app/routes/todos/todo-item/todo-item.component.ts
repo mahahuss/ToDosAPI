@@ -60,18 +60,16 @@ export class TodoItemComponent implements OnInit, AfterContentChecked {
     private cdRef: ChangeDetectorRef,
   ) {}
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.taskFilesExistence = this.todoTask!.files.length > 0 ? true : false;
-    this.authService.getUsersToShare().subscribe({
-      next: (res) => {
-        this.allUsers = res.map((item) => item);
-        for (let user of this.allUsers) {
-          console.log(this.currentUserId);
-          console.log(user.fullname);
-        }
-        // this.sharedby = this.allUsers.find((x) => x.id == this.todoTask.createdBy)!.fullname;
-      },
-    });
+    const res = await this.authService.getUsersToShare();
+    if (res.length === 0) return;
+
+    this.allUsers = res;
+
+    if (this.currentUserId !== this.todoTask.createdBy) {
+      this.sharedby = this.allUsers.find((x) => x.id == this.todoTask.createdBy)!.fullName;
+    }
   }
 
   ngAfterContentChecked() {

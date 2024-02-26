@@ -30,19 +30,16 @@ export class ShareTaskDialogComponent implements OnInit {
     private authService: AuthService,
   ) {}
 
-  ngOnInit(): void {
-    this.loadUsers();
+  async ngOnInit(): Promise<void> {
+    await this.loadUsers();
   }
-  loadUsers() {
-    this.authService.getUsersToShare().subscribe({
-      next: (res) => {
-        let sharedWithIds = this.todoTask?.sharedTasks
-          ? this.todoTask?.sharedTasks.map(({ sharedWith }) => sharedWith)
-          : [];
-        this.usersToShareWith = res.filter((item) => !sharedWithIds.includes(item.id));
-        this.selectedUsers = res.filter((item) => sharedWithIds.includes(item.id));
-      },
-    });
+  async loadUsers() {
+    const res = await this.authService.getUsersToShare();
+    let sharedWithIds = this.todoTask?.sharedTasks
+      ? this.todoTask?.sharedTasks.map(({ sharedWith }) => sharedWith)
+      : [];
+    this.usersToShareWith = res.filter((item) => !sharedWithIds.includes(item.id));
+    this.selectedUsers = res.filter((item) => sharedWithIds.includes(item.id));
   }
 
   @HostListener('window:keyup.esc')

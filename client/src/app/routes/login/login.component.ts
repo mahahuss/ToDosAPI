@@ -32,9 +32,9 @@ export class LoginComponent implements OnInit {
     if (!this.loginForm.valid) return;
     this.loginStatus = true;
     this.authService.login(this.f.username.value, this.f.password.value).subscribe({
-      next: () => {
+      next: async () => {
         this.authService.startRefreshTokenInterval();
-        this.authService.getUsersToShare().subscribe();
+        await this.authService.getUsersToShare();
         this.route.navigate(['/home']);
       },
       error: () => {

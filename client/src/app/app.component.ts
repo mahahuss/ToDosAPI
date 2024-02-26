@@ -15,8 +15,8 @@ export class AppComponent implements OnInit {
   constructor(private authService: AuthService) {
     this.authService.startRefreshTokenInterval();
     if (this.authService.isTokenValid()) {
-      this.authService.refreshToken().subscribe(() => {
-        this.authService.getUsersToShare().subscribe();
+      this.authService.refreshToken().subscribe(async () => {
+        await this.authService.getUsersToShare();
       });
     }
   }
