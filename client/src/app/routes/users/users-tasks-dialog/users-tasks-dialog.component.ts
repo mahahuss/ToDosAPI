@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, HostListener } from '@angular/core';
 import saveAs from 'file-saver';
 import { TodosService } from '../../../services/todos.service';
 import { UserTask, UserTaskFile } from '../../../shared/models/todo';
@@ -10,6 +10,7 @@ import { UserTask, UserTaskFile } from '../../../shared/models/todo';
   imports: [CommonModule],
   templateUrl: './users-tasks-dialog.component.html',
   styleUrl: './users-tasks-dialog.component.scss',
+  host: { '(window:keyup.esc)': 'onClose()' },
 })
 export class UsersTasksDialogComponent implements OnInit {
   @Input() userId: number | undefined;
@@ -21,10 +22,6 @@ export class UsersTasksDialogComponent implements OnInit {
     this.loadTodos();
   }
 
-  onClose() {
-    this.tasksViewClosed.emit();
-  }
-
   private loadTodos() {
     {
       this.todosService.getUserTasks(this.userId!).subscribe({
@@ -33,6 +30,11 @@ export class UsersTasksDialogComponent implements OnInit {
         },
       });
     }
+  }
+
+  @HostListener('window:keyup.esc')
+  onClose() {
+    this.tasksViewClosed.emit();
   }
 
   getFile(attachment: UserTaskFile) {

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { ToastrService } from 'ngx-toastr';
@@ -12,6 +12,7 @@ import { Role, UpdateUser, UserInfo } from '../../../shared/models/auth';
   imports: [CommonModule, FormsModule, NgSelectModule],
   templateUrl: './users-edit-dialog.component.html',
   styleUrl: './users-edit-dialog.component.scss',
+  host: { '(window:keyup.esc)': 'onClose()' },
 })
 export class UsersEditDialogComponent implements OnInit {
   @Input() user: UserInfo | undefined;
@@ -59,6 +60,7 @@ export class UsersEditDialogComponent implements OnInit {
     }
   }
 
+  @HostListener('window:keyup.esc')
   onClose() {
     this.editViewClosed.emit();
   }

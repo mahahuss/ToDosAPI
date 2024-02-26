@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 import { saveAs } from 'file-saver';
 import { TodosService } from '../../../services/todos.service';
 import { ToDoTask, UserTaskFile } from '../../../shared/models/todo';
@@ -10,16 +10,16 @@ import { ToDoTask, UserTaskFile } from '../../../shared/models/todo';
   imports: [CommonModule],
   templateUrl: './todo-files-dialog.component.html',
   styleUrl: './todo-files-dialog.component.scss',
+  host: { '(window:keyup.esc)': 'onClose()' },
 })
 export class TodoFilesDialogComponent implements OnInit {
   @Input() todoTask: ToDoTask | undefined = undefined;
   @Output() filesViewClosed = new EventEmitter();
-  constructor(
-    private todosService: TodosService
-  ) {}
+  constructor(private todosService: TodosService) {}
 
   ngOnInit(): void {}
 
+  @HostListener('window:keyup.esc')
   onClose() {
     this.filesViewClosed.emit();
   }

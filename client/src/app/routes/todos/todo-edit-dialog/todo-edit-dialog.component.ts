@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ToDoTask, UserTaskFile, UserFile } from '../../../shared/models/todo';
@@ -11,6 +11,7 @@ import { TodosService } from '../../../services/todos.service';
   imports: [CommonModule, FormsModule],
   templateUrl: './todo-edit-dialog.component.html',
   styleUrl: './todo-edit-dialog.component.scss',
+  host: { '(window:keyup.esc)': 'onClose()' },
 })
 export class TodoEditDialogComponent implements OnInit {
   @Input() todoTask: ToDoTask | undefined = undefined;
@@ -88,6 +89,8 @@ export class TodoEditDialogComponent implements OnInit {
       },
     });
   }
+
+  @HostListener('window:keyup.esc')
   onClose() {
     this.todoTaskCopy = structuredClone(this.todoTask);
     this.editViewClosed.emit();

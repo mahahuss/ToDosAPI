@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ShareTask, ToDoTask } from '../../../shared/models/todo';
 import { UserToShare } from '../../../shared/models/auth';
@@ -14,6 +14,7 @@ import { TodosService } from '../../../services/todos.service';
   imports: [CommonModule, FormsModule, NgSelectModule],
   templateUrl: './share-task-dialog.component.html',
   styleUrl: './share-task-dialog.component.scss',
+  host: { '(window:keyup.esc)': 'onClose()' },
 })
 export class ShareTaskDialogComponent implements OnInit {
   @Input() todoTask: ToDoTask | undefined = undefined;
@@ -48,6 +49,7 @@ export class ShareTaskDialogComponent implements OnInit {
     });
   }
 
+  @HostListener('window:keyup.esc')
   onClose() {
     this.shareViewClosed.emit();
   }

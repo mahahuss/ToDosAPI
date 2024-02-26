@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ToDoTask } from '../../../shared/models/todo';
 import { TodosService } from '../../../services/todos.service';
@@ -10,6 +10,7 @@ import { ToastrService } from 'ngx-toastr';
   imports: [CommonModule],
   templateUrl: './todo-dialog.component.html',
   styleUrl: './todo-dialog.component.scss',
+  host: { '(window:keyup.esc)': 'onClose()' },
 })
 export class TodoDialogComponent {
   @Input() todoTask: ToDoTask | undefined = undefined;
@@ -20,6 +21,7 @@ export class TodoDialogComponent {
     private toastr: ToastrService,
   ) {}
 
+  @HostListener('window:keyup.esc')
   onClose() {
     this.taskDeleted.emit(true);
   }
