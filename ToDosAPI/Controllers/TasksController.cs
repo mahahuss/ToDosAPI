@@ -83,8 +83,9 @@ public class TasksController : BaseController
 
         if (task == null) return NotFound("The Selected Task Not Exist");
 
-        var isItShared = task.SharedTasks.Find(user => user.SharedWith == currentUserId);
-        if (task.CreatedBy != currentUserId && isItShared == null) return Unauthorized("Unauthorized: due to invalid credentials");
+        var isItShared = task.SharedTasks.FirstOrDefault(user => user.SharedWith == currentUserId);
+
+        if (task.CreatedBy != currentUserId && isItShared is null) return Unauthorized("Unauthorized: due to invalid credentials");
 
         var result = await _taskService.EditTaskAsync(task, editTaskDto, editTaskFormDto.Files);
         if (!result) return BadRequest("Failed to update task");

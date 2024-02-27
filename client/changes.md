@@ -128,10 +128,17 @@ if (createdBy === me || isEditable) allowEdit
 - ~~fix deleting files --~~
 - ~~fix shared by (show name, not id...)~~
 - ~~move loading to a separate interceptor, and create only 1 method to toggle loading~~
-- move all business logic to service --
+- move all business logic to service X
 - ~~remove createdBy from client --~~
 
 ### 26-2-2024
 
-- fix file upload error (JSON PARSING) --
-- fix edit task shared by user --
+- ~~fix file upload error (JSON PARSING) --~~
+- ~~fix edit task shared by user --~~
+
+
+### 27-2-2024
+
+- move all business logic to service
+- also check if task is editable if it's being edited by shared with
+- loading indicators...

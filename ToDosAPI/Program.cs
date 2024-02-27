@@ -1,14 +1,25 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 using System.Text;
 using ToDosAPI;
 using ToDosAPI.Data;
 using ToDosAPI.Services;
 
-var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
 const string corsOrigins = "todos_origin";
+
+var builder = WebApplication.CreateBuilder(args);
+var retainedFileTimeLimit = builder.Configuration.GetSection("RetainedFileDaysLimit").Get<uint>();
+
+if (retainedFileTimeLimit == 0) throw new Exception("set the retainedFileTimeLimit value in app-settings");
+
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.File(builder.Configuration["LogsPath"]!, rollingInterval: RollingInterval.Minute,
+        retainedFileTimeLimit: TimeSpan.FromDays(retainedFileTimeLimit))
+    .CreateLogger();
+
+builder.Host.UseSerilog();
 
 builder.Services.AddControllers();
 builder.Services.AddCors(p =>
@@ -51,7 +62,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 var app = builder.Build();
-
+app.UseSerilogRequestLogging();
 app.UseMiddleware<ExceptionMiddleware>();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -16,7 +16,7 @@ import { TodosService } from '../../../services/todos.service';
 export class TodoEditDialogComponent implements OnInit {
   @Input() todoTask: ToDoTask | undefined = undefined;
   @Output() editViewClosed = new EventEmitter();
-  @Output() taskUpdated = new EventEmitter();
+  @Output() taskUpdated = new EventEmitter<ToDoTask>();
   todoTaskCopy: ToDoTask | undefined;
   files: UserFile[] = [];
   errorMessage = false;
@@ -50,8 +50,8 @@ export class TodoEditDialogComponent implements OnInit {
   }
 
   removeFile(file: UserTaskFile) {
-    this.todoTaskCopy!.files = this.todoTaskCopy!.files.filter((item) => item.id !== file!.id);
-    this.files = this.files.filter((item) => item.id !== file!.id); // I guess ?
+    this.todoTaskCopy!.files = this.todoTaskCopy!.files.filter((item) => item.id !== file.id);
+    this.files = this.files.filter((item) => item.id !== file.id); // I guess ?
   }
 
   editTask() {

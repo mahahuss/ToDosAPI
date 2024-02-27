@@ -19,8 +19,8 @@ export class TodosService {
     );
   }
 
-  updateTask(task: FormData): Observable<ApiResponse> {
-    return this.http.put<ApiResponse>(this.baseUrl + 'tasks', task).pipe(
+  updateTask(task: FormData): Observable<ToDoTask> {
+    return this.http.put<ToDoTask>(this.baseUrl + 'tasks', task).pipe(
       map((res) => {
         return res;
       }),

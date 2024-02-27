@@ -111,18 +111,12 @@ export class TodoItemComponent implements OnInit, AfterContentChecked {
   editTask() {
     this.editTodoStatus = true;
   }
-  filesViewClosed() {
-    this.filesClickStatus = false;
-  }
-  shareViewClosed() {
-    this.shareClickStatus = false;
-  }
   editViewClosed() {
     this.editTodoStatus = false;
   }
 
   sharedUsersUpdated(task: ToDoTask) {
     this.todoTask = task;
-    this.shareViewClosed();
+    this.shareClickStatus = false;
   }
 }
