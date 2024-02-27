@@ -28,11 +28,8 @@ public class UsersController : BaseController
     [HttpPost("register")]
     public async Task<ActionResult> Register([FromBody] RegisterDto user)
     {
-        var userInfo = await _userService.AddNewUserAsync(user);
-
-        if (userInfo is not null) return Ok("User registered successfully");
-
-        return BadRequest("Failed to register");
+        var result = await _userService.AddNewUserAsync(user);
+        return result.Match<ActionResult>(Ok, BadRequest);
     }
 
     [AllowAnonymous]
@@ -47,17 +44,8 @@ public class UsersController : BaseController
     public ActionResult GetUserPhoto()
     {
         var userId = User.GetId();
-        var imagePath = Path.Combine(Directory.GetCurrentDirectory(), _imageDir, userId + ".png");
-
-        if (!System.IO.File.Exists(imagePath)) return NotFound();
-
-        Byte[] bytes = System.IO.File.ReadAllBytes(imagePath);
-        String file = Convert.ToBase64String(bytes);
-        var image = new ProfileImage
-        {
-            FileBase64 = file
-        };
-        return Ok(image);
+        var result = _userService.GetUserPhoto(userId);
+        return result.Match<ActionResult>(Ok, BadRequest);
     }
 
     [HttpGet]
@@ -65,10 +53,6 @@ public class UsersController : BaseController
     public async Task<ActionResult> GetUsers()
     {
         var currentUserId = User.GetId();
-        //var roles = User.GetRoles(); // send as a parameters
-
-        //if (!roles.Contains("Admin") && !roles.Contains("Moderator"))
-        //    return Unauthorized("Unauthorized: due to invalid credentials");
         var users = await _userService.GetUsersAsync(currentUserId);
         return Ok(users);
     }
@@ -89,7 +73,6 @@ public class UsersController : BaseController
         return Ok(roles);
     }
 
-
     [HttpGet("roles")]
     [Authorize(Roles = "Admin")]
     public async Task<ActionResult> GetallRoles()
@@ -101,13 +84,8 @@ public class UsersController : BaseController
     [HttpGet("token")]
     public async Task<ActionResult> RefreshToken()
     {
-        var token = await _userService.RefreshToken(User.GetUsername()!);
-        if (!string.IsNullOrEmpty(token))
-        {
-            return Ok(token);
-        }
-
-        return Unauthorized();
+        var result = await _userService.RefreshToken(User.GetUsername()!);
+        return result.Match<ActionResult>(Ok, BadRequest);
     }
 
     [HttpPut]
@@ -115,21 +93,15 @@ public class UsersController : BaseController
     {
         var currentUserId = User.GetId();
         var result = await _userService.EditProfileAsync(updateUserProfileDto, currentUserId);
-        if (result) return Ok("Profile updated successfully");
-
-        return BadRequest("Failed to update profile");
+        return result.Match<ActionResult>(Ok, BadRequest);
     }
 
     [HttpPut("edit-roles")]
     [Authorize(Roles = "Admin")]
     public async Task<ActionResult> EditProfileByAdmin(EditProfileByAdminDto editProfileByAdminDto)
     {
-        if(editProfileByAdminDto.Roles.Count ==0) return BadRequest("Failed to update profile");
-
         var result = await _userService.EditProfileByAdminAsync(editProfileByAdminDto);
-        if (result) return Ok("Profile updated successfully");
-
-        return BadRequest("Failed to update profile");
+        return result.Match<ActionResult>(Ok, BadRequest);
     }
 
     [HttpPut("status")]
@@ -137,8 +109,6 @@ public class UsersController : BaseController
     public async Task<ActionResult> ChangeUserStatus(ChangeUserStatusDto changeUserStatusDto)
     {
         var result = await _userService.ChangeUserStatusAsync(changeUserStatusDto.userId, changeUserStatusDto.status);
-        if (result) return Ok("User status changed successfully");
-
-        return BadRequest("Failed to change user status");
+        return result.Match<ActionResult>(Ok, BadRequest);
     }
 }

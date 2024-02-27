@@ -15,7 +15,7 @@ export class TodosService {
 
   getUserTodos(userId: number, pageNumber: number, pageSize: number): Observable<GetUserTasksResponse> {
     return this.http.get<GetUserTasksResponse>(
-      this.baseUrl + 'tasks/user-tasks?userId=' + userId + '&pageNumber=' + pageNumber + '&pageSize=' + pageSize,
+      this.baseUrl + 'tasks/userId=' + userId + '&pageNumber=' + pageNumber + '&pageSize=' + pageSize,
     );
   }
 

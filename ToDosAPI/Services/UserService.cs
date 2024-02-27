@@ -28,7 +28,7 @@ public class UserService
         _fileService = fileService;
     }
 
-    public async Task<UserWithRolesDto?> AddNewUserAsync(RegisterDto registerDto)
+    public async Task<Result<UserWithRolesDto?>> AddNewUserAsync(RegisterDto registerDto)
     {
         var salt = _passwordHasherService.GenerateSalt();
         var password = _passwordHasherService.HashPassword(registerDto.Password!, salt);
@@ -40,12 +40,8 @@ public class UserService
             Username = registerDto.Username
         }, 3);
 
-        if (createdUser is not null)
-        {
-            return await _userRepo.GetUserWithRolesAsync(registerDto.Username);
-        }
+        return createdUser != null ? await _userRepo.GetUserWithRolesAsync(registerDto.Username) : Result<UserWithRolesDto?>.Failure("Failed to register");
 
-        return null;
     }
 
     public async Task<Result<string>> LoginAsync(string username, string password)
@@ -64,9 +60,7 @@ public class UserService
             : Result<string>.Failure("Failed to generate token");
     }
 
-    public async Task<bool> EditProfileAsync(UpdateUserProfileDto updateUserInfo, int id)
-
-
+    public async Task<Result<string>> EditProfileAsync(UpdateUserProfileDto updateUserInfo, int id)
     {
         if (updateUserInfo.Image != null && updateUserInfo.Image.Length < 200000 &&
             _fileService.CheckContentType(updateUserInfo.Image.FileName) == "image/png")
@@ -76,22 +70,28 @@ public class UserService
             await updateUserInfo.Image.CopyToAsync(fileStream);
         }
 
-        var check = await _userRepo.EditUserProfileAsync(updateUserInfo.Name, id);
+        var result = await _userRepo.EditUserProfileAsync(updateUserInfo.Name, id);
 
-        return check;
+        return result? Result<string>.Successful("Profile updated successfully") : Result<string>.Failure("Failed to update profile");
     }
 
-    public Task<List<GetUsers>> GetUsersAsync(int currentUserId) => _userRepo.GetUsersAsync(currentUserId);
-
-    public Task<bool> ChangeUserStatusAsync(int userId, bool status)
+    public Task<List<GetUsers>> GetUsersAsync(int currentUserId)
     {
-        return _userRepo.ChangeUserStatusAsync(userId, status);
+        return _userRepo.GetUsersAsync(currentUserId);
     }
 
-    public async Task<string> RefreshToken(string username)
+    public async Task<Result<string>> ChangeUserStatusAsync(int userId, bool status)
+    {
+        var result = await _userRepo.ChangeUserStatusAsync(userId, status);
+        return result? Result<string>.Successful("User status changed successfully") : Result<string>.Failure("Failed to change user status");
+    }
+
+    public async Task<Result<string>> RefreshToken(string username)
     {
         var userInfo = await _userRepo.GetUserWithRolesAsync(username);
-        return _userToken.GenerateToken(userInfo!);
+        if (userInfo == null) Result<string>.Failure("Failed to retrieve user information");
+        var token = _userToken.GenerateToken(userInfo!);
+        return token == null ? Result<string>.Failure("Failed to generate token") : token;
     }
 
     public async Task<List<Role>> GetUserRolesAsync(int userId)
@@ -104,14 +104,30 @@ public class UserService
         return await _userRepo.GetAllRolesAsync();
     }
 
-    public async Task<bool> EditProfileByAdminAsync(EditProfileByAdminDto editProfileByAdminDto)
+    public async Task<Result<string>> EditProfileByAdminAsync(EditProfileByAdminDto editProfileByAdminDto)
     {
-        // TODO: validate user roles before update
+        if (editProfileByAdminDto.Roles.Count == 0) return Result<string>.Failure("Failed to update profile");
         var check = await _userRepo.EditUserProfileAsync(editProfileByAdminDto);
-        return check;
+        return check? Result<string>.Successful("Profile updated successfully"): Result<string>.Failure("Failed to update profile");
     }
     public Task<List<UsersToShareDto>> GetUserstoShareAsync(int currentUserId)
     {
-      return  _userRepo.GetUserstoShareAsync(currentUserId);
+        return _userRepo.GetUserstoShareAsync(currentUserId);
+    }
+
+    public Result<ProfileImage?> GetUserPhoto(int userId)
+    {
+        var imagePath = Path.Combine(Directory.GetCurrentDirectory(), _imageDir, userId + ".png");
+
+        if (!System.IO.File.Exists(imagePath)) return Result<ProfileImage?>.Failure("Failed to generate token");
+
+        Byte[] bytes = System.IO.File.ReadAllBytes(imagePath);
+        String file = Convert.ToBase64String(bytes);
+        var image = new ProfileImage
+        {
+            FileBase64 = file
+        };
+
+        return image;
     }
 }

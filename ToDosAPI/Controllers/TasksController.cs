@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.StaticFiles;
 using ToDosAPI.Extensions;
 using ToDosAPI.Models.Dtos;
 using ToDosAPI.Services;
+using ToDosAPI.Models;
 
 namespace ToDosAPI.Controllers;
 
@@ -22,35 +23,19 @@ public class TasksController : BaseController
         _filesDir = configuration.GetValue<string>("Files:FilesPath")!;
     }
 
-    //[HttpGet]
-    //public async Task<ActionResult> GetAllTasks()
-    //{
-    //    var tasks = await _taskService.GetAllTasksAsync();
-    //    return Ok(tasks);
-    //}
-
-    [HttpGet("user-tasks")]
+    [HttpGet]
     public async Task<ActionResult> GetAllTasks(int userId, int pageNumber, int pageSize)
     {
         var currentUserId = User.GetId();
-        var roles = User.GetRoles(); // send as a parameters
-
-        if (userId != currentUserId && !roles.Contains("Admin") && !roles.Contains("Moderator"))
-            return Unauthorized("Unauthorized: due to invalid credentials");
-
-        var tasks = await _taskService.GetUserTasksAsync(userId, pageNumber, pageSize);
-        return Ok(tasks);
+        var roles = User.GetRoles();
+        var result = await _taskService.GetUserTasksAsync(userId, pageNumber, pageSize, currentUserId, roles);
+        return result.Match<ActionResult>(Ok, Unauthorized);
     }
 
     [HttpGet("user-tasks-only/{userId}")]
     [Authorize(Roles = "Admin, Moderator")]
     public async Task<ActionResult> GetUserTasks(int userId)
     {
-        //var roles = User.GetRoles(); // send as a parameters
-
-        //if (!roles.Contains("Admin") && !roles.Contains("Moderator"))
-        //    return Unauthorized("Unauthorized: due to invalid credentials");
-
         var tasks = await _taskService.GetUserTasksAsync(userId);
         return Ok(tasks);
     }
@@ -73,40 +58,19 @@ public class TasksController : BaseController
     [HttpPut]
     public async Task<ActionResult> EditTask([FromForm] EditTaskFormDto editTaskFormDto)
     {
-
+        // how to send different functions when response is failure? (NotFound(), Unauthorized() ...etc).
         var currentUserId = User.GetId();
-        var editTaskDto = JsonSerializer.Deserialize<EditTaskDto>(editTaskFormDto.Task);
-
-        if (editTaskDto is null) return BadRequest("Bad task JSON"); // ?
-
-        var task = await _taskService.GetTaskByIdAsync(editTaskDto.Id);
-
-        if (task == null) return NotFound("The Selected Task Not Exist");
-
-        var isItShared = task.SharedTasks.FirstOrDefault(user => user.SharedWith == currentUserId);
-
-        if (task.CreatedBy != currentUserId && isItShared is null) return Unauthorized("Unauthorized: due to invalid credentials");
-
-        var result = await _taskService.EditTaskAsync(task, editTaskDto, editTaskFormDto.Files);
-        if (!result) return BadRequest("Failed to update task");
-
-        var taskAfterUpdate = await _taskService.GetTaskByIdAsync(editTaskDto.Id);
-
-        return Ok(taskAfterUpdate);
+        var result = await _taskService.EditTaskAsync(editTaskFormDto, editTaskFormDto.Files, currentUserId);
+        return result.Match<ActionResult>(Ok, BadRequest);
     }
 
     [HttpDelete("{taskId}")]
     public async Task<ActionResult> DeleteTask(int taskId)
     {
-        var task = await _taskService.GetTaskByIdAsync(taskId);
+        var currentUserId = User.GetId();
+        var result = await _taskService.DeleteTaskAsync(taskId, currentUserId);
+        return result.Match<ActionResult>(Ok, BadRequest);
 
-        if (task == null) return NotFound("The Selected Task Not Exist");
-        if (task.CreatedBy != User.GetId()) return Unauthorized("Unauthorized: due to invalid credentials");
-
-        var check = await _taskService.DeleteTaskAsync(taskId);
-        if (check) return Ok("Deleted successfully");
-
-        return BadRequest("Failed to delete task");
     }
 
     [HttpGet("attachments/{attachmentId:int}")]

@@ -1,6 +1,8 @@
-﻿using System.IO;
+﻿using Microsoft.AspNetCore.StaticFiles;
+using System.IO;
 using System.Linq;
 using System.Net.Mail;
+using System.Text.Json;
 using System.Threading.Tasks;
 using ToDosAPI.Data;
 using ToDosAPI.Models;
@@ -49,13 +51,37 @@ public class TaskService
         return createdTask;
     }
 
-    public async Task<bool> DeleteTaskAsync(int taskId)
+    public async Task<Result<string>> DeleteTaskAsync(int taskId, int currentUserId)
     {
-        return await _userTaskRepo.DeleteTaskAsync(taskId);
+        var task = await GetTaskByIdAsync(taskId);
+
+        if (task == null) return Result<string>.Failure("The Selected Task Not Exist"); 
+        if (task.CreatedBy != currentUserId) return Result<string>.Failure("Unauthorized: You don't have permission to edit task"); 
+
+        var result = await _userTaskRepo.DeleteTaskAsync(taskId);
+        return result? Result<string>.Successful("Task Deleted Successfully") : Result<string>.Failure("Unauthorized: You don't have permission to edit task");
     }
 
-    public async Task<bool> EditTaskAsync(UserWithSharedTask oldTasks, EditTaskDto editTaskDto, List<IFormFile> files)
+    public async Task<Result<UserWithSharedTask>> EditTaskAsync(EditTaskFormDto editTaskFormDto, List<IFormFile> files, int currentUserId)
     {
+
+        var editTaskDto = JsonSerializer.Deserialize<EditTaskDto>(editTaskFormDto.Task);
+
+        if (editTaskDto is null) return Result<UserWithSharedTask>.Failure("Failed to Serialize JSON");
+
+        var oldTasks = await GetTaskByIdAsync(editTaskDto.Id);
+
+        if (oldTasks == null) return Result<UserWithSharedTask>.Failure("The Selected Task Not Exist");
+
+        var isItShared = oldTasks.SharedTasks.FirstOrDefault(user => user.SharedWith == currentUserId);
+
+        if (oldTasks.CreatedBy != currentUserId && isItShared is null) return Result<UserWithSharedTask>.Failure("Unauthorized: You don't have permission to edit task");
+
+        if (isItShared is not null) { 
+            if (!isItShared.IsEditable)
+             return Result<UserWithSharedTask>.Failure("Unauthorized: You don't have permission to edit task"); 
+        }
+
         var editResult = await _userTaskRepo.EditTaskAsync(editTaskDto);
         if (editTaskDto.Files.Count == 0)
         {
@@ -76,7 +102,11 @@ public class TaskService
             }
         }
 
-        if (files.Count == 0) return editResult;
+        if (files.Count == 0) {
+
+           var result  = await GetTaskByIdAsync(editTaskDto.Id);
+            return result ==null? Result<UserWithSharedTask>.Failure("Failed to Retrieve User Updated Information") : result;
+        };
 
         var filePath = Path.Combine(_filesDir, editTaskDto.CreatedBy.ToString());
         Directory.CreateDirectory(filePath!);
@@ -94,9 +124,8 @@ public class TaskService
                 var taskFile = await _userTaskRepo.CreateTaskAttachmentAsync(editTaskDto.Id, filename);
             }
         }
-
-
-        return editResult;
+        var finalResult = await GetTaskByIdAsync(editTaskDto.Id);
+        return finalResult == null ? Result<UserWithSharedTask>.Failure("Failed to Retrieve User Updated Information") : finalResult;
     }
 
     public async Task<List<UserTask>> GetAllTasksAsync()
@@ -104,13 +133,27 @@ public class TaskService
         return await _userTaskRepo.GetAllTasksAsync();
     }
 
-    public Task<GetUserTasksResponse> GetUserTasksAsync(int userId, int pageNumber, int pageSize)
+    public async Task<Result<GetUserTasksResponse>> GetUserTasksAsync(int userId, int pageNumber, int pageSize, int currentUserId, List<string> roles)
     {
-        return _userTaskRepo.GetUserTasksAsync(userId, pageNumber, pageSize);
+        if (userId != currentUserId && !roles.Contains("Admin") && !roles.Contains("Moderator")) 
+            return Result<GetUserTasksResponse>.Failure("Unauthorized: due to invalid credentials");
+
+        var result = await _userTaskRepo.GetUserTasksAsync(userId, pageNumber, pageSize);
+        return result;
     }
 
     public Task<TaskAttachment?> GetTaskAttachmentAsync(int attachmentId)
     {
+        //var filee = _userTaskRepo.GetTaskAttachmentAsync(attachmentId);
+        //if (filee == null) return Result<FileAttachment?>.Failure("Attachment Not Found");
+
+        //var filePath = Path.Combine(Directory.GetCurrentDirectory(), _filesDir, currentUser, filee.FileName);
+        //if (!System.IO.File.Exists(filePath)) return Result<FileAttachment?>.Failure("Attachment Not Found");
+
+        //new FileExtensionContentTypeProvider().TryGetContentType(file.FileName, out var contentType);
+
+        //if (string.IsNullOrEmpty(contentType)) contentType = "application/octet-stream";
+
         return _userTaskRepo.GetTaskAttachmentAsync(attachmentId);
     }
 
@@ -122,6 +165,8 @@ public class TaskService
     public Task ShareTaskAsync(ShareTaskDto shareTaskDto, int userId)
     {
         return _userTaskRepo.ShareTaskAsync(shareTaskDto, userId);
+        //var result = _userTaskRepo.ShareTaskAsync(shareTaskDto, userId);
+        //return result ? Result<string>.Successful("The Task Shared Successfully") : Result<GetUserTasksResponse>.Failure("Failed to Share Task");
     }
 
     public Task<List<UserTask>> GetUserTasksAsync(int userId)
