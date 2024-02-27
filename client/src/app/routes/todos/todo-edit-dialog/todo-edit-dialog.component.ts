@@ -83,9 +83,9 @@ export class TodoEditDialogComponent implements OnInit {
     }
 
     this.todosService.updateTask(formData).subscribe({
-      next: () => {
+      next: (res) => {
         this.toastr.success('The task updated successfully');
-        this.taskUpdated.emit(todoTaskBeforeFilter);
+        this.taskUpdated.emit(res);
       },
     });
   }

@@ -133,5 +133,5 @@ if (createdBy === me || isEditable) allowEdit
 
 ### 26-2-2024
 
-- fix file upload error (JSON PARSING)
-- 
+- fix file upload error (JSON PARSING) --
+- fix edit task shared by user --

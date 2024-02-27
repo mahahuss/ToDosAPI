@@ -94,12 +94,12 @@ public class UserTaskRepository
                 if (file is not null)
                 {
                     var fileAlreadyExist = taskInDictionary.Files.Where(x => x.Id == file.Id);
-                if (fileAlreadyExist.Count()==0)
+                    if (fileAlreadyExist.Count() == 0)
                         taskInDictionary.Files.Add(file);
                 }
                 if (sharedWith is not null)
                     taskInDictionary.SharedTasks.Add(sharedWith);
-            } 
+            }
 
             return task;
         });
@@ -115,26 +115,33 @@ public class UserTaskRepository
         return attachment;
     }
 
-    public async Task<EditTaskDto?> GetTaskByIdAsync(int taskId)
+    public async Task<UserWithSharedTask?> GetTaskByIdAsync(int taskId)
     {
         await using var con = new SqlConnection(_context.ConnectionString);
-        EditTaskDto? taskWithAttachments = null;
+        UserWithSharedTask? taskWithAttachments = null;
 
-        await con.QueryAsync<EditTaskDto, TaskAttachment, EditTaskDto>("sp_TasksGetById",
-    (task, attachment) =>
+
+        await con.QueryAsync<UserWithSharedTask, SharedTask?, TaskAttachment?, UserWithSharedTask>("sp_TasksGetById",
+    (task, sharedWith, file) =>
     {
-        taskWithAttachments ??= new EditTaskDto
+
+
+        taskWithAttachments ??= new UserWithSharedTask
         {
-            Id = taskId,
+            Id = task.Id,
             CreatedBy = task.CreatedBy,
+            CreatedDate = task.CreatedDate,
             Status = task.Status,
             TaskContent = task.TaskContent,
         };
 
-        taskWithAttachments.Files.Add(attachment);
+        if (file is not null)
+            taskWithAttachments.Files.Add(file);
+        if (sharedWith is not null)
+            taskWithAttachments.SharedTasks.Add(sharedWith);
+
         return taskWithAttachments;
     }, new { Id = taskId });
-
         return taskWithAttachments;
     }
 
@@ -175,7 +182,7 @@ public class UserTaskRepository
                 }
                 else if (file is not null)
                     taskInDictionary.Files.Add(file);
-
+                
                 return task;
             }, new { userId });
 
