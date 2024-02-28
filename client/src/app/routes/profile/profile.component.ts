@@ -5,13 +5,14 @@ import { ToastrService } from 'ngx-toastr';
 import { environment } from '../../../environments/environment.development';
 import { AuthService } from '../../services/auth.service';
 import { User } from '../../shared/models/auth';
+import { SpinnerComponent } from '../../core/components/spinner/spinner.component';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, FormsModule],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss',
+  imports: [CommonModule, FormsModule, SpinnerComponent],
 })
 export class ProfileComponent implements OnInit {
   userInfo: User | undefined;
@@ -22,6 +23,7 @@ export class ProfileComponent implements OnInit {
   fileToUpload: File | undefined = undefined;
   avatarPreview = false;
   previewSrc = '';
+  isLoading = false;
 
   constructor(
     public authService: AuthService,
@@ -56,8 +58,11 @@ export class ProfileComponent implements OnInit {
   }
 
   editProfile() {
-    if (!this.userInfo) return;
-
+    this.isLoading = true;
+    if (!this.userInfo) {
+      this.isLoading = false;
+      return;
+    }
     const formData = new FormData();
     if (this.fileToUpload && this.fileToUpload.size < 200000) {
       formData.append('Image', this.fileToUpload);
@@ -70,6 +75,7 @@ export class ProfileComponent implements OnInit {
         localStorage.setItem('fullname', this.name);
         this.userInfo!.given_name = this.name;
         this.avatarPreview = false;
+        this.isLoading = false;
         this.toastr.success(result.message);
       },
     });

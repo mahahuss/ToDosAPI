@@ -33,9 +33,20 @@ export const loadingInterceptor: HttpInterceptorFn = (req, next): Observable<Htt
 };
 
 function isException(req: HttpRequest<unknown>) {
-  if (req.url.includes('tasks') && req.method === 'PUT') {
+  if (
+    (req.url.includes('tasks') && req.method === 'PUT') ||
+    (req.url.includes('users/roles') && req.method === 'GET') ||
+    (req.url.includes('tasks/share') && req.method === 'POST') ||
+    (req.url.includes('tasks') && req.method === 'DELETE') ||
+    (req.url.includes('tasks') && req.method === 'POST') ||
+    (req.url.includes('Tasks/user-tasks-only') && req.method === 'GET') ||
+    (req.url.includes('Users/status') && req.method === 'PUT') ||
+    (req.url.includes('Users/edit-roles') && req.method === 'PUT') ||
+    (req.url.includes('users/roles') && req.method === 'GET') ||
+    (req.url.includes('users/user-roles') && req.method === 'GET') ||
+    (req.url.includes('Users') && req.method === 'PUT')
+  ) {
     return true;
   }
-
   return false;
 }

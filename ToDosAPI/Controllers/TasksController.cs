@@ -23,7 +23,7 @@ public class TasksController : BaseController
         _filesDir = configuration.GetValue<string>("Files:FilesPath")!;
     }
 
-    [HttpGet]
+    [HttpGet("user-tasks")]
     public async Task<ActionResult> GetAllTasks(int userId, int pageNumber, int pageSize)
     {
         var currentUserId = User.GetId();

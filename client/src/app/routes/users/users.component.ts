@@ -13,7 +13,7 @@ import { SpinnerComponent } from '../../core/components/spinner/spinner.componen
   styleUrl: './users.component.scss',
   imports: [CommonModule, UsersTasksDialogComponent, UsersEditDialogComponent, SpinnerComponent],
 })
-export class UsersComponent implements OnInit, AfterContentChecked {
+export class UsersComponent implements OnInit {
   userInfo!: User;
   isAdmin = false;
   tasksViewStatus = false;
@@ -21,17 +21,17 @@ export class UsersComponent implements OnInit, AfterContentChecked {
   user: UserInfo | undefined;
   users: UserInfo[] = [];
   currentUserId: number | undefined;
+  isLoading = false;
+  userId = -1;
   constructor(
     private authService: AuthService,
     public loaderService: LoaderService,
-    private cdRef: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
     this.authService.currentUser$.subscribe({
       next: (res) => {
         if (!res) return;
-
         this.userInfo = res;
         this.isAdmin = this.userInfo!.roles.includes('Admin');
       },
@@ -47,17 +47,16 @@ export class UsersComponent implements OnInit, AfterContentChecked {
     });
   }
 
-  ngAfterContentChecked() {
-    // this.cdRef.detectChanges();
-  }
-
   changeUserStatus(userId: number, status: boolean) {
+    this.isLoading = true;
+    this.userId = userId;
     status = status ? false : true;
 
     this.authService.changeUserStatus(userId, status).subscribe({
       next: () => {
         const indexToUpdate = this.users.findIndex((user) => user.id === userId);
         if (indexToUpdate !== -1) this.users[indexToUpdate].status = status;
+        this.isLoading = false;
       },
     });
   }

@@ -3,18 +3,21 @@ import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@a
 import { saveAs } from 'file-saver';
 import { TodosService } from '../../../services/todos.service';
 import { ToDoTask, UserTaskFile } from '../../../shared/models/todo';
+import { SpinnerComponent } from '../../../core/components/spinner/spinner.component';
 
 @Component({
   selector: 'app-todo-files-dialog',
   standalone: true,
-  imports: [CommonModule],
   templateUrl: './todo-files-dialog.component.html',
   styleUrl: './todo-files-dialog.component.scss',
   host: { '(window:keyup.esc)': 'onClose()' },
+  imports: [CommonModule, SpinnerComponent],
 })
 export class TodoFilesDialogComponent implements OnInit {
   @Input() todoTask: ToDoTask | undefined = undefined;
   @Output() filesViewClosed = new EventEmitter();
+  isLoading = false;
+  fileId = -1;
   constructor(private todosService: TodosService) {}
 
   ngOnInit(): void {}
@@ -25,9 +28,12 @@ export class TodoFilesDialogComponent implements OnInit {
   }
 
   getFile(attachment: UserTaskFile) {
+    this.fileId = attachment.id;
+    this.isLoading = true;
     this.todosService.getTaskAttachment(attachment.id).subscribe({
       next: (res) => {
         saveAs(res, attachment.fileName);
+        this.isLoading = false;
       },
     });
   }

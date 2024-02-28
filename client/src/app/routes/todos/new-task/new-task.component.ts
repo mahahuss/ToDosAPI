@@ -5,17 +5,19 @@ import { AuthService } from '../../../services/auth.service';
 import { TodosService } from '../../../services/todos.service';
 import { ToDoTask } from '../../../shared/models/todo';
 import { ToastrService } from 'ngx-toastr';
+import { SpinnerComponent } from '../../../core/components/spinner/spinner.component';
 @Component({
   selector: 'app-new-task',
   standalone: true,
-  imports: [CommonModule, FormsModule],
   templateUrl: './new-task.component.html',
   styleUrl: './new-task.component.scss',
+  imports: [CommonModule, FormsModule, SpinnerComponent],
 })
 export class NewTaskComponent {
   content = '';
   @Output() onTaskCreated = new EventEmitter<ToDoTask>();
   files: File[] = [];
+  isLoading = false;
 
   constructor(
     private authService: AuthService,
@@ -28,6 +30,7 @@ export class NewTaskComponent {
   }
 
   addTask() {
+    this.isLoading = true;
     const formData = new FormData();
     const userid = this.authService.getCurrentUserFromToken()?.nameid;
     if (this.content && userid) {
@@ -41,6 +44,7 @@ export class NewTaskComponent {
         this.onTaskCreated.emit(res);
         this.content = '';
         this.files = [];
+        this.isLoading = false;
         this.toastr.success('The task added successfully');
       },
     });

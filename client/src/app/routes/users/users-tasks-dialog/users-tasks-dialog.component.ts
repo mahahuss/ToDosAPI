@@ -12,19 +12,21 @@ import {
 import saveAs from 'file-saver';
 import { TodosService } from '../../../services/todos.service';
 import { UserTask, UserTaskFile } from '../../../shared/models/todo';
+import { SpinnerComponent } from '../../../core/components/spinner/spinner.component';
 
 @Component({
   selector: 'app-users-tasks-dialog',
   standalone: true,
-  imports: [CommonModule],
   templateUrl: './users-tasks-dialog.component.html',
   styleUrl: './users-tasks-dialog.component.scss',
   host: { '(window:keyup.esc)': 'onClose()' },
+  imports: [CommonModule, SpinnerComponent],
 })
 export class UsersTasksDialogComponent implements OnInit, AfterContentChecked {
   @Input() userId: number | undefined;
   @Output() tasksViewClosed = new EventEmitter();
   todos: UserTask[] = [];
+  isLoading = true;
 
   constructor(
     private todosService: TodosService,
@@ -39,6 +41,7 @@ export class UsersTasksDialogComponent implements OnInit, AfterContentChecked {
       this.todosService.getUserTasks(this.userId!).subscribe({
         next: (res) => {
           this.todos = res;
+          this.isLoading = false;
         },
       });
     }

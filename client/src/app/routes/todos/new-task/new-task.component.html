@@ -8,8 +8,11 @@
     [(ngModel)]="content"
   >
   </textarea>
-    <label for="upload" class="flex flex-col items-center gap-2 cursor-pointer rounded-md border border-indigo-700 bg-gray-50 p-4 ml-4 shadow-md w-5 h-9/12">
-      <span class="fa fa-upload text-indigo-700"> </span>
+  <label
+    for="upload"
+    class="flex flex-col items-center gap-2 cursor-pointer rounded-md border border-indigo-700 bg-gray-50 p-4 ml-4 shadow-md w-5 h-9/12"
+  >
+    <span class="fa fa-upload text-indigo-700"> </span>
     <input
       id="upload"
       type="file"
@@ -19,5 +22,9 @@
       multiple
     />
   </label>
-  <button class="btn btn-outline ml-4" (click)="addTask()" [disabled]="content === ''">Add</button>
+  @if (isLoading) {
+    <app-spinner class="ml-4"> </app-spinner>
+  } @else {
+    <button class="btn btn-outline ml-4" (click)="addTask()" [disabled]="content === ''">Add</button>
+  }
 </div>

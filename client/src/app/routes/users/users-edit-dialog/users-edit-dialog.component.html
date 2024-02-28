@@ -16,41 +16,47 @@
         </button>
       </div>
       <div class="p-4 md:p-5 text-center">
-        <label class="block mb-2 text-sm font-medium text-gray-900">Select roles</label>
-        @if (roles.length > 0 && userRoles.length > 0) {
-          <ng-select
-            [items]="roles"
-            [(ngModel)]="userRoles"
-            (ngModelChange)="editUserRoles()"
-            [multiple]="true"
-            bindLabel="userType"
-            placeholder="Select Roles.."
-            [clearable]="false"
-          >
-          </ng-select>
+        @if (isLoading) {
+          <div class="p-24 px-36">
+            <app-spinner> </app-spinner>
+          </div>
+        } @else {
+          <label class="block mb-2 text-sm font-medium text-gray-900">Select roles</label>
+          @if (roles.length > 0 && userRoles.length > 0) {
+            <ng-select
+              [items]="roles"
+              [(ngModel)]="userRoles"
+              (ngModelChange)="editUserRoles()"
+              [multiple]="true"
+              bindLabel="userType"
+              placeholder="Select Roles.."
+              [clearable]="false"
+            >
+            </ng-select>
+          }
+          <div [class.hidden]="!errorMessage" class="text-left text-red-600 text-sm px-1.5">
+            At least one role must be specified
+          </div>
+
+          <div class="pt-5">
+            <label class="block mb-2 text-sm font-medium text-gray-900">Edit name</label>
+
+            <input
+              [(ngModel)]="user!.fullName"
+              type="text"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+            />
+          </div>
+          <div class="pt-5">
+            <button
+              (click)="updateUser()"
+              [disabled]="userRoles.length === 0"
+              class="m-2 text-sm transition-colors duration-15 btn btn-sm btn-primary"
+            >
+              Update
+            </button>
+          </div>
         }
-        <div [class.hidden]="!errorMessage" class="text-left text-red-600 text-sm px-1.5">
-          At least one role must be specified
-        </div>
-
-        <div class="pt-5">
-          <label class="block mb-2 text-sm font-medium text-gray-900">Edit name</label>
-
-          <input
-            [(ngModel)]="user!.fullName"
-            type="text"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-          />
-        </div>
-        <div class="pt-5">
-          <button
-            (click)="updateUser()"
-            [disabled]="userRoles.length === 0"
-            class="m-2 text-sm transition-colors duration-15 btn btn-sm btn-primary"
-          >
-            Update
-          </button>
-        </div>
       </div>
     </div>
   </div>

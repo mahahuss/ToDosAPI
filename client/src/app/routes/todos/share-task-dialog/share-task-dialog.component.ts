@@ -7,14 +7,15 @@ import { ToastrService } from 'ngx-toastr';
 import { FormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { TodosService } from '../../../services/todos.service';
+import { SpinnerComponent } from '../../../core/components/spinner/spinner.component';
 
 @Component({
   selector: 'app-share-task-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgSelectModule],
   templateUrl: './share-task-dialog.component.html',
   styleUrl: './share-task-dialog.component.scss',
   host: { '(window:keyup.esc)': 'onClose()' },
+  imports: [CommonModule, FormsModule, NgSelectModule, SpinnerComponent],
 })
 export class ShareTaskDialogComponent implements OnInit {
   @Input() todoTask: ToDoTask | undefined = undefined;
@@ -23,6 +24,7 @@ export class ShareTaskDialogComponent implements OnInit {
   usersToShareWith: UserToShare[] = [];
   selectedUsers: UserToShare[] = [];
   isEditable = false;
+  isLoading = false;
 
   constructor(
     private toastr: ToastrService,
@@ -48,6 +50,8 @@ export class ShareTaskDialogComponent implements OnInit {
   }
 
   shareTaskWithUsers() {
+    this.isLoading = true;
+
     const sharedtask: ShareTask = {
       taskId: this.todoTask!.id,
       isEditable: this.isEditable,

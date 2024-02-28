@@ -4,14 +4,16 @@ import { FormsModule } from '@angular/forms';
 import { ToDoTask, UserTaskFile, UserFile } from '../../../shared/models/todo';
 import { ToastrService } from 'ngx-toastr';
 import { TodosService } from '../../../services/todos.service';
+import { SpinnerComponent } from '../../../core/components/spinner/spinner.component';
+import { LoaderService } from '../../../services/loader.service';
 
 @Component({
   selector: 'app-todo-edit-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule],
   templateUrl: './todo-edit-dialog.component.html',
   styleUrl: './todo-edit-dialog.component.scss',
   host: { '(window:keyup.esc)': 'onClose()' },
+  imports: [CommonModule, FormsModule, SpinnerComponent],
 })
 export class TodoEditDialogComponent implements OnInit {
   @Input() todoTask: ToDoTask | undefined = undefined;
@@ -20,10 +22,12 @@ export class TodoEditDialogComponent implements OnInit {
   todoTaskCopy: ToDoTask | undefined;
   files: UserFile[] = [];
   errorMessage = false;
+  editLoading = false;
 
   constructor(
     private toastr: ToastrService,
     private todosService: TodosService,
+    public loaderService: LoaderService,
   ) {}
 
   ngOnInit(): void {
@@ -55,8 +59,10 @@ export class TodoEditDialogComponent implements OnInit {
   }
 
   editTask() {
+    this.editLoading = true;
     if (this.todoTaskCopy?.taskContent.length == 0) {
       this.errorMessage = true;
+      this.editLoading = false;
       return;
     }
     this.errorMessage = false;
@@ -76,6 +82,8 @@ export class TodoEditDialogComponent implements OnInit {
         fileName: f.fileName,
       }));
     formData.append('task', JSON.stringify(this.todoTaskCopy));
+    console.log(JSON.stringify(this.todoTaskCopy));
+
     for (let file of this.files) {
       if (file.isOld || !file.file) continue;
 

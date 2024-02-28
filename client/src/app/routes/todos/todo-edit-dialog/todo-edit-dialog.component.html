@@ -23,59 +23,66 @@
         <span class="sr-only">Close modal</span>
       </button>
       <div class="p-4 md:p-5 text-center">
-        <div>Edit Task</div>
-        <div class="flex flex-grow space-x-3 font-medium px-2 items-center pt-8">
-          <textarea
-            id="taskContent"
-            [ariaMultiLine]="true"
-            type="text"
-            class="input input-bordered input-primary w-96"
-            [(ngModel)]="todoTaskCopy!.taskContent"
-            #focusTaskInput
-          >
-          </textarea>
-        </div>
-        <div [class.hidden]="!errorMessage" class="text-left text-red-600 text-sm px-3 pt-1">
-          Task Content Cannot be Empty!
-        </div>
-        <div class="grid grid-cols-2 gap-4 justify-between px-2 pt-2">
-          @for (file of files; track file) {
-            <div class="border px-2 py-2 border-2 rounded-md flex flex-row">
-              <div class="truncate w-4/5 text-sm" [title]="file.fileName">{{ file.fileName }}</div>
-              <button class="btn btn-outline btn-error btn-xs btn-circle" (click)="removeFile(file)">
-                <i class="fa-solid fa-trash"></i>
+        @if (editLoading) {
+          <div class="p-36">
+            <app-spinner> </app-spinner>
+          </div>
+        } @else {
+          <div>Edit Task</div>
+          <div class="flex flex-grow space-x-3 font-medium px-2 items-center pt-8">
+            <textarea
+              id="taskContent"
+              [ariaMultiLine]="true"
+              type="text"
+              class="input input-bordered input-primary w-96"
+              [(ngModel)]="todoTaskCopy!.taskContent"
+              #focusTaskInput
+            >
+            </textarea>
+          </div>
+          <div [class.hidden]="!errorMessage" class="text-left text-red-600 text-sm px-3 pt-1">
+            Task Content Cannot be Empty!
+          </div>
+          <div class="grid grid-cols-2 gap-4 justify-between px-2 pt-2">
+            @for (file of files; track file) {
+              <div class="border px-2 py-2 border-2 rounded-md flex flex-row">
+                <div class="truncate w-4/5 text-sm" [title]="file.fileName">{{ file.fileName }}</div>
+                <button class="btn btn-outline btn-error btn-xs btn-circle" (click)="removeFile(file)">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
+            }
+          </div>
+          <div class="px-2 pt-8">
+            <input
+              id="upload"
+              accept="image/png, application/pdf"
+              (change)="handleFileInput($event)"
+              multiple
+              type="file"
+              class="file-input file-input-bordered"
+            />
+          </div>
+          <div class="px-2 pt-8">
+            <div class="w-full flex justify-center gap-6 max-w-sm mx-auto">
+              <button
+                (click)="onClose()"
+                type="button"
+                class="text-gray-900 w-24 bg-white border border-gray-300 hover:outline-none hover:bg-gray-100 hover:ring-4 hover:ring-gray-200 font-medium rounded-lg text-sm"
+              >
+                Cancel
+              </button>
+
+              <button
+                (click)="editTask()"
+                type="button"
+                class="text-gray-900 w-24 bg-white border border-gray-300 hover:outline-none hover:bg-gray-100 hover:ring-4 hover:ring-gray-200 font-medium rounded-lg text-sm"
+              >
+                Save
               </button>
             </div>
-          }
-        </div>
-        <div class="px-2 pt-8">
-          <input
-            id="upload"
-            accept="image/png, application/pdf"
-            (change)="handleFileInput($event)"
-            multiple
-            type="file"
-            class="file-input file-input-bordered"
-          />
-        </div>
-        <div class="px-2 pt-8">
-          <div class="w-full flex justify-center gap-6 max-w-sm mx-auto">
-            <button
-              (click)="onClose()"
-              type="button"
-              class="text-gray-900 w-24 bg-white border border-gray-300 hover:outline-none hover:bg-gray-100 hover:ring-4 hover:ring-gray-200 font-medium rounded-lg text-sm"
-            >
-              Cancel
-            </button>
-            <button
-              (click)="editTask()"
-              type="button"
-              class="text-gray-900 w-24 bg-white border border-gray-300 hover:outline-none hover:bg-gray-100 hover:ring-4 hover:ring-gray-200 font-medium rounded-lg text-sm"
-            >
-              Save
-            </button>
           </div>
-        </div>
+        }
       </div>
     </div>
   </div>

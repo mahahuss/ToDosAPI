@@ -5,14 +5,15 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../../../services/auth.service';
 import { Role, UpdateUser, UserInfo } from '../../../shared/models/auth';
+import { SpinnerComponent } from '../../../core/components/spinner/spinner.component';
 
 @Component({
   selector: 'app-users-edit-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgSelectModule],
   templateUrl: './users-edit-dialog.component.html',
   styleUrl: './users-edit-dialog.component.scss',
   host: { '(window:keyup.esc)': 'onClose()' },
+  imports: [CommonModule, FormsModule, NgSelectModule, SpinnerComponent],
 })
 export class UsersEditDialogComponent implements OnInit {
   @Input() user: UserInfo | undefined;
@@ -23,6 +24,7 @@ export class UsersEditDialogComponent implements OnInit {
   userSelectedRoles: Role[] = [];
   userRoles: Role[] = [];
   errorMessage = false;
+  isLoading = true;
 
   constructor(
     private authService: AuthService,
@@ -38,7 +40,7 @@ export class UsersEditDialogComponent implements OnInit {
       next: (res) => {
         this.userRoles = res;
         this.userSelectedRoles = res;
-        console.log(res);
+        this.isLoading = false;
       },
     });
   }
@@ -48,8 +50,6 @@ export class UsersEditDialogComponent implements OnInit {
       next: (res) => {
         this.roles = res;
         this.loadUserRoles();
-        console.log(res);
-        
       },
     });
   }
@@ -69,6 +69,7 @@ export class UsersEditDialogComponent implements OnInit {
   }
 
   updateUser() {
+    this.isLoading = true;
     const userInfo: UpdateUser = {
       id: this.user!.id,
       fullName: this.user!.fullName,

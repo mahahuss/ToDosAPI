@@ -12,51 +12,57 @@
   <div
     class="w-full bg-white border border-gray-200 rounded-lg flex flex-col justify-center items-center gap-6 max-w-sm mx-auto bg-base-00 shadow-lg p-5 mt-5"
   >
-    <div class="flex justify-end px-4 pt-4">
-      <div><h6 class="text-white text-xl font-medium">Profile</h6></div>
-    </div>
-    <div class="flex flex-col items-center pb-10">
-      <div class="flex flex-row items-center pb-10">
-        <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="{{ photoPath }}" alt="image" />
-        <img
-          [class.hidden]="!avatarPreview"
-          class="w-24 h-24 mb-3 rounded-full shadow-lg"
-          [src]="previewSrc"
-          id=""
-          alt="image"
-        />
+    @if (isLoading) {
+      <div class="p-24 px-36">
+        <app-spinner> </app-spinner>
       </div>
-      @if (updateClickStatus) {
-        <input
-          type="file"
-          accept="image/png"
-          (change)="handleFileInput($event)"
-          class="w-full text-black text-sm bg-gray-100 file:cursor-pointer cursor-pointer file:border-0 file:py-1 file:px-4 file:mr-4 file:bg-gray-800 file:hover:bg-gray-700 file:text-white rounded"
-        />
-        <input
-          autofocus="true"
-          type="text"
-          class="mt-5 mb-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-24 p-1"
-          [(ngModel)]="name"
-        />
-      } @else {
-        <h5 class="mb-1 text-xl font-medium text-gray-900 mt-5">
-          {{ userInfo.given_name }}
-        </h5>
-      }
-      <span class="text-sm text-gray-500">{{ userInfo.unique_name }}</span>
-      <div class="flex mt-4 md:mt-6">
-        @for (role of userInfo.roles; track $index) {
-          <ul class="text-gray-500 flex flex-wrap items-center justify-center">
-            <li class="flex items-center justify-center space-x-3 rtl:space-x-reverse md:me-6 me-4">
-              <div class="badge badge-primary text-xs">{{ role }}</div>
-            </li>
-          </ul>
+    } @else {
+      <div class="flex justify-end px-4 pt-4">
+        <div><h6 class="text-white text-xl font-medium">Profile</h6></div>
+      </div>
+      <div class="flex flex-col items-center pb-10">
+        <div class="flex flex-row items-center pb-10">
+          <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="{{ photoPath }}" alt="image" />
+          <img
+            [class.hidden]="!avatarPreview"
+            class="w-24 h-24 mb-3 rounded-full shadow-lg"
+            [src]="previewSrc"
+            id=""
+            alt="image"
+          />
+        </div>
+        @if (updateClickStatus) {
+          <input
+            type="file"
+            accept="image/png"
+            (change)="handleFileInput($event)"
+            class="w-full text-black text-sm bg-gray-100 file:cursor-pointer cursor-pointer file:border-0 file:py-1 file:px-4 file:mr-4 file:bg-gray-800 file:hover:bg-gray-700 file:text-white rounded"
+          />
+          <input
+            autofocus="true"
+            type="text"
+            class="mt-5 mb-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-24 p-1"
+            [(ngModel)]="name"
+          />
+        } @else {
+          <h5 class="mb-1 text-xl font-medium text-gray-900 mt-5">
+            {{ userInfo.given_name }}
+          </h5>
         }
+        <span class="text-sm text-gray-500">{{ userInfo.unique_name }}</span>
+        <div class="flex mt-4 md:mt-6">
+          @for (role of userInfo.roles; track $index) {
+            <ul class="text-gray-500 flex flex-wrap items-center justify-center">
+              <li class="flex items-center justify-center space-x-3 rtl:space-x-reverse md:me-6 me-4">
+                <div class="badge badge-primary text-xs">{{ role }}</div>
+              </li>
+            </ul>
+          }
+        </div>
       </div>
-    </div>
+    }
   </div>
-  @if (updateClickStatus) {
+  @if (updateClickStatus && !isLoading) {
     <div class="w-full flex justify-end gap-6 max-w-sm mx-auto mt-6">
       <button
         (click)="toggleEdit()"

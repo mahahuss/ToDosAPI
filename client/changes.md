@@ -140,4 +140,4 @@ if (createdBy === me || isEditable) allowEdit
 
 - move all business logic to service --
 - also check if task is editable if it's being edited by shared with --
-- loading indicators...
+- loading indicators... --
