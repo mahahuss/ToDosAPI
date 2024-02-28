@@ -17,7 +17,7 @@ export class TodoFilesDialogComponent implements OnInit {
   @Input() todoTask: ToDoTask | undefined = undefined;
   @Output() filesViewClosed = new EventEmitter();
   isLoading = false;
-  fileId = -1;
+  fileIds: Map<number, boolean> = new Map();
   constructor(private todosService: TodosService) {}
 
   ngOnInit(): void {}
@@ -27,13 +27,28 @@ export class TodoFilesDialogComponent implements OnInit {
     this.filesViewClosed.emit();
   }
 
+  createPerson() {
+    const person = {
+      name: 'Maha',
+      age: 24,
+      height: 12,
+    };
+
+    return person;
+  }
+
   getFile(attachment: UserTaskFile) {
-    this.fileId = attachment.id;
+    this.fileIds.set(attachment.id, true);
     this.isLoading = true;
     this.todosService.getTaskAttachment(attachment.id).subscribe({
       next: (res) => {
         saveAs(res, attachment.fileName);
         this.isLoading = false;
+        this.fileIds.set(attachment.id, false);
+      },
+      error: () => {
+        this.isLoading = false;
+        this.fileIds.set(attachment.id, false);
       },
     });
   }

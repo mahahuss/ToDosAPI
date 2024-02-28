@@ -61,7 +61,17 @@ public class TasksController : BaseController
         // how to send different functions when response is failure? (NotFound(), Unauthorized() ...etc).
         var currentUserId = User.GetId();
         var result = await _taskService.EditTaskAsync(editTaskFormDto, editTaskFormDto.Files, currentUserId);
-        return result.Match<ActionResult>(Ok, BadRequest);
+
+        
+
+        if (result.Success) return Ok(result.Data);
+
+        return result.ErrorType switch
+        {
+            ResultErrorType.Unauthorized => Unauthorized(result.Error),
+            ResultErrorType.NotFound => NotFound(result.Error),
+            _ => BadRequest(result.Error),
+        };
     }
 
     [HttpDelete("{taskId}")]
@@ -76,16 +86,11 @@ public class TasksController : BaseController
     [HttpGet("attachments/{attachmentId:int}")]
     public async Task<ActionResult> GetTaskAttachment(int attachmentId)
     {
-        var file = await _taskService.GetTaskAttachmentAsync(attachmentId);
-        if (file == null) return NotFound();
+        var result = await _taskService.GetTaskAttachmentAsync(attachmentId, User.GetId());
 
-        var filePath = Path.Combine(Directory.GetCurrentDirectory(), _filesDir, User.GetId().ToString(), file.FileName);
-        if (!System.IO.File.Exists(filePath)) return NotFound();
+        if (!result.Success) return NotFound(result.Error);
 
-        new FileExtensionContentTypeProvider().TryGetContentType(file.FileName, out var contentType);
-
-        if (string.IsNullOrEmpty(contentType)) contentType = "application/octet-stream";
-
+        var (filePath, contentType) = result.Data;
         return PhysicalFile(filePath, contentType);
     }
 }

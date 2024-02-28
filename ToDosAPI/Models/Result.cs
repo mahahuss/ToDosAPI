@@ -1,4 +1,13 @@
-﻿namespace ToDosAPI.Models;
+﻿
+namespace ToDosAPI.Models;
+
+public enum ResultErrorType
+{
+    Unauthorized,
+    BadRequest,
+    NotFound,
+    Unknown
+}
 
 public class Result<T>
 {
@@ -9,16 +18,18 @@ public class Result<T>
     public T? Data { get; set; }
     public bool Success { get; set; }
     public string? Error { get; set; }
+    public ResultErrorType? ErrorType { get; set; }
 
     public static Result<T> Successful(T data) => new() { Success = true, Data = data };
 
 
-    public static Result<T> Failure(string errorResponse)
+    public static Result<T> Failure(string errorResponse, ResultErrorType errorType = ResultErrorType.BadRequest)
     {
         return new Result<T>
         {
             Success = false,
             Error = errorResponse,
+            ErrorType = errorType
         };
     }
 

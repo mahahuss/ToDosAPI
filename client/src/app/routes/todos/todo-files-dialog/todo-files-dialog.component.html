@@ -20,7 +20,7 @@
           @for (file of todoTask?.files; track file) {
             <div class="p-4">
               <div class="indicator">
-                @if (isLoading && fileId == file.id) {
+                @if (isLoading && fileIds.get(file.id)) {
                   <app-spinner> </app-spinner>
                 } @else {
                   <span class="indicator-item badge badge-primary">{{

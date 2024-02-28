@@ -22,7 +22,7 @@
           </div>
         } @else {
           <label class="block mb-2 text-sm font-medium text-gray-900">Select roles</label>
-          @if (roles.length > 0 && userRoles.length > 0) {
+          @if (roles.length > 0) {
             <ng-select
               [items]="roles"
               [(ngModel)]="userRoles"

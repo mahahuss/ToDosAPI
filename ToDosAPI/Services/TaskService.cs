@@ -55,11 +55,11 @@ public class TaskService
     {
         var task = await GetTaskByIdAsync(taskId);
 
-        if (task == null) return Result<string>.Failure("The Selected Task Not Exist"); 
-        if (task.CreatedBy != currentUserId) return Result<string>.Failure("Unauthorized: You don't have permission to edit task"); 
+        if (task == null) return Result<string>.Failure("The Selected Task Not Exist");
+        if (task.CreatedBy != currentUserId) return Result<string>.Failure("Unauthorized: You don't have permission to edit task");
 
         var result = await _userTaskRepo.DeleteTaskAsync(taskId);
-        return result? Result<string>.Successful("Task Deleted Successfully") : Result<string>.Failure("Unauthorized: You don't have permission to edit task");
+        return result ? Result<string>.Successful("Task Deleted Successfully") : Result<string>.Failure("Unauthorized: You don't have permission to edit task");
     }
 
     public async Task<Result<UserWithSharedTask>> EditTaskAsync(EditTaskFormDto editTaskFormDto, List<IFormFile> files, int currentUserId)
@@ -71,15 +71,16 @@ public class TaskService
 
         var oldTasks = await GetTaskByIdAsync(editTaskDto.Id);
 
-        if (oldTasks == null) return Result<UserWithSharedTask>.Failure("The Selected Task Not Exist");
+        if (oldTasks == null) return Result<UserWithSharedTask>.Failure("The Selected Task Not Exist", ResultErrorType.NotFound);
 
         var isItShared = oldTasks.SharedTasks.FirstOrDefault(user => user.SharedWith == currentUserId);
 
-        if (oldTasks.CreatedBy != currentUserId && isItShared is null) return Result<UserWithSharedTask>.Failure("Unauthorized: You don't have permission to edit task");
+        if (oldTasks.CreatedBy != currentUserId && isItShared is null) return Result<UserWithSharedTask>.Failure("Unauthorized: You don't have permission to edit task", ResultErrorType.Unauthorized);
 
-        if (isItShared is not null) { 
+        if (isItShared is not null)
+        {
             if (!isItShared.IsEditable)
-             return Result<UserWithSharedTask>.Failure("Unauthorized: You don't have permission to edit task"); 
+                return Result<UserWithSharedTask>.Failure("Unauthorized: You don't have permission to edit task", ResultErrorType.Unauthorized);
         }
 
         var editResult = await _userTaskRepo.EditTaskAsync(editTaskDto);
@@ -102,10 +103,11 @@ public class TaskService
             }
         }
 
-        if (files.Count == 0) {
+        if (files.Count == 0)
+        {
 
-           var result  = await GetTaskByIdAsync(editTaskDto.Id);
-            return result ==null? Result<UserWithSharedTask>.Failure("Failed to Retrieve User Updated Information") : result;
+            var result = await GetTaskByIdAsync(editTaskDto.Id);
+            return result == null ? Result<UserWithSharedTask>.Failure("Failed to Retrieve User Updated Information") : result;
         };
 
         var filePath = Path.Combine(_filesDir, editTaskDto.CreatedBy.ToString());
@@ -125,7 +127,7 @@ public class TaskService
             }
         }
         var finalResult = await GetTaskByIdAsync(editTaskDto.Id);
-        return finalResult == null ? Result<UserWithSharedTask>.Failure("Failed to Retrieve User Updated Information") : finalResult;
+        return finalResult ?? Result<UserWithSharedTask>.Failure("Failed to Retrieve User Updated Information");
     }
 
     public async Task<List<UserTask>> GetAllTasksAsync()
@@ -135,26 +137,28 @@ public class TaskService
 
     public async Task<Result<GetUserTasksResponse>> GetUserTasksAsync(int userId, int pageNumber, int pageSize, int currentUserId, List<string> roles)
     {
-        if (userId != currentUserId && !roles.Contains("Admin") && !roles.Contains("Moderator")) 
+        if (userId != currentUserId && !roles.Contains("Admin") && !roles.Contains("Moderator"))
             return Result<GetUserTasksResponse>.Failure("Unauthorized: due to invalid credentials");
 
         var result = await _userTaskRepo.GetUserTasksAsync(userId, pageNumber, pageSize);
         return result;
     }
 
-    public Task<TaskAttachment?> GetTaskAttachmentAsync(int attachmentId)
+    public async Task<Result<(string filePath, string contentType)>> GetTaskAttachmentAsync(int attachmentId, int currentUserId)
     {
-        //var filee = _userTaskRepo.GetTaskAttachmentAsync(attachmentId);
-        //if (filee == null) return Result<FileAttachment?>.Failure("Attachment Not Found");
+        var file = await _userTaskRepo.GetTaskAttachmentAsync(attachmentId);
 
-        //var filePath = Path.Combine(Directory.GetCurrentDirectory(), _filesDir, currentUser, filee.FileName);
-        //if (!System.IO.File.Exists(filePath)) return Result<FileAttachment?>.Failure("Attachment Not Found");
+        if (file == null) return Result<(string, string)>.Failure("Attachment Not Found");
 
-        //new FileExtensionContentTypeProvider().TryGetContentType(file.FileName, out var contentType);
+        var filePath = Path.Combine(Directory.GetCurrentDirectory(), _filesDir, currentUserId.ToString(), file.FileName);
 
-        //if (string.IsNullOrEmpty(contentType)) contentType = "application/octet-stream";
+        if (!File.Exists(filePath)) return Result<(string, string)>.Failure("Attachment Not Found");
 
-        return _userTaskRepo.GetTaskAttachmentAsync(attachmentId);
+        new FileExtensionContentTypeProvider().TryGetContentType(file.FileName, out var contentType);
+
+        if (string.IsNullOrEmpty(contentType)) contentType = "application/octet-stream";
+
+        return (filePath, contentType);
     }
 
     public Task<UserWithSharedTask?> GetTaskByIdAsync(int taskId)

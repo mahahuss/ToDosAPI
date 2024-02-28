@@ -2,7 +2,7 @@
 {
     public class FileAttachment
     {
-        public string FilePath { get; set; } = default!;
-        public string ContentType { get; set; } = default!;
+        public required string FilePath { get; set; }
+        public required string ContentType { get; set; }
     }
 }

@@ -138,6 +138,6 @@ if (createdBy === me || isEditable) allowEdit
 
 ### 27-2-2024
 
-- move all business logic to service --
-- also check if task is editable if it's being edited by shared with --
-- loading indicators... --
+- ~~move all business logic to service --~~
+- ~~also check if task is editable if it's being edited by shared with --~~
+- loading indicators... X
