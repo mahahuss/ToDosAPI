@@ -21,6 +21,8 @@ import { ShareTaskDialogComponent } from '../share-task-dialog/share-task-dialog
 import { TodoEditDialogComponent } from '../todo-edit-dialog/todo-edit-dialog.component';
 import { UserInfo, UserToShare } from '../../../shared/models/auth';
 import { AuthService } from '../../../services/auth.service';
+import { LoaderService } from '../../../services/loader.service';
+import { SpinnerComponent } from '../../../core/components/spinner/spinner.component';
 
 @Component({
   selector: 'app-todo-item',
@@ -34,6 +36,7 @@ import { AuthService } from '../../../services/auth.service';
     TodoFilesDialogComponent,
     ShareTaskDialogComponent,
     TodoEditDialogComponent,
+    SpinnerComponent,
   ],
 })
 export class TodoItemComponent implements OnInit, AfterContentChecked {
@@ -50,6 +53,7 @@ export class TodoItemComponent implements OnInit, AfterContentChecked {
   shareClickStatus = false;
   editTodoStatus = false;
   sharedby = '';
+  isLoading = false;
   allUsers: UserToShare[] = [];
   @ViewChild('focusTaskInput') focusTaskInput?: ElementRef;
 
@@ -77,13 +81,18 @@ export class TodoItemComponent implements OnInit, AfterContentChecked {
   }
 
   updateStatus(task: ToDoTask) {
+    this.isLoading = true;
     const formData = new FormData();
     task.status = !task.status;
     formData.append('task', JSON.stringify(task));
     this.todosService.updateTask(formData).subscribe({
       next: () => {
+        this.isLoading = false;
         this.taskUpdated.emit(task);
         this.toastr.success('The task updated successfully');
+      },
+      error: () => {
+        this.isLoading = false;
       },
     });
   }

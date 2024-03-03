@@ -47,6 +47,9 @@ export class NewTaskComponent {
         this.isLoading = false;
         this.toastr.success('The task added successfully');
       },
+      error: () => {
+        this.isLoading = false;
+      },
     });
   }
 }

@@ -5,14 +5,18 @@
       <div class="bg-white shadow-md rounded-lg px-3 py-2 mb-4">
         <div class="block text-indigo-700 text-lg font-semibold py-2 px-2">Todos List</div>
         <app-new-task (onTaskCreated)="taskAdded($event)" />
-        @for (todo of todos; track todo) {
-          <app-todo-item
-            [todoTask]="todo"
-            [currentUserId]="currentUserId"
-            (taskUpdated)="taskUpdated($event)"
-            (deleteStatusChanged)="deleteStatusChanged(todo)"
-            [users]="users"
-          />
+        @if (loaderService.isLoading$()) {
+          <app-spinner class="flex justify-center mt-8"> </app-spinner>
+        } @else {
+          @for (todo of todos; track todo) {
+            <app-todo-item
+              [todoTask]="todo"
+              [currentUserId]="currentUserId"
+              (taskUpdated)="taskUpdated($event)"
+              (deleteStatusChanged)="deleteStatusChanged(todo)"
+              [users]="users"
+            />
+          }
         }
         @if (toDoTask) {
           <app-todo-dialog [todoTask]="toDoTask" (taskDeleted)="taskDeleted($event)"></app-todo-dialog>
@@ -20,28 +24,24 @@
       </div>
 
       <nav aria-label="Page navigation example" class="flex justify-center">
-        @if (loaderService.isLoading$()) {
-          <app-spinner> </app-spinner>
-        } @else {
-          <ul class="inline-flex -space-x-px text-sm">
-            @for (page of pages; track $index) {
-              <li>
-                <button
-                  (click)="changePage(page)"
-                  [class.text-gray-500]="tasksResponse!.pageNumber != page"
-                  [class.bg-white]="tasksResponse!.pageNumber != page"
-                  [class.border-gray-300]="tasksResponse!.pageNumber != page"
-                  [class.text-blue-600]="tasksResponse!.pageNumber == page"
-                  [class.border-gray-300]="tasksResponse!.pageNumber == page"
-                  [class.bg-blue-50]="tasksResponse!.pageNumber == page"
-                  class="flex items-center justify-center px-3 h-8 leading-tight border hover:bg-gray-100 hover:text-gray-700"
-                >
-                  {{ page }}
-                </button>
-              </li>
-            }
-          </ul>
-        }
+        <ul class="inline-flex -space-x-px text-sm">
+          @for (page of pages; track $index) {
+            <li>
+              <button
+                (click)="changePage(page)"
+                [class.text-gray-500]="tasksResponse!.pageNumber != page"
+                [class.bg-white]="tasksResponse!.pageNumber != page"
+                [class.border-gray-300]="tasksResponse!.pageNumber != page"
+                [class.text-blue-600]="tasksResponse!.pageNumber == page"
+                [class.border-gray-300]="tasksResponse!.pageNumber == page"
+                [class.bg-blue-50]="tasksResponse!.pageNumber == page"
+                class="flex items-center justify-center px-3 h-8 leading-tight border hover:bg-gray-100 hover:text-gray-700"
+              >
+                {{ page }}
+              </button>
+            </li>
+          }
+        </ul>
       </nav>
     </div>
   </div>

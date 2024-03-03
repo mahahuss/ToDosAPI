@@ -34,6 +34,9 @@ export class TodoDialogComponent {
         this.toastr.success(res.message);
         this.taskDeleted.emit(false);
       },
+      error: () => {
+        this.isLoading = false;
+      },
     });
   }
 }

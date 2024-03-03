@@ -58,6 +58,9 @@ export class UsersComponent implements OnInit {
         if (indexToUpdate !== -1) this.users[indexToUpdate].status = status;
         this.isLoading = false;
       },
+      error: () => {
+        this.isLoading = false;
+      },
     });
   }
 

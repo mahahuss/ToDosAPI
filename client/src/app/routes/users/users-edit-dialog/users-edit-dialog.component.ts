@@ -42,6 +42,9 @@ export class UsersEditDialogComponent implements OnInit {
         this.userSelectedRoles = res;
         this.isLoading = false;
       },
+      error: () => {
+        this.isLoading = false;
+      },
     });
   }
 
@@ -81,6 +84,9 @@ export class UsersEditDialogComponent implements OnInit {
         this.toastr.success('updated successfully');
         this.userUpdated.emit(userInfo);
         this.onClose();
+      },
+      error: () => {
+        this.isLoading = false;
       },
     });
   }

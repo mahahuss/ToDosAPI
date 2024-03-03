@@ -77,6 +77,9 @@ export class ShareTaskDialogComponent implements OnInit {
         }
         this.sharedUsersUpdated.emit(this.todoTask);
       },
+      error: () => {
+        this.isLoading = false;
+      },
     });
   }
 }

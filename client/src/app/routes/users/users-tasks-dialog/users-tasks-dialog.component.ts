@@ -43,6 +43,9 @@ export class UsersTasksDialogComponent implements OnInit, AfterContentChecked {
           this.todos = res;
           this.isLoading = false;
         },
+        error: () => {
+          this.isLoading = false;
+        },
       });
     }
   }

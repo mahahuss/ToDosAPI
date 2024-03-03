@@ -6,6 +6,7 @@ import { environment } from '../../../environments/environment.development';
 import { AuthService } from '../../services/auth.service';
 import { User } from '../../shared/models/auth';
 import { SpinnerComponent } from '../../core/components/spinner/spinner.component';
+import { LoaderService } from '../../services/loader.service';
 
 @Component({
   selector: 'app-profile',
@@ -28,6 +29,7 @@ export class ProfileComponent implements OnInit {
   constructor(
     public authService: AuthService,
     private toastr: ToastrService,
+    public loaderService: LoaderService,
   ) {}
   ngOnInit(): void {
     this.initProfile();
@@ -77,6 +79,9 @@ export class ProfileComponent implements OnInit {
         this.avatarPreview = false;
         this.isLoading = false;
         this.toastr.success(result.message);
+      },
+      error: () => {
+        this.isLoading = false;
       },
     });
   }

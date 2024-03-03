@@ -1,4 +1,4 @@
-<div class="flex">
+<div class="flex items-center">
   <textarea
     [ariaMultiLine]="true"
     id="taskContentInput"
@@ -23,7 +23,7 @@
     />
   </label>
   @if (isLoading) {
-    <app-spinner class="ml-4"> </app-spinner>
+    <app-spinner class="ml-7"> </app-spinner>
   } @else {
     <button class="btn btn-outline ml-4" (click)="addTask()" [disabled]="content === ''">Add</button>
   }
