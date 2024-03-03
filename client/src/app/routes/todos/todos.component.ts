@@ -11,6 +11,7 @@ import { TodoItemComponent } from './todo-item/todo-item.component';
 import { UserInfo } from '../../shared/models/auth';
 import { LoaderService } from '../../services/loader.service';
 import { SpinnerComponent } from '../../core/components/spinner/spinner.component';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-todos',
@@ -25,6 +26,7 @@ import { SpinnerComponent } from '../../core/components/spinner/spinner.componen
     TodoFilesDialogComponent,
     FormsModule,
     SpinnerComponent,
+    RouterModule,
   ],
 })
 export class TodosComponent implements OnInit {
@@ -42,6 +44,7 @@ export class TodosComponent implements OnInit {
     private authService: AuthService,
     private todosService: TodosService,
     public loaderService: LoaderService,
+    private router: Router,
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -82,6 +85,7 @@ export class TodosComponent implements OnInit {
         this.pages = Array.from(new Array(res.totalPages), (x, i) => i + 1);
         this.currentpage = res.pageNumber;
         this.loadTodosStatus = true;
+        this.router.navigate(['/todos'], { queryParams: { page: this.currentpage } });
       },
     });
   }

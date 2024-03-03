@@ -82,7 +82,6 @@ export class TodoEditDialogComponent implements OnInit {
         fileName: f.fileName,
       }));
     formData.append('task', JSON.stringify(this.todoTaskCopy));
-    console.log(JSON.stringify(this.todoTaskCopy));
 
     for (let file of this.files) {
       if (file.isOld || !file.file) continue;
