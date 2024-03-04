@@ -1,10 +1,7 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
+using FluentMigrator.Runner;
 using Serilog;
-using System.Text;
 using ToDosAPI;
-using ToDosAPI.Data;
-using ToDosAPI.Services;
+using ToDosAPI.Extensions;
 
 const string corsOrigins = "todos_origin";
 
@@ -22,44 +19,13 @@ Log.Logger = new LoggerConfiguration()
 builder.Host.UseSerilog();
 
 builder.Services.AddControllers();
-builder.Services.AddCors(p =>
-{
-    p.AddPolicy(corsOrigins, c => { c.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod(); });
-});
-builder.Services.AddSingleton<UserService>();
-builder.Services.AddSingleton<UserRepository>();
-builder.Services.AddSingleton<UserTaskRepository>();
-builder.Services.AddSingleton<DapperDbContext>();
-builder.Services.AddSingleton<TaskService>();
-builder.Services.AddSingleton<PasswordHasherService>();
-builder.Services.AddSingleton<TokenService>();
-builder.Services.AddSingleton<FileService>();
+builder.AddAppServices();
+builder.AddTodosCors(corsOrigins);
 
-
-
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-
-//Jwt configuration starts here
-var jwtIssuer = builder.Configuration["Jwt:Issuer"];
-var jwtKey = builder.Configuration["Jwt:Key"];
-
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = jwtIssuer,
-            ValidAudience = jwtIssuer,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey!))
-        };
-    });
+builder.AddAppAuth();
+builder.AddDbMigrations();
 
 var app = builder.Build();
 app.UseSerilogRequestLogging();
@@ -76,5 +42,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
+using var scope = app.Services.CreateScope();
+var runner = scope.ServiceProvider.GetRequiredService<IMigrationRunner>();
+runner.MigrateUp();
 app.Run();

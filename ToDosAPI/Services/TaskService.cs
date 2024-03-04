@@ -1,9 +1,5 @@
 ﻿using Microsoft.AspNetCore.StaticFiles;
-using System.IO;
-using System.Linq;
-using System.Net.Mail;
 using System.Text.Json;
-using System.Threading.Tasks;
 using ToDosAPI.Data;
 using ToDosAPI.Models;
 using ToDosAPI.Models.Dtos;
@@ -18,7 +14,8 @@ public class TaskService
     private readonly FileService _fileService;
     private readonly UserRepository _userRepo;
 
-    public TaskService(UserTaskRepository userTaskRepo, IConfiguration configuration, FileService fileService, UserRepository userRepo)
+    public TaskService(UserTaskRepository userTaskRepo, IConfiguration configuration, FileService fileService,
+        UserRepository userRepo)
     {
         _userTaskRepo = userTaskRepo;
         _filesDir = configuration.GetValue<string>("Files:FilesPath")!;
@@ -33,7 +30,7 @@ public class TaskService
         if (createdTask == null || task.Files.Count == 0) return createdTask;
 
         var filePath = Path.Combine(_filesDir, task.CreatedBy.ToString());
-        Directory.CreateDirectory(filePath!);
+        Directory.CreateDirectory(filePath);
 
         foreach (var file in task.Files)
         {
@@ -41,7 +38,7 @@ public class TaskService
             if (contentType is "application/pdf" or "image/png")
             {
                 var filename =
-                    $"{Path.GetFileNameWithoutExtension(file.FileName)}{Guid.NewGuid().ToString("N")}{Path.GetExtension(file.FileName)}";
+                    $"{Path.GetFileNameWithoutExtension(file.FileName)}{Guid.NewGuid():N}{Path.GetExtension(file.FileName)}";
 
                 await using var fileStream = new FileStream(Path.Combine(filePath, filename), FileMode.Create);
                 await file.CopyToAsync(fileStream);
@@ -58,15 +55,18 @@ public class TaskService
         var task = await GetTaskByIdAsync(taskId);
 
         if (task == null) return Result<string>.Failure("The Selected Task Not Exist");
-        if (task.CreatedBy != currentUserId) return Result<string>.Failure("Unauthorized: You don't have permission to edit task");
+        if (task.CreatedBy != currentUserId)
+            return Result<string>.Failure("Unauthorized: You don't have permission to edit task");
 
         var result = await _userTaskRepo.DeleteTaskAsync(taskId);
-        return result ? Result<string>.Successful("Task Deleted Successfully") : Result<string>.Failure("Unauthorized: You don't have permission to edit task");
+        return result
+            ? Result<string>.Successful("Task Deleted Successfully")
+            : Result<string>.Failure("Unauthorized: You don't have permission to edit task");
     }
 
-    public async Task<Result<UserWithSharedTask>> EditTaskAsync(EditTaskFormDto editTaskFormDto, List<IFormFile> files, int currentUserId)
+    public async Task<Result<UserWithSharedTask>> EditTaskAsync(EditTaskFormDto editTaskFormDto, List<IFormFile> files,
+        int currentUserId)
     {
-
         var editTaskDto = JsonSerializer.Deserialize<EditTaskDto>(editTaskFormDto.Task);
 
         if (editTaskDto is null) return Result<UserWithSharedTask>.Failure("Failed to Serialize JSON");
@@ -77,20 +77,22 @@ public class TaskService
 
         var isShared = oldTasks.SharedTasks.FirstOrDefault(user => user.SharedWith == currentUserId);
 
-        if (oldTasks.CreatedBy != currentUserId && isShared is null) return Result<UserWithSharedTask>.Failure("Unauthorized: You don't have permission to edit task", ResultErrorType.Unauthorized);
+        if (oldTasks.CreatedBy != currentUserId && isShared is null)
+            return Result<UserWithSharedTask>.Failure("Unauthorized: You don't have permission to edit task",
+                ResultErrorType.Unauthorized);
 
         if (isShared is not null)
         {
             if (!isShared.IsEditable)
-                return Result<UserWithSharedTask>.Failure("Unauthorized: You don't have permission to edit task", ResultErrorType.Unauthorized);
+                return Result<UserWithSharedTask>.Failure("Unauthorized: You don't have permission to edit task",
+                    ResultErrorType.Unauthorized);
         }
 
-        var editResult = await _userTaskRepo.EditTaskAsync(editTaskDto);
+        await _userTaskRepo.EditTaskAsync(editTaskDto);
         if (editTaskDto.Files.Count == 0)
         {
             foreach (var file in oldTasks.Files)
             {
-                if (file == null) break;
                 await _userTaskRepo.DeleteFileAsync(file.Id);
             }
         }
@@ -107,13 +109,12 @@ public class TaskService
 
         if (files.Count == 0)
         {
-
             var result = await GetTaskByIdAsync(editTaskDto.Id);
-            return result == null ? Result<UserWithSharedTask>.Failure("Failed to Retrieve User Updated Information") : result;
-        };
+            return result ?? Result<UserWithSharedTask>.Failure("Failed to Retrieve User Updated Information");
+        }
 
         var filePath = Path.Combine(_filesDir, editTaskDto.CreatedBy.ToString());
-        Directory.CreateDirectory(filePath!);
+        Directory.CreateDirectory(filePath);
 
         foreach (var file in files)
         {
@@ -125,9 +126,10 @@ public class TaskService
 
                 await using var fileStream = new FileStream(Path.Combine(filePath, filename), FileMode.Create);
                 await file.CopyToAsync(fileStream);
-                var taskFile = await _userTaskRepo.CreateTaskAttachmentAsync(editTaskDto.Id, filename);
+                await _userTaskRepo.CreateTaskAttachmentAsync(editTaskDto.Id, filename);
             }
         }
+
         var finalResult = await GetTaskByIdAsync(editTaskDto.Id);
         return finalResult ?? Result<UserWithSharedTask>.Failure("Failed to Retrieve User Updated Information");
     }
@@ -137,7 +139,8 @@ public class TaskService
         return await _userTaskRepo.GetAllTasksAsync();
     }
 
-    public async Task<Result<GetUserTasksResponse>> GetUserTasksAsync(int userId, int pageNumber, int pageSize, int currentUserId, List<string> roles)
+    public async Task<Result<GetUserTasksResponse>> GetUserTasksAsync(int userId, int pageNumber, int pageSize, int currentUserId,
+        List<string> roles)
     {
         if (userId != currentUserId && !roles.Contains("Admin") && !roles.Contains("Moderator"))
             return Result<GetUserTasksResponse>.Failure("Unauthorized: due to invalid credentials");
@@ -168,39 +171,47 @@ public class TaskService
         return _userTaskRepo.GetTaskByIdAsync(taskId);
     }
 
-    public async Task<Result<bool>> ShareTaskAsync(ShareTaskDto shareTaskDto, int userId)
+    public async Task<Result<bool>> ShareTaskAsync(ShareTaskDto shareTaskDto, int currentUserId)
     {
+        var task = await GetTaskByIdAsync(shareTaskDto.TaskId);
+
+        if (task == null) return Result<bool>.Failure("Failed To Retrieve Task");
+
+        if (task.CreatedBy != currentUserId)
+            return Result<bool>.Failure("Not your task");
+
         if (shareTaskDto.SharedWith.Count == 0)
         {
             await _userTaskRepo.DeleteAllSharedWithAsync(shareTaskDto.TaskId);
             return Result<bool>.Successful(true);
-
         }
-        var users = await _userRepo.GetUserstoShareAsync(userId);
-        if (users == null) return Result<bool>.Failure("Failed to Retrieve Users");
-        var blockedUsers = users.Where(a=> a.Status==false).ToList();
-        var task = await GetTaskByIdAsync(shareTaskDto.TaskId);
-        if (task==null) return Result<bool>.Failure("Failed To Retrieve Task");
 
-        var alreadySharedWith = task.SharedTasks.Select(a => a.SharedWith);
+        var users = await _userRepo.GetUserstoShareAsync(task.CreatedBy);
 
-        if (alreadySharedWith.Count() == 0)
+        if (users.Count == 0) return Result<bool>.Failure("Failed to Retrieve Users");
+
+        var blockedUsers = users.Where(u => !u.Status).Select(u => u.Id).ToList();
+
+        if (task.SharedTasks.Count == 0)
         {
-            shareTaskDto.SharedWith = shareTaskDto.SharedWith.Where(x => blockedUsers.Any(y => y.Id != x)).ToList(); 
-            await _userTaskRepo.ShareTaskAsync(shareTaskDto, userId);
+            shareTaskDto.SharedWith = shareTaskDto.SharedWith.Except(blockedUsers).ToList();
+            await _userTaskRepo.ShareTaskAsync(shareTaskDto, task.CreatedBy);
             return Result<bool>.Successful(true);
         }
 
-        var usersToDelete = alreadySharedWith.Except(shareTaskDto.SharedWith.Select(b => b)).ToList(); 
+        var alreadySharedWith = task.SharedTasks.Select(a => a.SharedWith).ToList();
+        var usersToDelete = alreadySharedWith.Except(shareTaskDto.SharedWith).ToList();
 
-        if (usersToDelete.Count() > 0)
+        if (usersToDelete.Count > 0)
             await _userTaskRepo.DeleteSharedWithAsync(usersToDelete, shareTaskDto.TaskId);
 
-        var usersToShareWith = shareTaskDto.SharedWith.Except(alreadySharedWith.Select(b => b)).ToList(); 
-        shareTaskDto.SharedWith = usersToShareWith.Where(x => blockedUsers.Any(y => y.Id != x)).ToList();
+        shareTaskDto.SharedWith = shareTaskDto.SharedWith
+            .Except(alreadySharedWith)
+            .Except(blockedUsers)
+            .ToList();
 
-        if (shareTaskDto.SharedWith.Count() > 0)
-            await _userTaskRepo.ShareTaskAsync(shareTaskDto, userId);
+        if (shareTaskDto.SharedWith.Count > 0)
+            await _userTaskRepo.ShareTaskAsync(shareTaskDto, task.CreatedBy);
 
         return Result<bool>.Successful(true);
     }

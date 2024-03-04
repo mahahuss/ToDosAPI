@@ -7,11 +7,11 @@ public class UserTask
     public DateTime CreatedDate { get; set; }
     public int CreatedBy { get; set; }
     public bool Status { get; set; }
-    public List<TaskAttachment> Files { get; set; } = new();
+    public List<TaskAttachment> Files { get; set; } = [];
 }
 
 public class UserWithSharedTask : UserTask
 {
-    public List<SharedTask> SharedTasks { get; set; } = new();
+    public List<SharedTask> SharedTasks { get; set; } = [];
 
 }

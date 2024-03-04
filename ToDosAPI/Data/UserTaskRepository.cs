@@ -95,8 +95,8 @@ public class UserTaskRepository
             {
                 if (file is not null)
                 {
-                    var fileAlreadyExist = taskInDictionary.Files.Where(x => x.Id == file.Id);
-                    if (fileAlreadyExist.Count() == 0)
+                    var fileAlreadyExist = taskInDictionary.Files.Where(x => x.Id == file.Id).ToList();
+                    if (fileAlreadyExist.Count == 0)
                         taskInDictionary.Files.Add(file);
                 }
                 if (sharedWith is not null)
@@ -190,7 +190,7 @@ public class UserTaskRepository
                 }
                 else if (file is not null)
                     taskInDictionary.Files.Add(file);
-                
+
                 return task;
             }, new { userId });
 
@@ -208,10 +208,13 @@ public class UserTaskRepository
         await using var con = new SqlConnection(_context.ConnectionString);
         await con.OpenAsync();
         await using var tran = await con.BeginTransactionAsync();
+        var count = 0;
+
         foreach (var userToDelete in usersToDelete)
         {
-            await con.ExecuteAsync("sp_SharedTasksDeleteSharedWith", new { Id = userToDelete, TaskId = taskId }, transaction: tran);
+            count += await con.ExecuteAsync("sp_SharedTasksDeleteSharedWith", new { Id = userToDelete, TaskId = taskId }, transaction: tran);
         }
+        
         await tran.CommitAsync();
     }
 
