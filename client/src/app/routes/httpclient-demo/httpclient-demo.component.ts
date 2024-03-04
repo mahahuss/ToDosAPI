@@ -6,8 +6,12 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './httpclient-demo.component.html',
-  styleUrl: './httpclient-demo.component.scss'
+  styleUrl: './httpclient-demo.component.scss',
 })
 export class HttpclientDemoComponent {
+  isShowed = false;
 
+  show() {
+    this.isShowed = !this.isShowed;
+  }
 }
