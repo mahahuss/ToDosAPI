@@ -177,9 +177,10 @@ public class TaskService
 
         }
         var users = await _userRepo.GetUserstoShareAsync(userId);
+        if (users == null) return Result<bool>.Failure("Failed to Retrieve Users");
         var blockedUsers = users.Where(a=> a.Status==false).ToList();
         var task = await GetTaskByIdAsync(shareTaskDto.TaskId);
-        if (task==null) return Result<bool>.Failure("Task Failed To Retrieve");
+        if (task==null) return Result<bool>.Failure("Failed To Retrieve Task");
 
         var alreadySharedWith = task.SharedTasks.Select(a => a.SharedWith);
 
