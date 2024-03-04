@@ -16,12 +16,14 @@ public class TaskService
     private readonly UserTaskRepository _userTaskRepo;
     private readonly string _filesDir;
     private readonly FileService _fileService;
+    private readonly UserRepository _userRepo;
 
-    public TaskService(UserTaskRepository userTaskRepo, IConfiguration configuration, FileService fileService)
+    public TaskService(UserTaskRepository userTaskRepo, IConfiguration configuration, FileService fileService, UserRepository userRepo)
     {
         _userTaskRepo = userTaskRepo;
         _filesDir = configuration.GetValue<string>("Files:FilesPath")!;
         _fileService = fileService;
+        _userRepo = userRepo;
     }
 
     public async Task<UserTask?> AddNewTaskAsync(AddTaskDto task)
@@ -73,13 +75,13 @@ public class TaskService
 
         if (oldTasks == null) return Result<UserWithSharedTask>.Failure("The Selected Task Not Exist", ResultErrorType.NotFound);
 
-        var isItShared = oldTasks.SharedTasks.FirstOrDefault(user => user.SharedWith == currentUserId);
+        var isShared = oldTasks.SharedTasks.FirstOrDefault(user => user.SharedWith == currentUserId);
 
-        if (oldTasks.CreatedBy != currentUserId && isItShared is null) return Result<UserWithSharedTask>.Failure("Unauthorized: You don't have permission to edit task", ResultErrorType.Unauthorized);
+        if (oldTasks.CreatedBy != currentUserId && isShared is null) return Result<UserWithSharedTask>.Failure("Unauthorized: You don't have permission to edit task", ResultErrorType.Unauthorized);
 
-        if (isItShared is not null)
+        if (isShared is not null)
         {
-            if (!isItShared.IsEditable)
+            if (!isShared.IsEditable)
                 return Result<UserWithSharedTask>.Failure("Unauthorized: You don't have permission to edit task", ResultErrorType.Unauthorized);
         }
 
@@ -166,11 +168,40 @@ public class TaskService
         return _userTaskRepo.GetTaskByIdAsync(taskId);
     }
 
-    public Task ShareTaskAsync(ShareTaskDto shareTaskDto, int userId)
+    public async Task<Result<bool>> ShareTaskAsync(ShareTaskDto shareTaskDto, int userId)
     {
-        return _userTaskRepo.ShareTaskAsync(shareTaskDto, userId);
-        //var result = _userTaskRepo.ShareTaskAsync(shareTaskDto, userId);
-        //return result ? Result<string>.Successful("The Task Shared Successfully") : Result<GetUserTasksResponse>.Failure("Failed to Share Task");
+        if (shareTaskDto.SharedWith.Count == 0)
+        {
+            await _userTaskRepo.DeleteAllSharedWithAsync(shareTaskDto.TaskId);
+            return Result<bool>.Successful(true);
+
+        }
+        var users = await _userRepo.GetUserstoShareAsync(userId);
+        var blockedUsers = users.Where(a=> a.Status==false).ToList();
+        var task = await GetTaskByIdAsync(shareTaskDto.TaskId);
+        if (task==null) return Result<bool>.Failure("Task Failed To Retrieve");
+
+        var alreadySharedWith = task.SharedTasks.Select(a => a.SharedWith);
+
+        if (alreadySharedWith.Count() == 0)
+        {
+            shareTaskDto.SharedWith = shareTaskDto.SharedWith.Where(x => blockedUsers.Any(y => y.Id != x)).ToList(); 
+            await _userTaskRepo.ShareTaskAsync(shareTaskDto, userId);
+            return Result<bool>.Successful(true);
+        }
+
+        var usersToDelete = alreadySharedWith.Except(shareTaskDto.SharedWith.Select(b => b)).ToList(); 
+
+        if (usersToDelete.Count() > 0)
+            await _userTaskRepo.DeleteSharedWithAsync(usersToDelete, shareTaskDto.TaskId);
+
+        var usersToShareWith = shareTaskDto.SharedWith.Except(alreadySharedWith.Select(b => b)).ToList(); 
+        shareTaskDto.SharedWith = usersToShareWith.Where(x => blockedUsers.Any(y => y.Id != x)).ToList();
+
+        if (shareTaskDto.SharedWith.Count() > 0)
+            await _userTaskRepo.ShareTaskAsync(shareTaskDto, userId);
+
+        return Result<bool>.Successful(true);
     }
 
     public Task<List<UserTask>> GetUserTasksAsync(int userId)

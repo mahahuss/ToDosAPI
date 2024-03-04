@@ -6,6 +6,7 @@ import { loggedInAuthGuardGuard } from './core/gaurd/logged-in-auth-guard.guard'
 import { ProfileComponent } from './routes/profile/profile.component';
 import { TodosComponent } from './routes/todos/todos.component';
 import { UsersComponent } from './routes/users/users.component';
+import { HttpclientDemoComponent } from './routes/httpclient-demo/httpclient-demo.component';
 
 export const routes: Routes = [
   {
@@ -31,6 +32,11 @@ export const routes: Routes = [
   {
     path: 'users',
     component: UsersComponent,
+    canActivate: [guardAuthGuard],
+  },
+  {
+    path: 'httpclient-demo',
+    component: HttpclientDemoComponent,
     canActivate: [guardAuthGuard],
   },
   { path: '**', redirectTo: 'login' },

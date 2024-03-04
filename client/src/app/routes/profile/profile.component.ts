@@ -41,7 +41,15 @@ export class ProfileComponent implements OnInit {
         if (!res) return;
         this.userInfo = res;
         this.userInfo.roles = Array.isArray(this.userInfo.roles) ? this.userInfo.roles : [this.userInfo.roles];
-        this.setPhotoPath();
+        this.setUserPhoto();
+      },
+    });
+  }
+
+  setUserPhoto() {
+    this.authService.getUserPhoto().subscribe({
+      next: (result) => {
+        this.photoPath = 'data:image/png;base64,' + result.fileBase64;
       },
     });
   }
@@ -73,7 +81,7 @@ export class ProfileComponent implements OnInit {
     formData.append('Name', this.name);
     this.authService.updateUserProfile(formData).subscribe({
       next: (result) => {
-        this.setPhotoPath();
+        this.UpdatePhotoPath();
         this.updateClickStatus = false;
         localStorage.setItem('fullname', this.name);
         this.userInfo!.given_name = this.name;
@@ -87,16 +95,10 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  setPhotoPath() {
+  UpdatePhotoPath() {
     if (!this.userInfo) return;
     if (this.fileToUpload) {
       this.photoPath = URL.createObjectURL(this.fileToUpload);
-    } else {
-      this.authService.getUserPhoto().subscribe({
-        next: (result) => {
-          this.photoPath = 'data:image/png;base64,' + result.fileBase64;
-        },
-      });
     }
   }
 }

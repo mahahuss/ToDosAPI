@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Linq;
+using System.Net.Mail;
 using System.Threading.Tasks;
 using System.Transactions;
 using ToDosAPI.Models;
@@ -109,6 +110,12 @@ public class UserTaskRepository
         return response;
     }
 
+    public async Task<bool> DeleteAllSharedWithAsync(int taskId)
+    {
+        await using var con = new SqlConnection(_context.ConnectionString);
+        return await con.ExecuteAsync("sp_SharedTasksDeleteAllSharedWith",
+            new { taskId }) > 0;
+    }
     public async Task<TaskAttachment?> GetTaskAttachmentAsync(int userId)
     {
         await using var con = new SqlConnection(_context.ConnectionString);
@@ -151,7 +158,6 @@ public class UserTaskRepository
         await using var con = new SqlConnection(_context.ConnectionString);
         await con.OpenAsync();
         await using var tran = await con.BeginTransactionAsync();
-        await con.ExecuteAsync("sp_SharedTasksDeleteSharedWith", new { taskId = shareTaskDto.TaskId }, transaction: tran);
         foreach (var shareWith in shareTaskDto.SharedWith)
         {
             await con.ExecuteAsync("sp_TasksShare", new
@@ -196,4 +202,23 @@ public class UserTaskRepository
         await using var con = new SqlConnection(_context.ConnectionString);
         return await con.ExecuteAsync("sp_TasksAttachmentsDelete", new { Id = attachmentId }) > 0;
     }
+
+    public async Task DeleteSharedWithAsync(List<int> usersToDelete, int taskId)
+    {
+        await using var con = new SqlConnection(_context.ConnectionString);
+        await con.OpenAsync();
+        await using var tran = await con.BeginTransactionAsync();
+        foreach (var userToDelete in usersToDelete)
+        {
+            await con.ExecuteAsync("sp_SharedTasksDeleteSharedWith", new { Id = userToDelete, TaskId = taskId }, transaction: tran);
+        }
+        await tran.CommitAsync();
+    }
+
+    // public async Task<List<int>> GetSharedWith(int taskId)
+    // {
+
+    //     await using var con = new SqlConnection(_context.ConnectionString);
+    //     return (await con.QueryAsync<int>("sp_SharedTasksGetUsers")).ToList();
+    //}
 }

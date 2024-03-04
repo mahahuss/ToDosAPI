@@ -40,7 +40,8 @@ export class ShareTaskDialogComponent implements OnInit {
     let sharedWithIds = this.todoTask?.sharedTasks
       ? this.todoTask?.sharedTasks.map(({ sharedWith }) => sharedWith)
       : [];
-    this.usersToShareWith = res.filter((item) => !sharedWithIds.includes(item.id) && item.status !== false);
+
+    this.usersToShareWith = res.filter((item) => item.status !== false);
     this.selectedUsers = res.filter((item) => sharedWithIds.includes(item.id));
   }
 
