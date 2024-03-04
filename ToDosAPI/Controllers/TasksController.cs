@@ -51,6 +51,9 @@ public class TasksController : BaseController
     [HttpPost("share")]
     public async Task<ActionResult> ShareTask(ShareTaskDto shareTaskDto)
     {
+        // TODO:
+        // - check if shared with is blocked
+        // - update shared with properly
         await _taskService.ShareTaskAsync(shareTaskDto, User.GetId());
         return Ok();
     }
