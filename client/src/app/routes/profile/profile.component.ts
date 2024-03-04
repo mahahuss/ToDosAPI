@@ -51,6 +51,7 @@ export class ProfileComponent implements OnInit {
     this.avatarPreview = false;
     this.name = this.userInfo.given_name;
     this.updateClickStatus = !this.updateClickStatus;
+    this.fileToUpload = undefined;
   }
 
   handleFileInput(event: any) {
@@ -88,11 +89,14 @@ export class ProfileComponent implements OnInit {
 
   setPhotoPath() {
     if (!this.userInfo) return;
-
-    this.authService.getUserPhoto().subscribe({
-      next: (result) => {
-        this.photoPath = 'data:image/png;base64,' + result.fileBase64;
-      },
-    });
+    if (this.fileToUpload) {
+      this.photoPath = URL.createObjectURL(this.fileToUpload);
+    } else {
+      this.authService.getUserPhoto().subscribe({
+        next: (result) => {
+          this.photoPath = 'data:image/png;base64,' + result.fileBase64;
+        },
+      });
+    }
   }
 }

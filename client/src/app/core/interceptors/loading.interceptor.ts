@@ -42,10 +42,10 @@ function isException(req: HttpRequest<unknown>) {
     (req.url.includes('Tasks/user-tasks-only') && req.method === 'GET') ||
     (req.url.includes('Users/status') && req.method === 'PUT') ||
     (req.url.includes('Users/edit-roles') && req.method === 'PUT') ||
-    (req.url.includes('users/roles') && req.method === 'GET') ||
     (req.url.includes('users/user-roles') && req.method === 'GET') ||
     (req.url.includes('Users') && req.method === 'PUT') ||
-    (req.url.includes('Tasks/attachments') && req.method === 'GET')
+    (req.url.includes('Tasks/attachments') && req.method === 'GET') ||
+    (req.url.includes('users/image') && req.method === 'GET')
   ) {
     return true;
   }

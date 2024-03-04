@@ -36,11 +36,11 @@ export class ShareTaskDialogComponent implements OnInit {
     await this.loadUsers();
   }
   async loadUsers() {
-    const res = await this.authService.getUsersToShare();
+    let res = await this.authService.getUsersToShare();
     let sharedWithIds = this.todoTask?.sharedTasks
       ? this.todoTask?.sharedTasks.map(({ sharedWith }) => sharedWith)
       : [];
-    this.usersToShareWith = res.filter((item) => !sharedWithIds.includes(item.id));
+    this.usersToShareWith = res.filter((item) => !sharedWithIds.includes(item.id) && item.status !== false);
     this.selectedUsers = res.filter((item) => sharedWithIds.includes(item.id));
   }
 

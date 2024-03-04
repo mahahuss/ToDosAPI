@@ -11,7 +11,7 @@ import { TodoItemComponent } from './todo-item/todo-item.component';
 import { UserInfo } from '../../shared/models/auth';
 import { LoaderService } from '../../services/loader.service';
 import { SpinnerComponent } from '../../core/components/spinner/spinner.component';
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-todos',
@@ -45,6 +45,7 @@ export class TodosComponent implements OnInit {
     private todosService: TodosService,
     public loaderService: LoaderService,
     private router: Router,
+    private route: ActivatedRoute,
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -54,6 +55,8 @@ export class TodosComponent implements OnInit {
 
     this.currentUserId = currentUser.nameid;
     await this.authService.getUsersToShare();
+    const pageNumber = this.route.snapshot.queryParamMap.get('page');
+    this.currentpage = pageNumber ? +pageNumber : 1;
     this.loadTodos();
   }
   taskAdded(createdTask: ToDoTask) {

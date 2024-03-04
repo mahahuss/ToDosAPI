@@ -22,7 +22,7 @@ export class TodoEditDialogComponent implements OnInit {
   todoTaskCopy: ToDoTask | undefined;
   files: UserFile[] = [];
   errorMessage = false;
-  editLoading = false;
+  isLoading = false;
 
   constructor(
     private toastr: ToastrService,
@@ -59,10 +59,10 @@ export class TodoEditDialogComponent implements OnInit {
   }
 
   editTask() {
-    this.editLoading = true;
+    this.isLoading = true;
     if (this.todoTaskCopy?.taskContent.length == 0) {
       this.errorMessage = true;
-      this.editLoading = false;
+      this.isLoading = false;
       return;
     }
     this.errorMessage = false;
@@ -93,6 +93,9 @@ export class TodoEditDialogComponent implements OnInit {
       next: (res) => {
         this.toastr.success('The task updated successfully');
         this.taskUpdated.emit(res);
+      },
+      error: () => {
+        this.isLoading = false;
       },
     });
   }

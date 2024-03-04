@@ -33,6 +33,7 @@ export type UpdateUser = {
 export type UserToShare = {
   id: number;
   fullName: string;
+  status: boolean;
 };
 
 export type UserPhoto = {
