@@ -20,6 +20,10 @@ public static class AppServicesExtensions
         builder.Services.AddSingleton<PasswordHasherService>();
         builder.Services.AddSingleton<TokenService>();
         builder.Services.AddSingleton<FileService>();
+        builder.Services.AddSingleton<PostService>();
+        builder.Services.AddSingleton<PostRepository>();
+
+
     }
 
     public static void AddTodosCors(this WebApplicationBuilder builder, string corsName)
