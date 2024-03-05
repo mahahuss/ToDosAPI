@@ -26,7 +26,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.AddAppAuth();
 builder.AddDbMigrations();
-builder.Services.AddHttpClient();
 
 var app = builder.Build();
 app.UseSerilogRequestLogging();
@@ -37,6 +36,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 app.UseCors(corsOrigins);
 app.UseAuthentication();
 app.UseAuthorization();

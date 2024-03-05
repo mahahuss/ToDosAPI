@@ -13,25 +13,20 @@ public class PostRepository
         _context = context;
     }
 
-    public async Task<int> addPostsAsync(List<Post> posts)
+    public async Task<int> AddPostsAsync(List<Post> posts)
     {
-        int count = 0;
+        await using var con = new SqlConnection(_context.ConnectionString);
+        var count = 0;
         foreach (var post in posts)
         {
-            await using var con = new SqlConnection(_context.ConnectionString);
-           var result = await con.QueryFirstOrDefaultAsync<Post>("sp_PostsCreate", new
+            count += await con.ExecuteAsync("sp_PostsCreate", new
             {
                 post.Id,
                 post.Title,
                 post.Body
             });
-            if (result != null)
-            {
-                count++;
-            }
         }
-         return count;
+
+        return count;
     }
-
-
 }

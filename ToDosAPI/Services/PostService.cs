@@ -1,59 +1,36 @@
-﻿
-using Microsoft.Net.Http.Headers;
-using System.Net.Http;
-using System.Text.Json;
-using ToDosAPI.Data;
-using ToDosAPI.Models;
+﻿using ToDosAPI.Data;
 using ToDosAPI.Models.Entities;
 
-namespace ToDosAPI.Services
+namespace ToDosAPI.Services;
+
+public class PostService
 {
-    public class PostService
+    private readonly JsonPlaceholderService _jsonPlaceholderService;
+    private readonly PostRepository _postRepo;
+
+    public PostService(JsonPlaceholderService jsonPlaceholderService, PostRepository postRepo)
     {
-        private readonly IHttpClientFactory _httpClientFactory;
-        private readonly PostRepository _postRepository;
+        _jsonPlaceholderService = jsonPlaceholderService;
+        _postRepo = postRepo;
+    }
 
+    public async Task<List<Post>> GetAndCreatePostsAsync()
+    {
+        var posts = await _jsonPlaceholderService.GetPostsAsync();
 
-        public PostService( IHttpClientFactory httpClientFactory, PostRepository postRepository) {
+        Console.WriteLine(posts.Count);
+        if (posts.Count == 0) return [];
 
-            _httpClientFactory = httpClientFactory;
-            _postRepository = postRepository;
-        }
-        public async Task<List<Post>> getPostsAsync()
-        {
+        var added = await _postRepo.AddPostsAsync(posts);
 
-            var httpRequestMessage = new HttpRequestMessage(
-           HttpMethod.Get,
-           "https://jsonplaceholder.typicode.com/posts"){};
+        Console.WriteLine(added);
+        if (added == posts.Count) return posts;
 
-            var httpClient = _httpClientFactory.CreateClient();
-            var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
+        return [];
+    }
 
-            if (httpResponseMessage.IsSuccessStatusCode)
-            {
-                using var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync();
-
-                if (contentStream == null) return [];
-
-                var result = await JsonSerializer.DeserializeAsync<List<Post>>(contentStream);
-
-                if (result != null && result.Count >0)
-                {
-                   var count =  _postRepository.addPostsAsync(result);
-                }
-
-                return result ?? [];
-            }
-            return [];
-
-        }
-        //using HttpResponseMessage response = await _httpClient.GetAsync("https://jsonplaceholder.typicode.com/posts");
-
-        //var jsonResponse = await response.Content.ReadAsStringAsync();
-        //Console.WriteLine($"{jsonResponse}");
-        //var result = JsonSerializer.Deserialize<List<Post>>(jsonResponse);
-        //return result ?? [];
-
-    
+    public Task<Post?> CreatePostAsync(Post post)
+    {
+        return _jsonPlaceholderService.CreatePostAsync(post);
     }
 }

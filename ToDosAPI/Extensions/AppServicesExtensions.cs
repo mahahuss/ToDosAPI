@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Net.Http.Headers;
+using System.Text;
 using FluentMigrator.Runner;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -20,10 +21,12 @@ public static class AppServicesExtensions
         builder.Services.AddSingleton<PasswordHasherService>();
         builder.Services.AddSingleton<TokenService>();
         builder.Services.AddSingleton<FileService>();
-        builder.Services.AddSingleton<PostService>();
+        builder.Services.AddHttpClient<JsonPlaceholderService>(c =>
+        {
+            c.BaseAddress = new Uri("https://jsonplaceholder.typicode.com");
+        });
         builder.Services.AddSingleton<PostRepository>();
-
-
+        builder.Services.AddSingleton<PostService>();
     }
 
     public static void AddTodosCors(this WebApplicationBuilder builder, string corsName)

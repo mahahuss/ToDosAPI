@@ -1,27 +1,39 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
-using ToDosAPI.Controllers;
-using ToDosAPI.Extensions;
+﻿using Microsoft.AspNetCore.Mvc;
+using ToDosAPI.Models.Entities;
 using ToDosAPI.Services;
 
-namespace ToDosAPI.Controllers
+namespace ToDosAPI.Controllers;
+
+public class PostsController : BaseController
 {
-    public class PostsController : BaseController
+    private readonly PostService _postService;
+
+    public PostsController(PostService postService)
     {
-        private readonly PostService _postService;
-        public PostsController(PostService postService)
-        {
-            _postService = postService;
-        }
+        _postService = postService;
+    }
 
-        [HttpGet]
-        public async Task<ActionResult> GetPosts()
-        {
-            var result = await _postService.getPostsAsync();
-            if (result.Count ==0) BadRequest("Unable to fetch posts");
-            return Ok(result);
-        }
+    [HttpGet]
+    public async Task<ActionResult> GetPosts()
+    {
+        var result = await _postService.GetAndCreatePostsAsync();
 
+        if (result.Count == 0) BadRequest("Unable to fetch posts");
+
+        return Ok(result);
+    }
+
+    [HttpPost]
+    public async Task<ActionResult> CreatePost()
+    {
+        var result = await _postService.CreatePostAsync(new Post
+        {
+            Title = "testing",
+            Body = "nice"
+        });
+
+        if (result is null) return BadRequest();
+
+        return Ok(result);
     }
 }
-
