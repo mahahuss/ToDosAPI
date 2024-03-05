@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System.Security.Claims;
 using System.Text.Json;
-using Api.Models;
-using Api.Models.Dtos;
-using Api.Services;
 using Microsoft.AspNetCore.StaticFiles;
 using Api.Extensions;
+using Core.Dtos;
+using Core.Models;
+using Infrastructure.Services;
 
 namespace Api.Controllers;
 
@@ -65,7 +65,6 @@ public class TasksController : BaseController
         var currentUserId = User.GetId();
         var result = await _taskService.EditTaskAsync(editTaskFormDto, editTaskFormDto.Files, currentUserId);
 
-        
 
         if (result.Success) return Ok(result.Data);
 
@@ -83,7 +82,6 @@ public class TasksController : BaseController
         var currentUserId = User.GetId();
         var result = await _taskService.DeleteTaskAsync(taskId, currentUserId);
         return result.Match<ActionResult>(Ok, BadRequest);
-
     }
 
     [HttpGet("attachments/{attachmentId:int}")]

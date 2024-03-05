@@ -1,8 +1,8 @@
 ﻿using System.Text;
-using Api.Data;
-using Api.Migrations;
-using Api.Services;
 using FluentMigrator.Runner;
+using Infrastructure.Data;
+using Infrastructure.Migrations;
+using Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
@@ -69,7 +69,7 @@ public static class AppServicesExtensions
             .ConfigureRunner(rb => rb
                 .AddSqlServer()
                 .WithGlobalConnectionString(builder.Configuration.GetConnectionString("TodosDb"))
-                .ScanIn(typeof(Program).Assembly).For.Migrations()
+                .ScanIn(typeof(BaseTodosMigration).Assembly).For.Migrations()
                 .WithVersionTable(new MigrationTableMetadata()))
             .AddLogging(lb => lb.AddFluentMigratorConsole());
     }

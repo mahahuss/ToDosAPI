@@ -1,5 +1,5 @@
-﻿using Api.Models.Entities;
-using Api.Services;
+﻿using Core.Entities;
+using Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;

@@ -1,4 +1,4 @@
-﻿using Api.Models;
+﻿using Core.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
@@ -24,6 +24,7 @@ public class BaseController : ControllerBase
     {
         return base.Unauthorized(new ApiResponse(401, message ?? "You cannot access this resource"));
     }
+
     [NonAction]
     public NotFoundObjectResult NotFound(string? message = null)
     {

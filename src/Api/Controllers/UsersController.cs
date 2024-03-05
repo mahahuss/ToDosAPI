@@ -1,11 +1,9 @@
-﻿using Api.Models;
-using Api.Models.Dtos;
-using Api.Services;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Api.Extensions;
-using Api.Models.Entities;
+using Core.Dtos;
+using Infrastructure.Services;
 
 namespace Api.Controllers;
 

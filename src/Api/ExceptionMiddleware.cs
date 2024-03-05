@@ -2,7 +2,6 @@ using System.Net;
 
 namespace Api;
 
-
 public class ExceptionMiddleware
 {
     private readonly RequestDelegate _next;
